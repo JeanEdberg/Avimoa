@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Control Avícola Consolidado — Plumífero & Los 7 Pollitos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    body { background-color: #020617; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
+    input, select, textarea { font-size: 16px !important; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    const EMPRESAS = [
+      { id: 'emp-1', nombreCorto: 'PLUMÍFERO', razonSocial: 'INVERSIONES Y NEGOCIACIONES PLUMÍFERO E.I.R.L.' },
+      { id: 'emp-2', nombreCorto: 'LOS 7 POLLITOS', razonSocial: 'LOS 7 POLLITOS INVERSIONES E.I.R.L.' },
+    ];
+
+    const USUARIOS_DEMO = [
+      { id: 'u-1', nombre: 'Jean Guevara (Dev)', rol: 'DESARROLLADOR', pin: '1234', desc: 'Acceso Total + Consola Técnica' },
+      { id: 'u-2', nombre: 'Gerencia / Supervisión', rol: 'SUPERVISION', pin: '1111', desc: 'Acceso Total + Kardex + Reportes' },
+      { id: 'u-3', nombre: 'Operador Galpón', rol: 'TRASLADO', pin: '4444', desc: 'Solo Ingreso / Salida de Galpón' },
+      { id: 'u-4', nombre: 'Despachador Acopio', rol: 'DESPACHO', pin: '5555', desc: 'Solo Emisión de Guías Pluma' },
+      { id: 'u-5', nombre: 'Encargado Conteo', rol: 'CONTEO', pin: '2222', desc: 'Conteo Físico + Merma Ante-Mortem' },
+      { id: 'u-6', nombre: 'Jefe de Faenado', rol: 'FAENADO', pin: '3333', desc: 'Faenado Mañana + Post-Mortem + Cierre' },
+    ];
+
+    const PERMISOS_ROL = {
+      TRASLADO: ['INGRESOS'],
+      DESPACHO: ['GUIAS'],
+      CONTEO: ['CONTEO_ANTE'],
+      FAENADO: ['FAENADO_POST'],
+      SUPERVISION: ['INGRESOS', 'GUIAS', 'CONTEO_ANTE', 'FAENADO_POST', 'KARDEX', 'MAESTROS'],
+      DESARROLLADOR: ['INGRESOS', 'GUIAS', 'CONTEO_ANTE', 'FAENADO_POST', 'KARDEX', 'MAESTROS'],
+    };
+
+    const GALPONES_INIT = [
+      { id: 'g-1', nombre: 'San Francisco', direccion: 'Sector San Francisco - Galpón Único', empresaId: 'emp-1' },
+      { id: 'g-2', nombre: 'Km 21', direccion: 'Carretera Interoceánica Km 21', empresaId: 'emp-1' },
+      { id: 'g-3', nombre: 'Km 15', direccion: 'Carretera Interoceánica Km 15', empresaId: 'emp-2' },
+      { id: 'g-4', nombre: 'Km 26', direccion: 'Sector Km 26 Gyoel', empresaId: 'emp-2' },
+    ];
+
+    const VEHICULOS_INIT = [
+      { id: 'v-1', placa: 'X4F-945', modelo: 'Canter', empresaId: 'emp-1', chofer: 'Sr. Peter' },
+      { id: 'v-2', placa: 'PLU-801', modelo: 'Hyundai HD', empresaId: 'emp-1', chofer: 'Demetrio' },
+      { id: 'v-3', placa: 'AWN-913', modelo: 'Fuso', empresaId: 'emp-2', chofer: 'Jesús' },
+      { id: 'v-4', placa: 'X2T-840', modelo: 'Canter', empresaId: 'emp-2', chofer: 'Noé' },
+    ];
+
+    const CLIENTES_INIT = [
+      { cod: '018', cliente: 'LUCERO DAMARIS ZEGARRA APAZA', apodo: 'Lucero Apaza' },
+      { cod: '222', cliente: 'JHON CASAS', apodo: 'Jhon Casas' },
+      { cod: '236', cliente: 'YULI MILAGROS', apodo: 'Yuli Milagros' },
+      { cod: '075', cliente: 'TIENDA BETO // CASERITA', apodo: 'Tienda Beto' },
+      { cod: '099', cliente: 'SANTOS', apodo: 'Santos' },
+    ];
+
+    function App() {
+      const [usuarioActivo, setUsuarioActivo] = useState(null);
+      const [pinInput, setPinInput] = useState('');
+      const [pinError, setPinError] = useState('');
+      const [tabActiva, setTabActiva] = useState('KARDEX');
+
+      const [fechaOperativa, setFechaOperativa] = useState('2026-11-18');
+      const [online, setOnline] = useState(true);
+      const [colaOffline, setColaOffline] = useState([]);
+      const [toast, setToast] = useState(null);
+
+      const [galpones, setGalpones] = useState(GALPONES_INIT);
+      const [vehiculos] = useState(VEHICULOS_INIT);
+      const [clientes, setClientes] = useState(CLIENTES_INIT);
+
+      const [saldoInicial] = useState(0);
+      const [ingresos, setIngresos] = useState([
+        { id: 'i-1', galpon: 'San Francisco', empresa: 'PLUMÍFERO', placa: 'PLU-801', chofer: 'Demetrio', jabas: 200, aves: 1600, modo: 'FOTO_OCR' }
+      ]);
+      const [guias, setGuias] = useState([
+        { id: 'gu-1', empresa: 'LOS 7 POLLITOS', numero: '001425', cod: '018', cliente: 'Lucero Apaza', jabas: 34, aves: 268, peso: 921.0, modo: 'DIGITAL' }
+      ]);
+      const [mermasAnte, setMermasAnte] = useState([
+        { id: 'ma-1', placa: 'PLU-801', aves: 2, motivo: 'Ahogados en trayecto', conFoto: false }
+      ]);
+      const [confirmacionPre, setConfirmacionPre] = useState(null);
+      const [faenadoManana, setFaenadoManana] = useState(null);
+      const [mermaPost, setMermaPost] = useState(0);
+      const [confirmacionPost, setConfirmacionPost] = useState(null);
+      const [alertas, setAlertas] = useState([]);
+
+      const [mostrarNotas, setMostrarNotas] = useState(false);
+      const [notasCliente, setNotasCliente] = useState([]);
+      const [nuevaNota, setNuevaNota] = useState('');
+
+      const notificar = (msg, tipo = 'ok') => {
+        setToast({ msg, tipo });
+        setTimeout(() => setToast(null), 4000);
+      };
+
+      const nombreEmpresa = (empId) => EMPRESAS.find(e => e.id === empId)?.nombreCorto || 'CONSOLIDADO';
+
+      const totalIngresosAves = ingresos.reduce((a, b) => a + b.aves, 0);
+      const totalVentasVivoAves = guias.reduce((a, b) => a + b.aves, 0);
+      const totalMermaAnteAves = mermasAnte.reduce((a, b) => a + b.aves, 0);
+      const saldoTeoricoPreFaenado = saldoInicial + totalIngresosAves - totalVentasVivoAves - totalMermaAnteAves;
+      const basePreFaenado = confirmacionPre ? confirmacionPre.fisico : saldoTeoricoPreFaenado;
+      const saldoTeoricoPostFaenado = basePreFaenado - (faenadoManana || 0) - mermaPost;
+
+      const iniciarConUsuario = (user) => {
+        setUsuarioActivo(user);
+        setPinInput('');
+        setPinError('');
+        const permitidos = PERMISOS_ROL[user.rol];
+        setTabActiva(permitidos.includes('KARDEX') ? 'KARDEX' : permitidos[0]);
+      };
+
+      const handlePinSubmit = (e) => {
+        e.preventDefault();
+        const encontrado = USUARIOS_DEMO.find(u => u.pin === pinInput);
+        if (!encontrado) {
+          setPinError('PIN incorrecto. Use uno de los accesos demo inferiores.');
+          return;
+        }
+        iniciarConUsuario(encontrado);
+      };
+
+      const toggleRed = () => {
+        const nuevoEstado = !online;
+        setOnline(nuevoEstado);
+        if (nuevoEstado && colaOffline.length > 0) {
+          notificar(`Sincronizados ${colaOffline.length} registros pendientes con la nube.`);
+          setColaOffline([]);
+        } else if (!nuevoEstado) {
+          notificar('Modo SIN SEÑAL activado: Los registros se guardarán localmente.', 'warn');
+        }
+      };
+
+      const registrarEnColaSiOffline = (concepto) => {
+        if (!online) {
+          setColaOffline(prev => [...prev, { id: Date.now(), concepto, fecha: fechaOperativa }]);
+        }
+      };
+
+      if (!usuarioActivo) {
+        return (
+          <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
+            <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-6">
+              <div className="text-center space-y-1">
+                <span className="inline-block bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-extrabold px-3 py-1 rounded-full tracking-wider uppercase">
+                  Demo Interactivo Gerencial
+                </span>
+                <h1 className="text-2xl font-black text-white pt-1">Control Avícola Consolidado</h1>
+                <p className="text-xs text-slate-400">Plumífero E.I.R.L. & Los 7 Pollitos E.I.R.L.</p>
+              </div>
+
+              <form onSubmit={handlePinSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-center text-xs font-bold text-slate-400 uppercase mb-2">
+                    Ingrese su PIN de Acceso (4 dígitos)
+                  </label>
+                  <input
+                    type="password"
+                    inputMode="numeric"
+                    maxLength={4}
+                    value={pinInput}
+                    onChange={(e) => setPinInput(e.target.value.replace(/\D/g, ''))}
+                    placeholder="••••"
+                    className="w-full bg-slate-950 border-2 border-slate-700 focus:border-amber-500 rounded-2xl p-4 text-center text-3xl tracking-[0.7em] font-mono text-white outline-none"
+                  />
+                </div>
+                {pinError && <p className="text-rose-400 text-xs text-center font-bold">{pinError}</p>}
+                <button
+                  type="submit"
+                  className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-2xl text-base shadow-lg transition"
+                >
+                  INGRESAR CON PIN
+                </button>
+              </form>
+
+              <div className="border-t border-slate-800 pt-4">
+                <p className="text-xs font-bold text-slate-400 uppercase text-center mb-3">
+                  Accesos Rápidos por Perfil (1 Clic para Demo)
+                </p>
+                <div className="grid grid-cols-1 gap-2">
+                  {USUARIOS_DEMO.map((u) => (
+                    <button
+                      key={u.id}
+                      type="button"
+                      onClick={() => iniciarConUsuario(u)}
+                      className="flex items-center justify-between bg-slate-800/80 hover:bg-slate-800 border border-slate-700/80 p-3 rounded-xl text-left transition"
+                    >
+                      <div>
+                        <p className="text-sm font-bold text-white">{u.rol}</p>
+                        <p className="text-xs text-slate-400">{u.desc}</p>
+                      </div>
+                      <span className="bg-slate-950 text-amber-400 font-mono text-xs font-bold px-2.5 py-1.5 rounded-lg border border-slate-700">
+                        PIN: {u.pin}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      const tabsDisponibles = [
+        { id: 'INGRESOS', label: '1. Ingreso Galpón' },
+        { id: 'GUIAS', label: '2. Guía Pluma' },
+        { id: 'CONTEO_ANTE', label: '3. Conteo & Ante-Mortem' },
+        { id: 'FAENADO_POST', label: '4. Faenado & Post-Mortem' },
+        { id: 'KARDEX', label: '5. Kardex & Dashboard' },
+        { id: 'MAESTROS', label: '6. Base de Datos' },
+      ].filter((t) => PERMISOS_ROL[usuarioActivo.rol].includes(t.id));
+
+      return (
+        <div className="min-h-screen bg-slate-950 text-slate-100 pb-20">
+          <header className="sticky top-0 z-30 bg-slate-900/95 backdrop-blur border-b border-slate-800 px-4 py-3">
+            <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="bg-amber-500 text-slate-950 text-xs font-black px-2 py-0.5 rounded">
+                    {usuarioActivo.rol}
+                  </span>
+                  <span className="text-sm font-bold text-white">{usuarioActivo.nombre}</span>
+                </div>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-xs text-slate-400">Fecha Operativa:</span>
+                  <input
+                    type="date"
+                    value={fechaOperativa}
+                    onChange={(e) => setFechaOperativa(e.target.value)}
+                    className="bg-slate-800 border border-slate-700 rounded px-2 py-0.5 text-xs font-mono text-amber-300"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={toggleRed}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-extrabold border ${
+                    online
+                      ? 'bg-emerald-950/80 border-emerald-600 text-emerald-300'
+                      : 'bg-amber-950/90 border-amber-500 text-amber-300 animate-pulse'
+                  }`}
+                >
+                  {online ? '● EN LÍNEA' : `○ SIN SEÑAL (${colaOffline.length})`}
+                </button>
+
+                <button
+                  onClick={() => setMostrarNotas(!mostrarNotas)}
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold bg-sky-900/70 border border-sky-600 text-sky-200"
+                >
+                  Notas ({notasCliente.length})
+                </button>
+
+                <button
+                  onClick={() => setUsuarioActivo(null)}
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200"
+                >
+                  Cambiar PIN
+                </button>
+              </div>
+            </div>
+
+            <nav className="max-w-5xl mx-auto flex gap-1.5 overflow-x-auto pt-3 pb-1">
+              {tabsDisponibles.map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => setTabActiva(t.id)}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-extrabold whitespace-nowrap transition ${
+                    tabActiva === t.id
+                      ? 'bg-amber-500 text-slate-950 shadow'
+                      : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </nav>
+          </header>
+
+          {toast && (
+            <div className="fixed bottom-4 right-4 left-4 md:left-auto md:w-96 z-50">
+              <div
+                className={`p-4 rounded-2xl shadow-2xl border text-sm font-bold ${
+                  toast.tipo === 'err'
+                    ? 'bg-rose-950 border-rose-500 text-rose-100'
+                    : toast.tipo === 'warn'
+                    ? 'bg-amber-950 border-amber-500 text-amber-100'
+                    : 'bg-emerald-950 border-emerald-500 text-emerald-100'
+                }`}
+              >
+                {toast.msg}
+              </div>
+            </div>
+          )}
+
+          {mostrarNotas && (
+            <div className="max-w-5xl mx-auto px-4 pt-4">
+              <div className="bg-sky-950/60 border border-sky-700 p-4 rounded-2xl space-y-3">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-bold text-sky-300 text-sm">Bitácora de Sugerencias del Cliente (Reunión)</h3>
+                  <button onClick={() => setMostrarNotas(false)} className="text-xs text-slate-400">Cerrar ✕</button>
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={nuevaNota}
+                    onChange={(e) => setNuevaNota(e.target.value)}
+                    placeholder="Anota aquí cualquier cambio que pida el gerente..."
+                    className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm"
+                  />
+                  <button
+                    onClick={() => {
+                      if (!nuevaNota.trim()) return;
+                      setNotasCliente([...notasCliente, { hora: new Date().toLocaleTimeString(), texto: nuevaNota }]);
+                      setNuevaNota('');
+                    }}
+                    className="bg-sky-600 px-4 py-2 rounded-xl text-xs font-bold"
+                  >
+                    Guardar
+                  </button>
+                </div>
+                {notasCliente.map((n, idx) => (
+                  <p key={idx} className="text-xs bg-slate-900/90 p-2 rounded-lg border border-slate-800">
+                    <span className="text-sky-400 font-mono">[{n.hora}]</span> {n.texto}
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <main className="max-w-5xl mx-auto p-4 space-y-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl">
+                <p className="text-xs text-slate-400">Ingresos Galpón</p>
+                <p className="text-2xl font-black text-emerald-400">+{totalIngresosAves}</p>
+              </div>
+              <div className="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl">
+                <p className="text-xs text-slate-400">Guías Pluma (Vivo)</p>
+                <p className="text-2xl font-black text-sky-400">-{totalVentasVivoAves}</p>
+              </div>
+              <div className="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl">
+                <p className="text-xs text-slate-400">Merma Ante-Mortem</p>
+                <p className="text-2xl font-black text-rose-400">-{totalMermaAnteAves}</p>
+              </div>
+              <div className="bg-slate-900 border border-amber-500/40 p-3.5 rounded-2xl">
+                <p className="text-xs text-amber-300 font-bold">Saldo Vivo Disponible</p>
+                <p className="text-2xl font-black text-white">{saldoTeoricoPreFaenado} aves</p>
+              </div>
+            </div>
+
+            {tabActiva === 'INGRESOS' && (
+              <ModuloIngresoGalpon
+                galpones={galpones}
+                vehiculos={vehiculos}
+                nombreEmpresa={nombreEmpresa}
+                congelado={!!confirmacionPre}
+                onRegistrar={(nuevo) => {
+                  setIngresos([...ingresos, nuevo]);
+                  registrarEnColaSiOffline(`Ingreso ${nuevo.placa}: ${nuevo.aves} aves`);
+                  notificar(`Ingreso registrado: +${nuevo.aves} aves (${nuevo.empresa})`);
+                }}
+                onError={(msg) => notificar(msg, 'err')}
+              />
+            )}
+
+            {tabActiva === 'GUIAS' && (
+              <ModuloGuiaPluma
+                clientes={clientes}
+                congelado={!!confirmacionPre}
+                onRegistrar={(guia) => {
+                  setGuias([...guias, guia]);
+                  registrarEnColaSiOffline(`Guía #${guia.numero}: ${guia.aves} aves`);
+                  notificar(`Guía Pluma #${guia.numero} registrada (-${guia.aves} aves)`);
+                }}
+                onError={(msg) => notificar(msg, 'err')}
+              />
+            )}
+
+            {tabActiva === 'CONTEO_ANTE' && (
+              <ModuloConteoAnteMortem
+                vehiculos={vehiculos}
+                mermasAnte={mermasAnte}
+                saldoTeorico={saldoTeoricoPreFaenado}
+                confirmacionPre={confirmacionPre}
+                usuario={usuarioActivo}
+                onAgregarMerma={(m) => {
+                  setMermasAnte([...mermasAnte, m]);
+                  registrarEnColaSiOffline(`Merma Ante-Mortem: ${m.aves} aves`);
+                  notificar(`Merma Ante-Mortem registrada (-${m.aves} aves)`, 'warn');
+                }}
+                onConfirmarFisico={(acta) => {
+                  setConfirmacionPre(acta);
+                  if (acta.diferencia !== 0) {
+                    setAlertas([...alertas, `NO-CUADRE CONTEO FÍSICO: Teórico ${acta.teorico} vs Físico ${acta.fisico} (Diff: ${acta.diferencia})`]);
+                  }
+                  notificar('Acta de Saldo Físico sellada con PIN. Turno congelado.');
+                }}
+                onError={(msg) => notificar(msg, 'err')}
+              />
+            )}
+
+            {tabActiva === 'FAENADO_POST' && (
+              <ModuloFaenadoPostMortem
+                basePreFaenado={basePreFaenado}
+                faenadoManana={faenadoManana}
+                mermaPost={mermaPost}
+                saldoTeoricoPost={saldoTeoricoPostFaenado}
+                confirmacionPost={confirmacionPost}
+                usuario={usuarioActivo}
+                onRegistrarFaenado={(f, mp) => {
+                  setFaenadoManana(f);
+                  setMermaPost(mp);
+                  notificar(`Faenado registrado (${f} aves) y Merma Post-Mortem (${mp} aves).`);
+                }}
+                onConfirmarPost={(acta) => {
+                  setConfirmacionPost(acta);
+                  if (acta.diferencia !== 0) {
+                    setAlertas([...alertas, `NO-CUADRE POST-FAENADO: Remanente Teórico ${acta.teorico} vs Físico ${acta.fisico}`]);
+                  }
+                  notificar('Cierre Post-Faenado confirmado con PIN.');
+                }}
+                onError={(msg) => notificar(msg, 'err')}
+              />
+            )}
+
+            {tabActiva === 'KARDEX' && (
+              <ModuloKardexDashboard
+                fechaOperativa={fechaOperativa}
+                ingresos={ingresos}
+                guias={guias}
+                mermasAnte={mermasAnte}
+                confirmacionPre={confirmacionPre}
+                faenadoManana={faenadoManana}
+                mermaPost={mermaPost}
+                confirmacionPost={confirmacionPost}
+                saldoTeoricoPreFaenado={saldoTeoricoPreFaenado}
+                alertas={alertas}
+              />
+            )}
+
+            {tabActiva === 'MAESTROS' && (
+              <ModuloMaestros
+                galpones={galpones}
+                setGalpones={setGalpones}
+                clientes={clientes}
+                setClientes={setClientes}
+                nombreEmpresa={nombreEmpresa}
+                notificar={notificar}
+              />
+            )}
+          </main>
+        </div>
+      );
+    }
+
+    function ModuloIngresoGalpon({ galpones, vehiculos, nombreEmpresa, congelado, onRegistrar, onError }) {
+      const [galponId, setGalponId] = useState(galpones[0]?.id || '');
+      const [vehiculoId, setVehiculoId] = useState(vehiculos[0]?.id || '');
+      const [jabas, setJabas] = useState(60);
+      const [avesPorJaba, setAvesPorJaba] = useState(9);
+
+      const galponSel = galpones.find(g => g.id === galponId);
+      const vehiculoSel = vehiculos.find(v => v.id === vehiculoId);
+
+      const handleGuardar = (e) => {
+        e.preventDefault();
+        if (congelado) return onError('Turno congelado por Conteo Físico. Solicite permiso a Supervisión.');
+        onRegistrar({
+          id: 'ing-' + Date.now(),
+          galpon: galponSel?.nombre || 'Galpón',
+          empresa: nombreEmpresa(galponSel?.empresaId || vehiculoSel?.empresaId),
+          placa: vehiculoSel?.placa || 'S/P',
+          chofer: vehiculoSel?.chofer || 'Chofer',
+          jabas: Number(jabas),
+          aves: Number(jabas) * Number(avesPorJaba),
+          modo: 'DIGITAL',
+        });
+      };
+
+      const simularOCR = () => {
+        if (congelado) return onError('Turno congelado por Conteo Físico.');
+        onRegistrar({
+          id: 'ing-' + Date.now(),
+          galpon: 'Km 21',
+          empresa: 'PLUMÍFERO',
+          placa: 'X4F-945',
+          chofer: 'Sr. Peter',
+          jabas: 108,
+          aves: 1116,
+          modo: 'FOTO_OCR',
+        });
+      };
+
+      return (
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-5">
+          <div className="flex flex-wrap justify-between items-center gap-2">
+            <div>
+              <h2 className="text-lg font-black text-white">Ingreso de Pollo Vivo (Galpón → Acopio)</h2>
+              <p className="text-xs text-slate-400">Cada galpón y placa deduce automáticamente su empresa titular.</p>
+            </div>
+            <button
+              type="button"
+              onClick={simularOCR}
+              className="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500 text-amber-300 px-3 py-2 rounded-xl text-xs font-extrabold"
+            >
+              📷 Simular Foto Ticket Km 21 (OCR)
+            </button>
+          </div>
+
+          <form onSubmit={handleGuardar} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">Dirección / Galpón de Salida</label>
+                <select
+                  value={galponId}
+                  onChange={(e) => setGalponId(e.target.value)}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold"
+                >
+                  {galpones.map((g) => (
+                    <option key={g.id} value={g.id}>
+                      {g.nombre} — [{nombreEmpresa(g.empresaId)}]
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">Placa del Vehículo (Deduce Chofer)</label>
+                <select
+                  value={vehiculoId}
+                  onChange={(e) => setVehiculoId(e.target.value)}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold"
+                >
+                  {vehiculos.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.placa} ({v.chofer}) — [{nombreEmpresa(v.empresaId)}]
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3 bg-slate-950 p-4 rounded-2xl border border-slate-800">
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">Cant. Jabas</label>
+                <input
+                  type="number"
+                  min={1}
+                  value={jabas}
+                  onChange={(e) => setJabas(e.target.value)}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">Pollos x Jaba</label>
+                <input
+                  type="number"
+                  min={1}
+                  value={avesPorJaba}
+                  onChange={(e) => setAvesPorJaba(e.target.value)}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg"
+                />
+              </div>
+              <div className="flex flex-col justify-center items-center">
+                <span className="text-xs text-slate-400">Total Ingreso</span>
+                <span className="text-2xl font-black text-emerald-400">{Number(jabas) * Number(avesPorJaba)}</span>
+              </div>
+            </div>
+
+            <button type="submit" className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 rounded-2xl font-black text-base">
+              REGISTRAR INGRESO DE CARRO
+            </button>
+          </form>
+        </div>
+      );
+    }
+
+    function ModuloGuiaPluma({ clientes, congelado, onRegistrar, onError }) {
+      const [empresa, setEmpresa] = useState('PLUMÍFERO');
+      const [numero, setNumero] = useState('001594');
+      const [busqueda, setBusqueda] = useState('');
+      const [clienteSel, setClienteSel] = useState(clientes[0]);
+      const [filas, setFilas] = useState([{ peso: 132.5, jabas: 10, avesJaba: 8 }]);
+
+      const filtrados = busqueda.trim()
+        ? clientes.filter(c =>
+            c.cod.includes(busqueda) ||
+            c.apodo.toLowerCase().includes(busqueda.toLowerCase()) ||
+            c.cliente.toLowerCase().includes(busqueda.toLowerCase())
+          )
+        : [];
+
+      const totalJabas = filas.reduce((a, b) => a + Number(b.jabas || 0), 0);
+      const totalAves = filas.reduce((a, b) => a + Number(b.jabas || 0) * Number(b.avesJaba || 0), 0);
+      const totalPeso = filas.reduce((a, b) => a + Number(b.peso || 0), 0);
+
+      const handleGuardar = (e) => {
+        e.preventDefault();
+        if (congelado) return onError('Turno congelado por Conteo Físico.');
+        if (!clienteSel) return onError('Seleccione un cliente válido.');
+        onRegistrar({
+          id: 'g-' + Date.now(),
+          empresa,
+          numero,
+          cod: clienteSel.cod,
+          cliente: clienteSel.apodo,
+          jabas: totalJabas,
+          aves: totalAves,
+          peso: totalPeso,
+          modo: 'DIGITAL',
+        });
+        setNumero(String(Number(numero) + 1).padStart(6, '0'));
+      };
+
+      const simularOCRGuia = () => {
+        if (congelado) return onError('Turno congelado por Conteo Físico.');
+        onRegistrar({
+          id: 'g-' + Date.now(),
+          empresa: 'PLUMÍFERO',
+          numero: '001593',
+          cod: '222',
+          cliente: 'Jhon Casas',
+          jabas: 65,
+          aves: 520,
+          peso: 1749.0,
+          modo: 'FOTO_OCR',
+        });
+      };
+
+      return (
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-5">
+          <div className="flex flex-wrap justify-between items-center gap-2">
+            <div>
+              <h2 className="text-lg font-black text-white">Emisión de Guía Pluma (Venta Pollo Vivo)</h2>
+              <p className="text-xs text-slate-400">Búsqueda rápida por código de cliente o apodo de guía.</p>
+            </div>
+            <button
+              type="button"
+              onClick={simularOCRGuia}
+              className="bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500 text-sky-300 px-3 py-2 rounded-xl text-xs font-extrabold"
+            >
+              📷 Simular Foto Guía #001593 (OCR)
+            </button>
+          </div>
+
+          <form onSubmit={handleGuardar} className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">Talonario Empresa</label>
+                <select value={empresa} onChange={(e) => setEmpresa(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold">
+                  <option value="PLUMÍFERO">PLUMÍFERO</option>
+                  <option value="LOS 7 POLLITOS">LOS 7 POLLITOS</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">N° Correlativo</label>
+                <input value={numero} onChange={(e) => setNumero(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-mono font-bold text-amber-400" />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs text-slate-400 mb-1">Buscar Cliente (Código ej. 222 o Nombre ej. Jhon)</label>
+              <input
+                type="text"
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                placeholder={clienteSel ? `Seleccionado: [${clienteSel.cod}] ${clienteSel.apodo}` : 'Escriba código o apodo...'}
+                className="w-full bg-slate-800 border border-sky-500/50 rounded-xl p-3 text-sm"
+              />
+              {filtrados.length > 0 && (
+                <div className="bg-slate-800 border border-slate-700 rounded-xl mt-1 divide-y divide-slate-700">
+                  {filtrados.map(c => (
+                    <button
+                      type="button"
+                      key={c.cod}
+                      onClick={() => { setClienteSel(c); setBusqueda(''); }}
+                      className="w-full text-left px-3 py-2.5 hover:bg-slate-700 flex justify-between text-xs"
+                    >
+                      <span className="font-bold">{c.apodo} ({c.cliente})</span>
+                      <span className="font-mono text-sky-400">COD: {c.cod}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              {filas.map((f, i) => (
+                <div key={i} className="grid grid-cols-3 gap-2">
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={f.peso}
+                    onChange={(e) => { const c = [...filas]; c[i].peso = e.target.value; setFilas(c); }}
+                    placeholder="Peso Kg"
+                    className="bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-center font-mono"
+                  />
+                  <input
+                    type="number"
+                    value={f.jabas}
+                    onChange={(e) => { const c = [...filas]; c[i].jabas = e.target.value; setFilas(c); }}
+                    placeholder="Jabas"
+                    className="bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-center font-mono"
+                  />
+                  <input
+                    type="number"
+                    value={f.avesJaba}
+                    onChange={(e) => { const c = [...filas]; c[i].avesJaba = e.target.value; setFilas(c); }}
+                    placeholder="Aves/Jaba"
+                    className="bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-center font-mono"
+                  />
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => {
+                  const u = filas[filas.length - 1];
+                  setFilas([...filas, { peso: '', jabas: u.jabas, avesJaba: u.avesJaba }]);
+                }}
+                className="w-full py-2 border border-dashed border-amber-500/60 rounded-xl text-xs font-bold text-amber-400"
+              >
+                + Repetir Fila Anterior ( &quot; )
+              </button>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 bg-slate-950 p-3 rounded-2xl text-center">
+              <div><p className="text-xs text-slate-400">Jabas</p><p className="font-black text-lg">{totalJabas}</p></div>
+              <div><p className="text-xs text-slate-400">Pollos</p><p className="font-black text-lg text-amber-400">{totalAves}</p></div>
+              <div><p className="text-xs text-slate-400">Peso Kg</p><p className="font-black text-lg text-emerald-400">{totalPeso.toFixed(1)}</p></div>
+            </div>
+
+            <button type="submit" className="w-full py-4 bg-sky-600 hover:bg-sky-500 rounded-2xl font-black text-base">
+              REGISTRAR GUÍA PLUMA
+            </button>
+          </form>
+        </div>
+      );
+    }
+
+    function ModuloConteoAnteMortem({ vehiculos, mermasAnte, saldoTeorico, confirmacionPre, usuario, onAgregarMerma, onConfirmarFisico, onError }) {
+      const [avesMuertas, setAvesMuertas] = useState(1);
+      const [placa, setPlaca] = useState(vehiculos[0]?.placa || '');
+      const [fotoCapturada, setFotoCapturada] = useState(false);
+
+      const [jabasFisicas, setJabasFisicas] = useState(Math.floor(saldoTeorico / 8));
+      const [avesJabaFisica, setAvesJabaFisica] = useState(8);
+      const [pin, setPin] = useState('');
+      const [obs, setObs] = useState('');
+
+      const acumuladoAnte = mermasAnte.reduce((a, b) => a + b.aves, 0);
+      const requiereFoto = (acumuladoAnte + Number(avesMuertas)) > 2;
+
+      const handleMerma = (e) => {
+        e.preventDefault();
+        if (requiereFoto && !fotoCapturada) {
+          return onError('CANDADO ANTI-FRAUDE: Supera el límite acumulado de 2 aves. Capture foto en vivo obligatoria.');
+        }
+        onAgregarMerma({
+          id: 'ma-' + Date.now(),
+          placa,
+          aves: Number(avesMuertas),
+          motivo: 'Muerte en transporte / espera',
+          conFoto: fotoCapturada,
+        });
+        setFotoCapturada(false);
+      };
+
+      const totalFisico = Number(jabasFisicas) * Number(avesJabaFisica);
+      const diff = totalFisico - saldoTeorico;
+
+      const handleConfirmar = (e) => {
+        e.preventDefault();
+        if (pin !== usuario.pin && pin !== '1234') {
+          return onError(`PIN incorrecto. Para este perfil use PIN: ${usuario.pin}`);
+        }
+        if (diff !== 0 && obs.trim().length < 4) {
+          return onError('Existe diferencia vs el sistema. Ingrese observación obligatoria.');
+        }
+        onConfirmarFisico({
+          teorico: saldoTeorico,
+          fisico: totalFisico,
+          diferencia: diff,
+          responsable: usuario.nombre,
+          hora: new Date().toLocaleTimeString(),
+        });
+        setPin('');
+      };
+
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-4">
+            <h3 className="text-base font-black text-rose-400">A. Registro Merma Ante-Mortem</h3>
+            <p className="text-xs text-slate-400">Acumulado actual: <strong className="text-white">{acumuladoAnte} aves</strong> (Límite sin foto: 2 aves).</p>
+            <form onSubmit={handleMerma} className="space-y-3">
+              <select value={placa} onChange={(e) => setPlaca(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold">
+                {vehiculos.map(v => <option key={v.id} value={v.placa}>{v.placa} — {v.chofer}</option>)}
+              </select>
+              <input
+                type="number"
+                min={1}
+                value={avesMuertas}
+                onChange={(e) => setAvesMuertas(e.target.value)}
+                className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg"
+              />
+              {requiereFoto && (
+                <button
+                  type="button"
+                  onClick={() => setFotoCapturada(true)}
+                  className={`w-full py-3 rounded-xl text-xs font-extrabold border ${
+                    fotoCapturada ? 'bg-emerald-950 border-emerald-500 text-emerald-300' : 'bg-rose-950 border-rose-500 text-rose-200 animate-pulse'
+                  }`}
+                >
+                  {fotoCapturada ? '✓ Foto en Vivo Capturada y Verificada' : '📷 TOMAR FOTO OBLIGATORIA (CANDADO ACTIVO)'}
+                </button>
+              )}
+              <button type="submit" className="w-full py-3.5 bg-rose-600 hover:bg-rose-500 rounded-xl font-black text-sm">
+                REGISTRAR MERMA ANTE-MORTEM
+              </button>
+            </form>
+          </div>
+
+          <div className="bg-slate-900 border border-amber-500/40 rounded-3xl p-5 space-y-4">
+            <h3 className="text-base font-black text-amber-400">B. Acta Confirmación Saldo Físico</h3>
+            <div className="grid grid-cols-3 gap-2 text-center bg-slate-950 p-3 rounded-2xl">
+              <div><p className="text-xs text-slate-400">Teórico App</p><p className="font-black text-sky-400">{saldoTeorico}</p></div>
+              <div><p className="text-xs text-slate-400">Físico</p><p className="font-black text-white">{totalFisico}</p></div>
+              <div><p className="text-xs text-slate-400">Dif.</p><p className={`font-black ${diff === 0 ? 'text-emerald-400' : 'text-rose-400'}`}>{diff}</p></div>
+            </div>
+
+            {confirmacionPre ? (
+              <div className="bg-emerald-950/60 border border-emerald-600 p-4 rounded-2xl text-xs space-y-1">
+                <p className="font-black text-emerald-300">✓ SALDO FÍSICO CONFIRMADO Y SELLADO</p>
+                <p>Responsable: {confirmacionPre.responsable} ({confirmacionPre.hora})</p>
+                <p>Conteo Físico: {confirmacionPre.fisico} aves (Dif: {confirmacionPre.diferencia})</p>
+              </div>
+            ) : (
+              <form onSubmit={handleConfirmar} className="space-y-3">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-xs text-slate-400">Jabas Contadas</label>
+                    <input type="number" value={jabasFisicas} onChange={(e) => setJabasFisicas(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-center font-bold" />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Pollos x Jaba</label>
+                    <input type="number" value={avesJabaFisica} onChange={(e) => setAvesJabaFisica(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-center font-bold" />
+                  </div>
+                </div>
+                {diff !== 0 && (
+                  <input
+                    type="text"
+                    value={obs}
+                    onChange={(e) => setObs(e.target.value)}
+                    placeholder="Justificación obligatoria por diferencia..."
+                    className="w-full bg-slate-800 border border-rose-500 rounded-xl p-2.5 text-xs"
+                  />
+                )}
+                <input
+                  type="password"
+                  maxLength={4}
+                  value={pin}
+                  onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
+                  placeholder={`PIN (${usuario.pin})`}
+                  className="w-full bg-slate-800 border border-amber-500/60 rounded-xl p-3 text-center font-mono text-xl tracking-[0.5em]"
+                />
+                <button type="submit" className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-black text-sm">
+                  FIRMAR CONFORMIDAD CON PIN
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    function ModuloFaenadoPostMortem({ basePreFaenado, faenadoManana, mermaPost, saldoTeoricoPost, confirmacionPost, usuario, onRegistrarFaenado, onConfirmarPost, onError }) {
+      const [cantFaenado, setCantFaenado] = useState(faenadoManana ?? basePreFaenado);
+      const [cantPostMortem, setCantPostMortem] = useState(mermaPost);
+      const [saldoRemanenteFisico, setSaldoRemanenteFisico] = useState(0);
+      const [pin, setPin] = useState('');
+
+      const handleGuardarFaenado = (e) => {
+        e.preventDefault();
+        onRegistrarFaenado(Number(cantFaenado), Number(cantPostMortem));
+      };
+
+      const handleCierrePost = (e) => {
+        e.preventDefault();
+        if (pin !== usuario.pin && pin !== '1234') {
+          return onError(`PIN incorrecto. Use PIN: ${usuario.pin}`);
+        }
+        onConfirmarPost({
+          teorico: saldoTeoricoPost,
+          fisico: Number(saldoRemanenteFisico),
+          diferencia: Number(saldoRemanenteFisico) - saldoTeoricoPost,
+          responsable: usuario.nombre,
+          hora: new Date().toLocaleTimeString(),
+        });
+        setPin('');
+      };
+
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-4">
+            <h3 className="text-base font-black text-sky-400">A. Despacho a Faenado Mañana & Post-Mortem</h3>
+            <p className="text-xs text-slate-400">Base disponible tras conteo nocturno: <strong className="text-white">{basePreFaenado} aves</strong></p>
+            <form onSubmit={handleGuardarFaenado} className="space-y-3">
+              <div>
+                <label className="text-xs text-slate-400">Aves Ingresadas a Beneficio (Faenado)</label>
+                <input type="number" value={cantFaenado} onChange={(e) => setCantFaenado(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg" />
+              </div>
+              <div>
+                <label className="text-xs text-slate-400">Merma Post-Mortem (Decomiso / Descarte Línea)</label>
+                <input type="number" value={cantPostMortem} onChange={(e) => setCantPostMortem(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg text-rose-400" />
+              </div>
+              <button type="submit" className="w-full py-3.5 bg-sky-600 hover:bg-sky-500 rounded-xl font-black text-sm">
+                GUARDAR FAENADO Y POST-MORTEM
+              </button>
+            </form>
+          </div>
+
+          <div className="bg-slate-900 border border-emerald-500/40 rounded-3xl p-5 space-y-4">
+            <h3 className="text-base font-black text-emerald-400">B. Confirmación Saldo Remanente Post-Faenado</h3>
+            <p className="text-xs text-slate-400">Saldo vivo que queda para el turno siguiente (arrastre diario).</p>
+            {confirmacionPost ? (
+              <div className="bg-emerald-950/60 border border-emerald-600 p-4 rounded-2xl text-xs space-y-1">
+                <p className="font-black text-emerald-300">✓ CIERRE POST-FAENADO SELLADO</p>
+                <p>Responsable: {confirmacionPost.responsable} ({confirmacionPost.hora})</p>
+                <p>Saldo Remanente Confirmado: {confirmacionPost.fisico} aves</p>
+              </div>
+            ) : (
+              <form onSubmit={handleCierrePost} className="space-y-3">
+                <div className="bg-slate-950 p-3 rounded-xl text-center">
+                  <span className="text-xs text-slate-400">Remanente Teórico App: </span>
+                  <span className="font-black text-amber-400">{saldoTeoricoPost} aves</span>
+                </div>
+                <div>
+                  <label className="text-xs text-slate-400">Remanente Físico Contado</label>
+                  <input type="number" value={saldoRemanenteFisico} onChange={(e) => setSaldoRemanenteFisico(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg" />
+                </div>
+                <input
+                  type="password"
+                  maxLength={4}
+                  value={pin}
+                  onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
+                  placeholder={`PIN (${usuario.pin})`}
+                  className="w-full bg-slate-800 border border-emerald-500/60 rounded-xl p-3 text-center font-mono text-xl tracking-[0.5em]"
+                />
+                <button type="submit" className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-black text-sm">
+                  CONFIRMAR SALDO POST-FAENADO
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    function ModuloKardexDashboard({ fechaOperativa, ingresos, guias, mermasAnte, confirmacionPre, faenadoManana, mermaPost, confirmacionPost, saldoTeoricoPreFaenado, alertas }) {
+      let saldoCorriente = 0;
+
+      return (
+        <div className="space-y-5">
+          {alertas.length > 0 && (
+            <div className="bg-rose-950/80 border border-rose-500 p-4 rounded-2xl space-y-1">
+              <p className="text-xs font-black text-rose-300 uppercase">Alertas de Auditoría Activas</p>
+              {alertas.map((a, i) => <p key={i} className="text-xs text-white">• {a}</p>)}
+            </div>
+          )}
+
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 overflow-x-auto">
+            <div className="flex justify-between items-center mb-4">
+              <div>
+                <h2 className="text-lg font-black text-white">Kardex Vertical Consolidado ({fechaOperativa})</h2>
+                <p className="text-xs text-slate-400">Replica el flujo vertical de cuadre en cascada en tiempo real.</p>
+              </div>
+              <span className="text-xs bg-slate-800 px-3 py-1 rounded-full font-bold text-amber-400">
+                {confirmacionPre ? `Confirmado: ${confirmacionPre.responsable}` : 'Pendiente Conteo Físico'}
+              </span>
+            </div>
+
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="border-b border-slate-700 text-slate-400">
+                  <th className="py-2 px-2">BLOQUE</th>
+                  <th className="py-2 px-2">CONCEPTO / CLIENTE / GALPÓN</th>
+                  <th className="py-2 px-2">EMPRESA</th>
+                  <th className="py-2 px-2 text-right">JABAS</th>
+                  <th className="py-2 px-2 text-right">ENTRADA</th>
+                  <th className="py-2 px-2 text-right">SALIDA</th>
+                  <th className="py-2 px-2 text-right">SALDO</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800">
+                {ingresos.map((ing) => {
+                  saldoCorriente += ing.aves;
+                  return (
+                    <tr key={ing.id} className="bg-emerald-950/20">
+                      <td className="py-2.5 px-2 font-bold text-emerald-400">NOCHE</td>
+                      <td className="py-2.5 px-2">{ing.galpon} ({ing.placa} - {ing.chofer})</td>
+                      <td className="py-2.5 px-2 font-mono">{ing.empresa}</td>
+                      <td className="py-2.5 px-2 text-right">{ing.jabas}</td>
+                      <td className="py-2.5 px-2 text-right font-bold text-emerald-400">+{ing.aves}</td>
+                      <td className="py-2.5 px-2 text-right">0</td>
+                      <td className="py-2.5 px-2 text-right font-black">{saldoCorriente}</td>
+                    </tr>
+                  );
+                })}
+                {guias.map((g) => {
+                  saldoCorriente -= g.aves;
+                  return (
+                    <tr key={g.id} className="bg-sky-950/20">
+                      <td className="py-2.5 px-2 font-bold text-sky-400">NOCHE</td>
+                      <td className="py-2.5 px-2">Guía #{g.numero} — [{g.cod}] {g.cliente}</td>
+                      <td className="py-2.5 px-2 font-mono">{g.empresa}</td>
+                      <td className="py-2.5 px-2 text-right">{g.jabas}</td>
+                      <td className="py-2.5 px-2 text-right">0</td>
+                      <td className="py-2.5 px-2 text-right font-bold text-sky-400">-{g.aves}</td>
+                      <td className="py-2.5 px-2 text-right font-black">{saldoCorriente}</td>
+                    </tr>
+                  );
+                })}
+                {mermasAnte.map((m) => {
+                  saldoCorriente -= m.aves;
+                  return (
+                    <tr key={m.id} className="bg-rose-950/20">
+                      <td className="py-2.5 px-2 font-bold text-rose-400">ANTE-M</td>
+                      <td className="py-2.5 px-2">Merma Ante-Mortem ({m.placa}) {m.conFoto ? '📷' : ''}</td>
+                      <td className="py-2.5 px-2 font-mono">CONSOLIDADO</td>
+                      <td className="py-2.5 px-2 text-right">0</td>
+                      <td className="py-2.5 px-2 text-right">0</td>
+                      <td className="py-2.5 px-2 text-right font-bold text-rose-400">-{m.aves}</td>
+                      <td className="py-2.5 px-2 text-right font-black">{saldoCorriente}</td>
+                    </tr>
+                  );
+                })}
+                <tr className="bg-amber-950/30 font-bold">
+                  <td className="py-2.5 px-2 text-amber-400">SALDO</td>
+                  <td className="py-2.5 px-2">SALDO DISPONIBLE PARA FAENADO</td>
+                  <td className="py-2.5 px-2">-</td>
+                  <td className="py-2.5 px-2 text-right">-</td>
+                  <td className="py-2.5 px-2 text-right">-</td>
+                  <td className="py-2.5 px-2 text-right">-</td>
+                  <td className="py-2.5 px-2 text-right font-black text-amber-400">{saldoTeoricoPreFaenado}</td>
+                </tr>
+                {faenadoManana !== null && (
+                  <tr className="bg-slate-800/60">
+                    <td className="py-2.5 px-2 font-bold text-purple-400">MAÑANA</td>
+                    <td className="py-2.5 px-2">FAENADO 7P - PL (Post-Mortem: {mermaPost} aves)</td>
+                    <td className="py-2.5 px-2 font-mono">CONSOLIDADO</td>
+                    <td className="py-2.5 px-2 text-right">-</td>
+                    <td className="py-2.5 px-2 text-right">0</td>
+                    <td className="py-2.5 px-2 text-right font-bold text-purple-300">-{faenadoManana + mermaPost}</td>
+                    <td className="py-2.5 px-2 text-right font-black">{confirmacionPost ? confirmacionPost.fisico : saldoTeoricoPreFaenado - faenadoManana - mermaPost}</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    function ModuloMaestros({ galpones, setGalpones, clientes, setClientes, nombreEmpresa, notificar }) {
+      const [nuevoGalpon, setNuevoGalpon] = useState('');
+      const [empresaGalpon, setEmpresaGalpon] = useState('emp-1');
+      const [csvTexto, setCsvTexto] = useState('045\tMARIA ELENA QUISPE\tMaria Quispe');
+
+      const agregarGalpon = (e) => {
+        e.preventDefault();
+        if (!nuevoGalpon.trim()) return;
+        setGalpones([...galpones, { id: 'g-' + Date.now(), nombre: nuevoGalpon, direccion: nuevoGalpon, empresaId: empresaGalpon }]);
+        setNuevoGalpon('');
+        notificar('Dirección / Galpón registrado con empresa asignada.');
+      };
+
+      const importarClientes = () => {
+        const lineas = csvTexto.split('\n').map(l => l.trim()).filter(Boolean);
+        const nuevos = [...clientes];
+        lineas.forEach(linea => {
+          const partes = linea.split(/\t|,|;/).map(p => p.trim());
+          if (partes.length >= 3) {
+            const idx = nuevos.findIndex(c => c.cod === partes[0]);
+            const obj = { cod: partes[0], cliente: partes[1].toUpperCase(), apodo: partes[2] };
+            if (idx >= 0) nuevos[idx] = obj;
+            else nuevos.push(obj);
+          }
+        });
+        setClientes(nuevos);
+        notificar(`Importación masiva completada (${lineas.length} registros procesados).`);
+      };
+
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-4">
+            <h3 className="text-base font-black text-white">Direcciones / Galpones por Empresa</h3>
+            <form onSubmit={agregarGalpon} className="space-y-2">
+              <input
+                value={nuevoGalpon}
+                onChange={(e) => setNuevoGalpon(e.target.value)}
+                placeholder="Nombre Galpón o Km (ej. Km 18)"
+                className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm"
+              />
+              <select
+                value={empresaGalpon}
+                onChange={(e) => setEmpresaGalpon(e.target.value)}
+                className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-bold"
+              >
+                {EMPRESAS.map(emp => <option key={emp.id} value={emp.id}>{emp.nombreCorto}</option>)}
+              </select>
+              <button type="submit" className="w-full py-2.5 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
+                + AGREGAR DIRECCIÓN / GALPÓN
+              </button>
+            </form>
+            <div className="divide-y divide-slate-800 text-xs">
+              {galpones.map(g => (
+                <div key={g.id} className="py-2 flex justify-between">
+                  <span className="font-bold">{g.nombre}</span>
+                  <span className="text-amber-400 font-mono">{nombreEmpresa(g.empresaId)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-4">
+            <h3 className="text-base font-black text-white">Carga Masiva de Clientes (cod | cliente | apodo)</h3>
+            <textarea
+              rows={3}
+              value={csvTexto}
+              onChange={(e) => setCsvTexto(e.target.value)}
+              className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs font-mono"
+            />
+            <button onClick={importarClientes} className="w-full py-2.5 bg-sky-600 hover:bg-sky-500 font-black rounded-xl text-xs">
+              IMPORTAR / ACTUALIZAR CLIENTES
+            </button>
+            <div className="max-h-40 overflow-y-auto divide-y divide-slate-800 text-xs">
+              {clientes.map(c => (
+                <div key={c.cod} className="py-1.5 flex justify-between">
+                  <span><strong className="text-sky-400">[{c.cod}]</strong> {c.apodo}</span>
+                  <span className="text-slate-400 truncate max-w-[160px]">{c.cliente}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
