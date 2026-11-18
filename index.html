@@ -20,13 +20,13 @@
     const { useState } = React;
 
     const EMPRESAS = [
-      { id: 'emp-1', nombreCorto: 'PLUMÍFERO', razonSocial: 'INVERSIONES Y NEGOCIACIONES PLUMÍFERO E.I.R.L.' },
-      { id: 'emp-2', nombreCorto: 'LOS 7 POLLITOS', razonSocial: 'LOS 7 POLLITOS INVERSIONES E.I.R.L.' },
+      { id: 'emp-1', nombreCorto: 'PLUMÍFERO', ruc: '20601234561', razonSocial: 'INVERSIONES Y NEGOCIACIONES PLUMÍFERO E.I.R.L.' },
+      { id: 'emp-2', nombreCorto: 'LOS 7 POLLITOS', ruc: '20609876543', razonSocial: 'LOS 7 POLLITOS INVERSIONES E.I.R.L.' },
     ];
 
     const USUARIOS_DEMO = [
-      { id: 'u-1', nombre: 'Jean Guevara (Dev)', rol: 'DESARROLLADOR', pin: '1234', desc: 'Acceso Total + Consola Técnica' },
-      { id: 'u-2', nombre: 'Gerencia / Supervisión', rol: 'SUPERVISION', pin: '1111', desc: 'Acceso Total + Kardex + Reportes' },
+      { id: 'u-1', nombre: 'Jean Guevara (Dev)', rol: 'DESARROLLADOR', pin: '1234', desc: 'Acceso Total + Maestros + Consola' },
+      { id: 'u-2', nombre: 'Gerencia / Supervisión', rol: 'SUPERVISION', pin: '1111', desc: 'Acceso Total + Kardex + Maestros' },
       { id: 'u-3', nombre: 'Operador Galpón', rol: 'TRASLADO', pin: '4444', desc: 'Solo Ingreso / Salida de Galpón' },
       { id: 'u-4', nombre: 'Despachador Acopio', rol: 'DESPACHO', pin: '5555', desc: 'Solo Emisión de Guías Pluma' },
       { id: 'u-5', nombre: 'Encargado Conteo', rol: 'CONTEO', pin: '2222', desc: 'Conteo Físico + Merma Ante-Mortem' },
@@ -43,17 +43,25 @@
     };
 
     const GALPONES_INIT = [
-      { id: 'g-1', nombre: 'San Francisco', direccion: 'Sector San Francisco - Galpón Único', empresaId: 'emp-1' },
-      { id: 'g-2', nombre: 'Km 21', direccion: 'Carretera Interoceánica Km 21', empresaId: 'emp-1' },
-      { id: 'g-3', nombre: 'Km 15', direccion: 'Carretera Interoceánica Km 15', empresaId: 'emp-2' },
-      { id: 'g-4', nombre: 'Km 26', direccion: 'Sector Km 26 Gyoel', empresaId: 'emp-2' },
+      { id: 'g-1', sector: 'San Francisco', numeroGalpon: 'Galpón Único', referencia: 'Sector San Francisco Km 18', empresaId: 'emp-1' },
+      { id: 'g-2', sector: 'Km 21', numeroGalpon: 'Galpón 1', referencia: 'Carretera Interoceánica Km 21 (Galponero Dino)', empresaId: 'emp-1' },
+      { id: 'g-3', sector: 'Km 21', numeroGalpon: 'Galpón 2', referencia: 'Carretera Interoceánica Km 21', empresaId: 'emp-1' },
+      { id: 'g-4', sector: 'Km 15', numeroGalpon: 'Galpón 1', referencia: 'Carretera Interoceánica Km 15 - Sector Norte', empresaId: 'emp-2' },
+      { id: 'g-5', sector: 'Km 26', numeroGalpon: 'Galpón 1', referencia: 'Sector Km 26 Gyoel', empresaId: 'emp-2' },
     ];
 
-    const VEHICULOS_INIT = [
-      { id: 'v-1', placa: 'X4F-945', modelo: 'Canter', empresaId: 'emp-1', chofer: 'Sr. Peter' },
-      { id: 'v-2', placa: 'PLU-801', modelo: 'Hyundai HD', empresaId: 'emp-1', chofer: 'Demetrio' },
-      { id: 'v-3', placa: 'AWN-913', modelo: 'Fuso', empresaId: 'emp-2', chofer: 'Jesús' },
-      { id: 'v-4', placa: 'X2T-840', modelo: 'Canter', empresaId: 'emp-2', chofer: 'Noé' },
+    const CHOFERES_INIT = [
+      { id: 'ch-1', nombre: 'Demetrio', dni: '41258963', telefono: '982 114 201', activo: true },
+      { id: 'ch-2', nombre: 'Sr. Peter', dni: '04852147', telefono: '982 441 890', activo: true },
+      { id: 'ch-3', nombre: 'Jesús', dni: '45896321', telefono: '974 552 310', activo: true },
+      { id: 'ch-4', nombre: 'Noé', dni: '47123698', telefono: '951 887 412', activo: true },
+    ];
+
+    const PLACAS_INIT = [
+      { id: 'v-1', placa: 'PLU-801', modelo: 'Hyundai HD', empresaId: 'emp-1', choferId: 'ch-1' },
+      { id: 'v-2', placa: 'X4F-945', modelo: 'Mitsubishi Canter', empresaId: 'emp-1', choferId: 'ch-2' },
+      { id: 'v-3', placa: 'AWN-913', modelo: 'Mitsubishi Fuso', empresaId: 'emp-2', choferId: 'ch-3' },
+      { id: 'v-4', placa: 'X2T-840', modelo: 'Mitsubishi Canter', empresaId: 'emp-2', choferId: 'ch-4' },
     ];
 
     const CLIENTES_INIT = [
@@ -75,22 +83,26 @@
       const [colaOffline, setColaOffline] = useState([]);
       const [toast, setToast] = useState(null);
 
+      // Catálogos Maestros Editables
       const [galpones, setGalpones] = useState(GALPONES_INIT);
-      const [vehiculos] = useState(VEHICULOS_INIT);
+      const [placas, setPlacas] = useState(PLACAS_INIT);
+      const [choferes, setChoferes] = useState(CHOFERES_INIT);
       const [clientes, setClientes] = useState(CLIENTES_INIT);
 
+      // Movimientos del Turno
       const [saldoInicial] = useState(0);
       const [ingresos, setIngresos] = useState([
-        { id: 'i-1', galpon: 'San Francisco', empresa: 'PLUMÍFERO', placa: 'PLU-801', chofer: 'Demetrio', jabas: 200, aves: 1600, modo: 'FOTO_OCR' }
+        { id: 'i-1', sector: 'San Francisco', numeroGalpon: 'Galpón Único', empresa: 'PLUMÍFERO', placa: 'PLU-801', chofer: 'Demetrio', jabas: 200, aves: 1600, modo: 'FOTO_OCR' }
       ]);
       const [guias, setGuias] = useState([
         { id: 'gu-1', empresa: 'LOS 7 POLLITOS', numero: '001425', cod: '018', cliente: 'Lucero Apaza', jabas: 34, aves: 268, peso: 921.0, modo: 'DIGITAL' }
       ]);
       const [mermasAnte, setMermasAnte] = useState([
-        { id: 'ma-1', placa: 'PLU-801', aves: 2, motivo: 'Ahogados en trayecto', conFoto: false }
+        { id: 'ma-1', placa: 'PLU-801', aves: 2, peso: 5.5, motivo: 'Ahogados en trayecto', conFoto: false }
       ]);
       const [confirmacionPre, setConfirmacionPre] = useState(null);
       const [faenadoManana, setFaenadoManana] = useState(null);
+      const [pesoFaenado, setPesoFaenado] = useState(0);
       const [mermaPost, setMermaPost] = useState(0);
       const [confirmacionPost, setConfirmacionPost] = useState(null);
       const [alertas, setAlertas] = useState([]);
@@ -105,6 +117,7 @@
       };
 
       const nombreEmpresa = (empId) => EMPRESAS.find(e => e.id === empId)?.nombreCorto || 'CONSOLIDADO';
+      const nombreChofer = (chId) => choferes.find(c => c.id === chId)?.nombre || 'Sin asignar';
 
       const totalIngresosAves = ingresos.reduce((a, b) => a + b.aves, 0);
       const totalVentasVivoAves = guias.reduce((a, b) => a + b.aves, 0);
@@ -125,7 +138,7 @@
         e.preventDefault();
         const encontrado = USUARIOS_DEMO.find(u => u.pin === pinInput);
         if (!encontrado) {
-          setPinError('PIN incorrecto. Use uno de los accesos demo inferiores.');
+          setPinError('PIN incorrecto. Use uno de los accesos rápidos inferiores.');
           return;
         }
         iniciarConUsuario(encontrado);
@@ -213,11 +226,11 @@
       }
 
       const tabsDisponibles = [
-        { id: 'INGRESOS', label: '1. Ingreso Galpón' },
+        { id: 'INGRESOS', label: '1. Traslado Galpón' },
         { id: 'GUIAS', label: '2. Guía Pluma' },
         { id: 'CONTEO_ANTE', label: '3. Conteo & Ante-Mortem' },
         { id: 'FAENADO_POST', label: '4. Faenado & Post-Mortem' },
-        { id: 'KARDEX', label: '5. Kardex & Dashboard' },
+        { id: 'KARDEX', label: '5. Kardex & Reportes' },
         { id: 'MAESTROS', label: '6. Base de Datos' },
       ].filter((t) => PERMISOS_ROL[usuarioActivo.rol].includes(t.id));
 
@@ -362,13 +375,15 @@
             {tabActiva === 'INGRESOS' && (
               <ModuloIngresoGalpon
                 galpones={galpones}
-                vehiculos={vehiculos}
+                placas={placas}
+                choferes={choferes}
                 nombreEmpresa={nombreEmpresa}
+                nombreChofer={nombreChofer}
                 congelado={!!confirmacionPre}
                 onRegistrar={(nuevo) => {
                   setIngresos([...ingresos, nuevo]);
                   registrarEnColaSiOffline(`Ingreso ${nuevo.placa}: ${nuevo.aves} aves`);
-                  notificar(`Ingreso registrado: +${nuevo.aves} aves (${nuevo.empresa})`);
+                  notificar(`Ingreso registrado: +${nuevo.aves} aves (${nuevo.sector} - ${nuevo.numeroGalpon})`);
                 }}
                 onError={(msg) => notificar(msg, 'err')}
               />
@@ -389,7 +404,8 @@
 
             {tabActiva === 'CONTEO_ANTE' && (
               <ModuloConteoAnteMortem
-                vehiculos={vehiculos}
+                placas={placas}
+                nombreChofer={nombreChofer}
                 mermasAnte={mermasAnte}
                 saldoTeorico={saldoTeoricoPreFaenado}
                 confirmacionPre={confirmacionPre}
@@ -418,10 +434,11 @@
                 saldoTeoricoPost={saldoTeoricoPostFaenado}
                 confirmacionPost={confirmacionPost}
                 usuario={usuarioActivo}
-                onRegistrarFaenado={(f, mp) => {
+                onRegistrarFaenado={(f, pKg, mp) => {
                   setFaenadoManana(f);
+                  setPesoFaenado(pKg);
                   setMermaPost(mp);
-                  notificar(`Faenado registrado (${f} aves) y Merma Post-Mortem (${mp} aves).`);
+                  notificar(`Faenado registrado (${f} aves / ${pKg} kg) y Merma Post-Mortem (${mp} aves).`);
                 }}
                 onConfirmarPost={(acta) => {
                   setConfirmacionPost(acta);
@@ -442,10 +459,12 @@
                 mermasAnte={mermasAnte}
                 confirmacionPre={confirmacionPre}
                 faenadoManana={faenadoManana}
+                pesoFaenado={pesoFaenado}
                 mermaPost={mermaPost}
                 confirmacionPost={confirmacionPost}
                 saldoTeoricoPreFaenado={saldoTeoricoPreFaenado}
                 alertas={alertas}
+                notificar={notificar}
               />
             )}
 
@@ -453,9 +472,14 @@
               <ModuloMaestros
                 galpones={galpones}
                 setGalpones={setGalpones}
+                placas={placas}
+                setPlacas={setPlacas}
+                choferes={choferes}
+                setChoferes={setChoferes}
                 clientes={clientes}
                 setClientes={setClientes}
                 nombreEmpresa={nombreEmpresa}
+                nombreChofer={nombreChofer}
                 notificar={notificar}
               />
             )}
@@ -464,24 +488,43 @@
       );
     }
 
-    function ModuloIngresoGalpon({ galpones, vehiculos, nombreEmpresa, congelado, onRegistrar, onError }) {
-      const [galponId, setGalponId] = useState(galpones[0]?.id || '');
-      const [vehiculoId, setVehiculoId] = useState(vehiculos[0]?.id || '');
+    function ModuloIngresoGalpon({ galpones, placas, choferes, nombreEmpresa, nombreChofer, congelado, onRegistrar, onError }) {
+      const sectoresUnicos = [...new Set(galpones.map(g => g.sector))];
+      const [sectorSel, setSectorSel] = useState(sectoresUnicos[0] || '');
+      const galponesDelSector = galpones.filter(g => g.sector === sectorSel);
+      const [galponId, setGalponId] = useState(galponesDelSector[0]?.id || '');
+
+      const [placaId, setPlacaId] = useState(placas[0]?.id || '');
+      const [choferId, setChoferId] = useState(placas[0]?.choferId || choferes[0]?.id || '');
       const [jabas, setJabas] = useState(60);
       const [avesPorJaba, setAvesPorJaba] = useState(9);
 
-      const galponSel = galpones.find(g => g.id === galponId);
-      const vehiculoSel = vehiculos.find(v => v.id === vehiculoId);
+      const handleCambioSector = (nuevoSector) => {
+        setSectorSel(nuevoSector);
+        const lista = galpones.filter(g => g.sector === nuevoSector);
+        setGalponId(lista[0]?.id || '');
+      };
+
+      const handleCambioPlaca = (nuevaPlacaId) => {
+        setPlacaId(nuevaPlacaId);
+        const veh = placas.find(p => p.id === nuevaPlacaId);
+        if (veh?.choferId) setChoferId(veh.choferId);
+      };
+
+      const galponObj = galpones.find(g => g.id === galponId) || galponesDelSector[0];
+      const placaObj = placas.find(p => p.id === placaId);
+      const choferObj = choferes.find(c => c.id === choferId);
 
       const handleGuardar = (e) => {
         e.preventDefault();
         if (congelado) return onError('Turno congelado por Conteo Físico. Solicite permiso a Supervisión.');
         onRegistrar({
           id: 'ing-' + Date.now(),
-          galpon: galponSel?.nombre || 'Galpón',
-          empresa: nombreEmpresa(galponSel?.empresaId || vehiculoSel?.empresaId),
-          placa: vehiculoSel?.placa || 'S/P',
-          chofer: vehiculoSel?.chofer || 'Chofer',
+          sector: galponObj?.sector || sectorSel,
+          numeroGalpon: galponObj?.numeroGalpon || 'Galpón 1',
+          empresa: nombreEmpresa(galponObj?.empresaId || placaObj?.empresaId),
+          placa: placaObj?.placa || 'S/P',
+          chofer: choferObj?.nombre || 'Chofer',
           jabas: Number(jabas),
           aves: Number(jabas) * Number(avesPorJaba),
           modo: 'DIGITAL',
@@ -492,7 +535,8 @@
         if (congelado) return onError('Turno congelado por Conteo Físico.');
         onRegistrar({
           id: 'ing-' + Date.now(),
-          galpon: 'Km 21',
+          sector: 'Km 21',
+          numeroGalpon: 'Galpón 2',
           empresa: 'PLUMÍFERO',
           placa: 'X4F-945',
           chofer: 'Sr. Peter',
@@ -506,44 +550,74 @@
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-5">
           <div className="flex flex-wrap justify-between items-center gap-2">
             <div>
+              <span className="text-xs font-extrabold text-amber-400 uppercase">Módulo 1 • Traslado de Granja</span>
               <h2 className="text-lg font-black text-white">Ingreso de Pollo Vivo (Galpón → Acopio)</h2>
-              <p className="text-xs text-slate-400">Cada galpón y placa deduce automáticamente su empresa titular.</p>
+              <p className="text-xs text-slate-400">Selecciona Dirección, N° de Galpón, Placa y Chofer asignado.</p>
             </div>
             <button
               type="button"
               onClick={simularOCR}
               className="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500 text-amber-300 px-3 py-2 rounded-xl text-xs font-extrabold"
             >
-              📷 Simular Foto Ticket Km 21 (OCR)
+              📷 Simular Foto Ticket Km 21 - G2 (OCR)
             </button>
           </div>
 
           <form onSubmit={handleGuardar} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs text-slate-400 mb-1">Dirección / Galpón de Salida</label>
+                <label className="block text-xs text-slate-400 mb-1">1. Dirección / Sector de Granja</label>
+                <select
+                  value={sectorSel}
+                  onChange={(e) => handleCambioSector(e.target.value)}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold"
+                >
+                  {sectoresUnicos.map((sec) => (
+                    <option key={sec} value={sec}>{sec}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">2. Número de Galpón (Deduce Empresa)</label>
                 <select
                   value={galponId}
                   onChange={(e) => setGalponId(e.target.value)}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold text-amber-300"
+                >
+                  {galponesDelSector.map((g) => (
+                    <option key={g.id} value={g.id}>
+                      {g.numeroGalpon} — [{nombreEmpresa(g.empresaId)}]
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">3. Placa del Vehículo</label>
+                <select
+                  value={placaId}
+                  onChange={(e) => handleCambioPlaca(e.target.value)}
                   className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold"
                 >
-                  {galpones.map((g) => (
-                    <option key={g.id} value={g.id}>
-                      {g.nombre} — [{nombreEmpresa(g.empresaId)}]
+                  {placas.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.placa} ({v.modelo}) — [{nombreEmpresa(v.empresaId)}]
                     </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-xs text-slate-400 mb-1">Placa del Vehículo (Deduce Chofer)</label>
+                <label className="block text-xs text-slate-400 mb-1">4. Chofer del Viaje</label>
                 <select
-                  value={vehiculoId}
-                  onChange={(e) => setVehiculoId(e.target.value)}
+                  value={choferId}
+                  onChange={(e) => setChoferId(e.target.value)}
                   className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold"
                 >
-                  {vehiculos.map((v) => (
-                    <option key={v.id} value={v.id}>
-                      {v.placa} ({v.chofer}) — [{nombreEmpresa(v.empresaId)}]
+                  {choferes.map((ch) => (
+                    <option key={ch.id} value={ch.id}>
+                      {ch.nombre} {ch.dni ? `(DNI: ${ch.dni})` : ''}
                     </option>
                   ))}
                 </select>
@@ -573,7 +647,7 @@
               </div>
               <div className="flex flex-col justify-center items-center">
                 <span className="text-xs text-slate-400">Total Ingreso</span>
-                <span className="text-2xl font-black text-emerald-400">{Number(jabas) * Number(avesPorJaba)}</span>
+                <span className="text-2xl font-black text-emerald-400">+{Number(jabas) * Number(avesPorJaba)}</span>
               </div>
             </div>
 
@@ -641,15 +715,16 @@
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-5">
           <div className="flex flex-wrap justify-between items-center gap-2">
             <div>
-              <h2 className="text-lg font-black text-white">Emisión de Guía Pluma (Venta Pollo Vivo)</h2>
+              <span className="text-xs font-extrabold text-sky-400 uppercase">Módulo 2 • Despacho Ventas Pollo Vivo</span>
+              <h2 className="text-lg font-black text-white">Emisión de Guía Pluma</h2>
               <p className="text-xs text-slate-400">Búsqueda rápida por código de cliente o apodo de guía.</p>
             </div>
             <button
               type="button"
               onClick={simularOCRGuia}
-              className="bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500 text-sky-300 px-3 py-2 rounded-xl text-xs font-extrabold"
+              className="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500 text-amber-300 px-3 py-2 rounded-xl text-xs font-extrabold"
             >
-              📷 Simular Foto Guía #001593 (OCR)
+              📷 Simular Foto Guía #001593 (Jhon Casas)
             </button>
           </div>
 
@@ -663,13 +738,13 @@
                 </select>
               </div>
               <div>
-                <label className="block text-xs text-slate-400 mb-1">N° Correlativo</label>
+                <label className="block text-xs text-slate-400 mb-1">N° Guía Pluma</label>
                 <input value={numero} onChange={(e) => setNumero(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-mono font-bold text-amber-400" />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs text-slate-400 mb-1">Buscar Cliente (Código ej. 222 o Nombre ej. Jhon)</label>
+              <label className="block text-xs text-slate-400 mb-1">Cliente (Código 018, 222 o Apodo)</label>
               <input
                 type="text"
                 value={busqueda}
@@ -734,26 +809,26 @@
             </div>
 
             <div className="grid grid-cols-3 gap-2 bg-slate-950 p-3 rounded-2xl text-center">
-              <div><p className="text-xs text-slate-400">Jabas</p><p className="font-black text-lg">{totalJabas}</p></div>
-              <div><p className="text-xs text-slate-400">Pollos</p><p className="font-black text-lg text-amber-400">{totalAves}</p></div>
-              <div><p className="text-xs text-slate-400">Peso Kg</p><p className="font-black text-lg text-emerald-400">{totalPeso.toFixed(1)}</p></div>
+              <div><p className="text-xs text-slate-400">Total Jabas</p><p className="font-black text-lg">{totalJabas}</p></div>
+              <div><p className="text-xs text-slate-400">Total Pollos</p><p className="font-black text-lg text-amber-400">-{totalAves}</p></div>
+              <div><p className="text-xs text-slate-400">Peso Total</p><p className="font-black text-lg text-emerald-400">{totalPeso.toFixed(1)} kg</p></div>
             </div>
 
-            <button type="submit" className="w-full py-4 bg-sky-600 hover:bg-sky-500 rounded-2xl font-black text-base">
-              REGISTRAR GUÍA PLUMA
+            <button type="submit" className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-2xl font-black text-base">
+              GUARDAR GUÍA PLUMA Y DESCONTAR SALDO
             </button>
           </form>
         </div>
       );
     }
 
-    function ModuloConteoAnteMortem({ vehiculos, mermasAnte, saldoTeorico, confirmacionPre, usuario, onAgregarMerma, onConfirmarFisico, onError }) {
+    function ModuloConteoAnteMortem({ placas, nombreChofer, mermasAnte, saldoTeorico, confirmacionPre, usuario, onAgregarMerma, onConfirmarFisico, onError }) {
       const [avesMuertas, setAvesMuertas] = useState(1);
-      const [placa, setPlaca] = useState(vehiculos[0]?.placa || '');
+      const [pesoMerma, setPesoMerma] = useState(2.8);
+      const [placa, setPlaca] = useState(placas[0]?.placa || '');
       const [fotoCapturada, setFotoCapturada] = useState(false);
 
-      const [jabasFisicas, setJabasFisicas] = useState(Math.floor(saldoTeorico / 8));
-      const [avesJabaFisica, setAvesJabaFisica] = useState(8);
+      const [lotes, setLotes] = useState([{ jabas: Math.floor(saldoTeorico / 8), avesJaba: 8 }]);
       const [pin, setPin] = useState('');
       const [obs, setObs] = useState('');
 
@@ -769,14 +844,23 @@
           id: 'ma-' + Date.now(),
           placa,
           aves: Number(avesMuertas),
+          peso: Number(pesoMerma),
           motivo: 'Muerte en transporte / espera',
           conFoto: fotoCapturada,
         });
         setFotoCapturada(false);
       };
 
-      const totalFisico = Number(jabasFisicas) * Number(avesJabaFisica);
+      const totalFisico = lotes.reduce((acc, l) => acc + Number(l.jabas || 0) * Number(l.avesJaba || 0), 0);
       const diff = totalFisico - saldoTeorico;
+
+      const igualarSaldoApp = () => {
+        const completas = Math.floor(saldoTeorico / 8);
+        const resto = saldoTeorico % 8;
+        const nuevos = [{ jabas: completas, avesJaba: 8 }];
+        if (resto > 0) nuevos.push({ jabas: 1, avesJaba: resto });
+        setLotes(nuevos);
+      };
 
       const handleConfirmar = (e) => {
         e.preventDefault();
@@ -798,20 +882,128 @@
 
       return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="bg-slate-900 border border-amber-500/40 rounded-3xl p-5 space-y-4">
+            <div className="flex justify-between items-start gap-2">
+              <div>
+                <span className="text-xs font-extrabold text-sky-400 uppercase">Módulo 3A • Verificación Física en Campo</span>
+                <h3 className="text-base font-black text-white">Acta de Confirmación de Saldo Físico</h3>
+              </div>
+              {!confirmacionPre && (
+                <button
+                  type="button"
+                  onClick={igualarSaldoApp}
+                  className="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-600 px-2.5 py-1.5 rounded-xl font-bold text-sky-300"
+                >
+                  Igualar a Saldo App ({saldoTeorico})
+                </button>
+              )}
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 text-center bg-slate-950 p-3 rounded-2xl">
+              <div><p className="text-xs text-slate-400">Saldo Teórico App</p><p className="font-black text-xl text-sky-400">{saldoTeorico}</p></div>
+              <div><p className="text-xs text-slate-400">Físico Contado</p><p className="font-black text-xl text-white">{totalFisico}</p></div>
+              <div><p className="text-xs text-slate-400">Diferencia</p><p className={`font-black text-xl ${diff === 0 ? 'text-emerald-400' : 'text-rose-400'}`}>{diff}</p></div>
+            </div>
+
+            {confirmacionPre ? (
+              <div className="bg-emerald-950/60 border border-emerald-600 p-4 rounded-2xl text-xs space-y-1">
+                <p className="font-black text-emerald-300">✓ SALDO FÍSICO CONFIRMADO Y SELLADO</p>
+                <p>Responsable: {confirmacionPre.responsable} ({confirmacionPre.hora})</p>
+                <p>Conteo Físico: {confirmacionPre.fisico} aves (Dif: {confirmacionPre.diferencia})</p>
+              </div>
+            ) : (
+              <form onSubmit={handleConfirmar} className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-bold text-slate-400 uppercase">Desglose Contado</span>
+                  <button
+                    type="button"
+                    onClick={() => setLotes([...lotes, { jabas: 1, avesJaba: 6 }])}
+                    className="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg"
+                  >
+                    + Pucho / Lote
+                  </button>
+                </div>
+
+                <div className="space-y-2">
+                  {lotes.map((l, idx) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        value={l.jabas}
+                        onChange={(e) => { const c = [...lotes]; c[idx].jabas = e.target.value; setLotes(c); }}
+                        className="w-24 bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-center font-bold"
+                      />
+                      <span className="text-xs text-slate-400">jbs ×</span>
+                      <input
+                        type="number"
+                        value={l.avesJaba}
+                        onChange={(e) => { const c = [...lotes]; c[idx].avesJaba = e.target.value; setLotes(c); }}
+                        className="w-20 bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-center font-bold"
+                      />
+                      <span className="text-xs font-bold text-sky-400 ml-auto">
+                        = {Number(l.jabas || 0) * Number(l.avesJaba || 0)} aves
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {diff !== 0 && (
+                  <input
+                    type="text"
+                    value={obs}
+                    onChange={(e) => setObs(e.target.value)}
+                    placeholder="Justificación obligatoria por diferencia..."
+                    className="w-full bg-slate-800 border border-rose-500 rounded-xl p-2.5 text-xs"
+                  />
+                )}
+                <input
+                  type="password"
+                  maxLength={4}
+                  value={pin}
+                  onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
+                  placeholder={`PIN Personal (prueba: ${usuario.pin} o 1111)`}
+                  className="w-full bg-slate-800 border border-amber-500/60 rounded-xl p-3 text-center font-mono text-lg"
+                />
+                <button type="submit" className="w-full py-3.5 bg-sky-600 hover:bg-sky-500 rounded-xl font-black text-sm">
+                  FIRMAR CON PIN Y SELLAR SALDO FÍSICO
+                </button>
+              </form>
+            )}
+          </div>
+
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-4">
-            <h3 className="text-base font-black text-rose-400">A. Registro Merma Ante-Mortem</h3>
+            <span className="text-xs font-extrabold text-rose-400 uppercase">Módulo 3B • Mortalidad Pre-Beneficio</span>
+            <h3 className="text-base font-black text-white">Registro Merma Ante-Mortem</h3>
             <p className="text-xs text-slate-400">Acumulado actual: <strong className="text-white">{acumuladoAnte} aves</strong> (Límite sin foto: 2 aves).</p>
             <form onSubmit={handleMerma} className="space-y-3">
-              <select value={placa} onChange={(e) => setPlaca(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold">
-                {vehiculos.map(v => <option key={v.id} value={v.placa}>{v.placa} — {v.chofer}</option>)}
-              </select>
-              <input
-                type="number"
-                min={1}
-                value={avesMuertas}
-                onChange={(e) => setAvesMuertas(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg"
-              />
+              <div>
+                <label className="text-xs text-slate-400">Vehículo / Placa</label>
+                <select value={placa} onChange={(e) => setPlaca(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold">
+                  {placas.map(v => <option key={v.id} value={v.placa}>{v.placa} — {nombreChofer(v.choferId)}</option>)}
+                </select>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-xs text-slate-400">Aves Muertas</label>
+                  <input
+                    type="number"
+                    min={1}
+                    value={avesMuertas}
+                    onChange={(e) => setAvesMuertas(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-slate-400">Peso (kg)</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={pesoMerma}
+                    onChange={(e) => setPesoMerma(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg"
+                  />
+                </div>
+              </div>
               {requiereFoto && (
                 <button
                   type="button"
@@ -828,69 +1020,21 @@
               </button>
             </form>
           </div>
-
-          <div className="bg-slate-900 border border-amber-500/40 rounded-3xl p-5 space-y-4">
-            <h3 className="text-base font-black text-amber-400">B. Acta Confirmación Saldo Físico</h3>
-            <div className="grid grid-cols-3 gap-2 text-center bg-slate-950 p-3 rounded-2xl">
-              <div><p className="text-xs text-slate-400">Teórico App</p><p className="font-black text-sky-400">{saldoTeorico}</p></div>
-              <div><p className="text-xs text-slate-400">Físico</p><p className="font-black text-white">{totalFisico}</p></div>
-              <div><p className="text-xs text-slate-400">Dif.</p><p className={`font-black ${diff === 0 ? 'text-emerald-400' : 'text-rose-400'}`}>{diff}</p></div>
-            </div>
-
-            {confirmacionPre ? (
-              <div className="bg-emerald-950/60 border border-emerald-600 p-4 rounded-2xl text-xs space-y-1">
-                <p className="font-black text-emerald-300">✓ SALDO FÍSICO CONFIRMADO Y SELLADO</p>
-                <p>Responsable: {confirmacionPre.responsable} ({confirmacionPre.hora})</p>
-                <p>Conteo Físico: {confirmacionPre.fisico} aves (Dif: {confirmacionPre.diferencia})</p>
-              </div>
-            ) : (
-              <form onSubmit={handleConfirmar} className="space-y-3">
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="text-xs text-slate-400">Jabas Contadas</label>
-                    <input type="number" value={jabasFisicas} onChange={(e) => setJabasFisicas(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-center font-bold" />
-                  </div>
-                  <div>
-                    <label className="text-xs text-slate-400">Pollos x Jaba</label>
-                    <input type="number" value={avesJabaFisica} onChange={(e) => setAvesJabaFisica(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-center font-bold" />
-                  </div>
-                </div>
-                {diff !== 0 && (
-                  <input
-                    type="text"
-                    value={obs}
-                    onChange={(e) => setObs(e.target.value)}
-                    placeholder="Justificación obligatoria por diferencia..."
-                    className="w-full bg-slate-800 border border-rose-500 rounded-xl p-2.5 text-xs"
-                  />
-                )}
-                <input
-                  type="password"
-                  maxLength={4}
-                  value={pin}
-                  onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
-                  placeholder={`PIN (${usuario.pin})`}
-                  className="w-full bg-slate-800 border border-amber-500/60 rounded-xl p-3 text-center font-mono text-xl tracking-[0.5em]"
-                />
-                <button type="submit" className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-black text-sm">
-                  FIRMAR CONFORMIDAD CON PIN
-                </button>
-              </form>
-            )}
-          </div>
         </div>
       );
     }
 
     function ModuloFaenadoPostMortem({ basePreFaenado, faenadoManana, mermaPost, saldoTeoricoPost, confirmacionPost, usuario, onRegistrarFaenado, onConfirmarPost, onError }) {
       const [cantFaenado, setCantFaenado] = useState(faenadoManana ?? basePreFaenado);
+      const [pesoTotalKg, setPesoTotalKg] = useState(2850);
       const [cantPostMortem, setCantPostMortem] = useState(mermaPost);
+      const [detalleObs, setDetalleObs] = useState('Lote beneficio turno mañana');
       const [saldoRemanenteFisico, setSaldoRemanenteFisico] = useState(0);
       const [pin, setPin] = useState('');
 
       const handleGuardarFaenado = (e) => {
         e.preventDefault();
-        onRegistrarFaenado(Number(cantFaenado), Number(cantPostMortem));
+        onRegistrarFaenado(Number(cantFaenado), Number(pesoTotalKg), Number(cantPostMortem));
       };
 
       const handleCierrePost = (e) => {
@@ -911,26 +1055,38 @@
       return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-4">
-            <h3 className="text-base font-black text-sky-400">A. Despacho a Faenado Mañana & Post-Mortem</h3>
-            <p className="text-xs text-slate-400">Base disponible tras conteo nocturno: <strong className="text-white">{basePreFaenado} aves</strong></p>
+            <span className="text-xs font-extrabold text-purple-400 uppercase">Módulo 4A • Turno Mañana</span>
+            <h3 className="text-base font-black text-white">Faenado y Merma Post-Mortem</h3>
+            <p className="text-xs text-slate-400">Disponible Pre-Faena: <strong className="text-sky-400">{basePreFaenado} aves</strong></p>
             <form onSubmit={handleGuardarFaenado} className="space-y-3">
-              <div>
-                <label className="text-xs text-slate-400">Aves Ingresadas a Beneficio (Faenado)</label>
-                <input type="number" value={cantFaenado} onChange={(e) => setCantFaenado(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg" />
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-xs text-slate-400">Cantidad Aves Faenado</label>
+                  <input type="number" value={cantFaenado} onChange={(e) => setCantFaenado(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg" />
+                </div>
+                <div>
+                  <label className="text-xs text-slate-400">Peso Total (kg)</label>
+                  <input type="number" step="0.1" value={pesoTotalKg} onChange={(e) => setPesoTotalKg(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg" />
+                </div>
               </div>
               <div>
                 <label className="text-xs text-slate-400">Merma Post-Mortem (Decomiso / Descarte Línea)</label>
                 <input type="number" value={cantPostMortem} onChange={(e) => setCantPostMortem(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg text-rose-400" />
               </div>
-              <button type="submit" className="w-full py-3.5 bg-sky-600 hover:bg-sky-500 rounded-xl font-black text-sm">
-                GUARDAR FAENADO Y POST-MORTEM
+              <div>
+                <label className="text-xs text-slate-400">Detalle / Observación</label>
+                <input type="text" value={detalleObs} onChange={(e) => setDetalleObs(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs" />
+              </div>
+              <button type="submit" className="w-full py-3.5 bg-purple-600 hover:bg-purple-500 rounded-xl font-black text-sm">
+                REGISTRAR FAENADO MAÑANA
               </button>
             </form>
           </div>
 
           <div className="bg-slate-900 border border-emerald-500/40 rounded-3xl p-5 space-y-4">
-            <h3 className="text-base font-black text-emerald-400">B. Confirmación Saldo Remanente Post-Faenado</h3>
-            <p className="text-xs text-slate-400">Saldo vivo que queda para el turno siguiente (arrastre diario).</p>
+            <span className="text-xs font-extrabold text-emerald-400 uppercase">Módulo 4B • Cierre Final del Día</span>
+            <h3 className="text-base font-black text-white">Confirmación Saldo Post-Faenado</h3>
+            <p className="text-xs text-slate-400">Aves vivas remanentes en acopio (arrastre para siguiente noche).</p>
             {confirmacionPost ? (
               <div className="bg-emerald-950/60 border border-emerald-600 p-4 rounded-2xl text-xs space-y-1">
                 <p className="font-black text-emerald-300">✓ CIERRE POST-FAENADO SELLADO</p>
@@ -939,12 +1095,20 @@
               </div>
             ) : (
               <form onSubmit={handleCierrePost} className="space-y-3">
-                <div className="bg-slate-950 p-3 rounded-xl text-center">
-                  <span className="text-xs text-slate-400">Remanente Teórico App: </span>
-                  <span className="font-black text-amber-400">{saldoTeoricoPost} aves</span>
+                <div className="grid grid-cols-2 gap-2 bg-slate-950 p-3 rounded-xl text-center">
+                  <div>
+                    <p className="text-xs text-slate-400">Remanente Teórico</p>
+                    <p className="font-black text-xl text-sky-400">{saldoTeoricoPost}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-400">Descuadre</p>
+                    <p className={`font-black text-xl ${Number(saldoRemanenteFisico) - saldoTeoricoPost === 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                      {Number(saldoRemanenteFisico) - saldoTeoricoPost}
+                    </p>
+                  </div>
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400">Remanente Físico Contado</label>
+                  <label className="text-xs text-slate-400">Aves Vivas Remanentes Contadas</label>
                   <input type="number" value={saldoRemanenteFisico} onChange={(e) => setSaldoRemanenteFisico(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg" />
                 </div>
                 <input
@@ -952,8 +1116,8 @@
                   maxLength={4}
                   value={pin}
                   onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
-                  placeholder={`PIN (${usuario.pin})`}
-                  className="w-full bg-slate-800 border border-emerald-500/60 rounded-xl p-3 text-center font-mono text-xl tracking-[0.5em]"
+                  placeholder={`PIN Jefe Faenado (prueba: ${usuario.pin} o 1111)`}
+                  className="w-full bg-slate-800 border border-emerald-500/60 rounded-xl p-3 text-center font-mono text-lg"
                 />
                 <button type="submit" className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-black text-sm">
                   CONFIRMAR SALDO POST-FAENADO
@@ -965,8 +1129,37 @@
       );
     }
 
-    function ModuloKardexDashboard({ fechaOperativa, ingresos, guias, mermasAnte, confirmacionPre, faenadoManana, mermaPost, confirmacionPost, saldoTeoricoPreFaenado, alertas }) {
+    function ModuloKardexDashboard({ fechaOperativa, ingresos, guias, mermasAnte, confirmacionPre, faenadoManana, pesoFaenado, mermaPost, confirmacionPost, saldoTeoricoPreFaenado, alertas, notificar }) {
       let saldoCorriente = 0;
+
+      const exportarCSV = () => {
+        let saldo = 0;
+        const filas = [['FECHA', 'BLOQUE', 'CONCEPTO', 'EMPRESA', 'JABAS', 'ENTRADA', 'SALIDA', 'SALDO']];
+        ingresos.forEach(i => {
+          saldo += i.aves;
+          filas.push([fechaOperativa, 'NOCHE', `${i.sector} - ${i.numeroGalpon} (${i.placa} - ${i.chofer})`, i.empresa, i.jabas, i.aves, 0, saldo]);
+        });
+        guias.forEach(g => {
+          saldo -= g.aves;
+          filas.push([fechaOperativa, 'NOCHE', `Guía #${g.numero} - [${g.cod}] ${g.cliente}`, g.empresa, g.jabas, 0, g.aves, saldo]);
+        });
+        mermasAnte.forEach(m => {
+          saldo -= m.aves;
+          filas.push([fechaOperativa, 'ANTE-MORTEM', `Merma Ante-Mortem (${m.placa})`, 'CONSOLIDADO', 0, 0, m.aves, saldo]);
+        });
+        if (faenadoManana !== null) {
+          saldo -= (faenadoManana + mermaPost);
+          filas.push([fechaOperativa, 'MAÑANA', `Faenado (${pesoFaenado} kg) + Post-Mortem (${mermaPost})`, 'CONSOLIDADO', 0, 0, faenadoManana + mermaPost, saldo]);
+        }
+        const csvContent = 'data:text/csv;charset=utf-8,' + filas.map(e => e.join(',')).join('\n');
+        const link = document.createElement('a');
+        link.setAttribute('href', encodeURI(csvContent));
+        link.setAttribute('download', `Kardex_Avicola_${fechaOperativa}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        notificar('Archivo CSV del Kardex descargado.');
+      };
 
       return (
         <div className="space-y-5">
@@ -978,21 +1171,30 @@
           )}
 
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 overflow-x-auto">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex flex-wrap justify-between items-center gap-2 mb-4">
               <div>
                 <h2 className="text-lg font-black text-white">Kardex Vertical Consolidado ({fechaOperativa})</h2>
-                <p className="text-xs text-slate-400">Replica el flujo vertical de cuadre en cascada en tiempo real.</p>
+                <p className="text-xs text-slate-400">Arrastre automático de saldos desde apertura nocturna hasta cierre post-faenado.</p>
               </div>
-              <span className="text-xs bg-slate-800 px-3 py-1 rounded-full font-bold text-amber-400">
-                {confirmacionPre ? `Confirmado: ${confirmacionPre.responsable}` : 'Pendiente Conteo Físico'}
-              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={exportarCSV}
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold px-3 py-1.5 rounded-xl"
+                >
+                  ⬇ Exportar Kardex CSV
+                </button>
+                <span className="text-xs bg-slate-800 px-3 py-1.5 rounded-xl font-bold text-amber-400">
+                  {confirmacionPre ? `Sellado: ${confirmacionPre.responsable}` : 'Pendiente Conteo'}
+                </span>
+              </div>
             </div>
 
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="border-b border-slate-700 text-slate-400">
                   <th className="py-2 px-2">BLOQUE</th>
-                  <th className="py-2 px-2">CONCEPTO / CLIENTE / GALPÓN</th>
+                  <th className="py-2 px-2">CONCEPTO / GALPÓN / CLIENTE</th>
                   <th className="py-2 px-2">EMPRESA</th>
                   <th className="py-2 px-2 text-right">JABAS</th>
                   <th className="py-2 px-2 text-right">ENTRADA</th>
@@ -1006,7 +1208,7 @@
                   return (
                     <tr key={ing.id} className="bg-emerald-950/20">
                       <td className="py-2.5 px-2 font-bold text-emerald-400">NOCHE</td>
-                      <td className="py-2.5 px-2">{ing.galpon} ({ing.placa} - {ing.chofer})</td>
+                      <td className="py-2.5 px-2">{ing.sector} — <strong>{ing.numeroGalpon}</strong> ({ing.placa} - {ing.chofer})</td>
                       <td className="py-2.5 px-2 font-mono">{ing.empresa}</td>
                       <td className="py-2.5 px-2 text-right">{ing.jabas}</td>
                       <td className="py-2.5 px-2 text-right font-bold text-emerald-400">+{ing.aves}</td>
@@ -1055,7 +1257,7 @@
                 {faenadoManana !== null && (
                   <tr className="bg-slate-800/60">
                     <td className="py-2.5 px-2 font-bold text-purple-400">MAÑANA</td>
-                    <td className="py-2.5 px-2">FAENADO 7P - PL (Post-Mortem: {mermaPost} aves)</td>
+                    <td className="py-2.5 px-2">FAENADO 7P - PL ({pesoFaenado} kg | Post-Mortem: {mermaPost} aves)</td>
                     <td className="py-2.5 px-2 font-mono">CONSOLIDADO</td>
                     <td className="py-2.5 px-2 text-right">-</td>
                     <td className="py-2.5 px-2 text-right">0</td>
@@ -1070,17 +1272,100 @@
       );
     }
 
-    function ModuloMaestros({ galpones, setGalpones, clientes, setClientes, nombreEmpresa, notificar }) {
-      const [nuevoGalpon, setNuevoGalpon] = useState('');
+    function ModuloMaestros({ galpones, setGalpones, placas, setPlacas, choferes, setChoferes, clientes, setClientes, nombreEmpresa, nombreChofer, notificar }) {
+      const [subTab, setSubTab] = useState('GALPONES');
+
+      // Estados Galpones
       const [empresaGalpon, setEmpresaGalpon] = useState('emp-1');
+      const [sectorGalpon, setSectorGalpon] = useState('');
+      const [numeroGalpon, setNumeroGalpon] = useState('Galpón 1');
+      const [referenciaGalpon, setReferenciaGalpon] = useState('');
+      const [cantidadLote, setCantidadLote] = useState(1);
+
+      // Estados Placas
+      const [nuevaPlaca, setNuevaPlaca] = useState('');
+      const [modeloPlaca, setModeloPlaca] = useState('');
+      const [empresaPlaca, setEmpresaPlaca] = useState('emp-1');
+      const [choferHabitualPlaca, setChoferHabitualPlaca] = useState(choferes[0]?.id || '');
+
+      // Estados Choferes
+      const [nombreNuevoChofer, setNombreNuevoChofer] = useState('');
+      const [dniNuevoChofer, setDniNuevoChofer] = useState('');
+      const [telNuevoChofer, setTelNuevoChofer] = useState('');
+
+      // Estados Clientes
       const [csvTexto, setCsvTexto] = useState('045\tMARIA ELENA QUISPE\tMaria Quispe');
 
       const agregarGalpon = (e) => {
         e.preventDefault();
-        if (!nuevoGalpon.trim()) return;
-        setGalpones([...galpones, { id: 'g-' + Date.now(), nombre: nuevoGalpon, direccion: nuevoGalpon, empresaId: empresaGalpon }]);
-        setNuevoGalpon('');
-        notificar('Dirección / Galpón registrado con empresa asignada.');
+        if (!sectorGalpon.trim()) return;
+        const cant = Number(cantidadLote);
+        if (cant > 1) {
+          const nuevos = [];
+          for (let i = 1; i <= cant; i++) {
+            nuevos.push({
+              id: 'g-' + Date.now() + '-' + i,
+              sector: sectorGalpon.trim(),
+              numeroGalpon: `Galpón ${i}`,
+              referencia: referenciaGalpon.trim() || sectorGalpon.trim(),
+              empresaId: empresaGalpon,
+            });
+          }
+          setGalpones([...galpones, ...nuevos]);
+          notificar(`Se crearon ${cant} galpones (Galpón 1 al ${cant}) en ${sectorGalpon}.`);
+        } else {
+          setGalpones([
+            ...galpones,
+            {
+              id: 'g-' + Date.now(),
+              sector: sectorGalpon.trim(),
+              numeroGalpon,
+              referencia: referenciaGalpon.trim() || sectorGalpon.trim(),
+              empresaId: empresaGalpon,
+            },
+          ]);
+          notificar(`Dirección ${sectorGalpon} (${numeroGalpon}) registrada.`);
+        }
+        setSectorGalpon('');
+        setReferenciaGalpon('');
+        setCantidadLote(1);
+      };
+
+      const agregarPlaca = (e) => {
+        e.preventDefault();
+        if (!nuevaPlaca.trim()) return;
+        setPlacas([
+          ...placas,
+          {
+            id: 'v-' + Date.now(),
+            placa: nuevaPlaca.trim().toUpperCase(),
+            modelo: modeloPlaca.trim() || 'Camión Furgón',
+            empresaId: empresaPlaca,
+            choferId: choferHabitualPlaca,
+          },
+        ]);
+        setNuevaPlaca('');
+        setModeloPlaca('');
+        notificar('Placa / Vehículo registrado en el catálogo.');
+      };
+
+      const agregarChofer = (e) => {
+        e.preventDefault();
+        if (!nombreNuevoChofer.trim()) return;
+        setChoferes([
+          ...choferes,
+          {
+            id: 'ch-' + Date.now(),
+            nombre: nombreNuevoChofer.trim(),
+            dni: dniNuevoChofer.trim(),
+            telefono: telNuevoChofer.trim(),
+            activo: true,
+          },
+        ]);
+        setNombreNuevoChofer('');
+        setDniNuevoChofer('');
+        setTelNuevoChofer('');
+        notificar('Chofer registrado correctamente.');
       };
 
       const importarClientes = () => {
@@ -1096,61 +1381,222 @@
           }
         });
         setClientes(nuevos);
-        notificar(`Importación masiva completada (${lineas.length} registros procesados).`);
+        notificar(`Importación masiva completada (${lineas.length} clientes procesados).`);
       };
 
       return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-4">
-            <h3 className="text-base font-black text-white">Direcciones / Galpones por Empresa</h3>
-            <form onSubmit={agregarGalpon} className="space-y-2">
-              <input
-                value={nuevoGalpon}
-                onChange={(e) => setNuevoGalpon(e.target.value)}
-                placeholder="Nombre Galpón o Km (ej. Km 18)"
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm"
-              />
-              <select
-                value={empresaGalpon}
-                onChange={(e) => setEmpresaGalpon(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-bold"
-              >
-                {EMPRESAS.map(emp => <option key={emp.id} value={emp.id}>{emp.nombreCorto}</option>)}
-              </select>
-              <button type="submit" className="w-full py-2.5 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
-                + AGREGAR DIRECCIÓN / GALPÓN
-              </button>
-            </form>
-            <div className="divide-y divide-slate-800 text-xs">
-              {galpones.map(g => (
-                <div key={g.id} className="py-2 flex justify-between">
-                  <span className="font-bold">{g.nombre}</span>
-                  <span className="text-amber-400 font-mono">{nombreEmpresa(g.empresaId)}</span>
-                </div>
-              ))}
-            </div>
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-5">
+          <div>
+            <span className="text-xs font-extrabold text-sky-400 uppercase">Base de Datos Interna • Catálogos Maestros</span>
+            <h2 className="text-lg font-black text-white">Direcciones, Galpones, Placas, Choferes y Clientes</h2>
           </div>
 
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-4">
-            <h3 className="text-base font-black text-white">Carga Masiva de Clientes (cod | cliente | apodo)</h3>
-            <textarea
-              rows={3}
-              value={csvTexto}
-              onChange={(e) => setCsvTexto(e.target.value)}
-              className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs font-mono"
-            />
-            <button onClick={importarClientes} className="w-full py-2.5 bg-sky-600 hover:bg-sky-500 font-black rounded-xl text-xs">
-              IMPORTAR / ACTUALIZAR CLIENTES
+          <div className="flex flex-wrap gap-2 bg-slate-950 p-2 rounded-2xl border border-slate-800">
+            <button
+              type="button"
+              onClick={() => setSubTab('GALPONES')}
+              className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'GALPONES' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}
+            >
+              Direcciones / Galpones ({galpones.length})
             </button>
-            <div className="max-h-40 overflow-y-auto divide-y divide-slate-800 text-xs">
-              {clientes.map(c => (
-                <div key={c.cod} className="py-1.5 flex justify-between">
-                  <span><strong className="text-sky-400">[{c.cod}]</strong> {c.apodo}</span>
-                  <span className="text-slate-400 truncate max-w-[160px]">{c.cliente}</span>
-                </div>
-              ))}
-            </div>
+            <button
+              type="button"
+              onClick={() => setSubTab('PLACAS')}
+              className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'PLACAS' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}
+            >
+              Placas ({placas.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setSubTab('CHOFERES')}
+              className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'CHOFERES' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}
+            >
+              Choferes ({choferes.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setSubTab('CLIENTES')}
+              className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'CLIENTES' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}
+            >
+              Clientes ({clientes.length})
+            </button>
           </div>
+
+          {subTab === 'GALPONES' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <form onSubmit={agregarGalpon} className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
+                <h3 className="text-sm font-black text-white">Nueva Dirección / Galpón</h3>
+                <div>
+                  <label className="text-xs text-slate-400">Empresa Titular (Obligatorio)</label>
+                  <select value={empresaGalpon} onChange={(e) => setEmpresaGalpon(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-bold mt-1">
+                    {EMPRESAS.map(emp => <option key={emp.id} value={emp.id}>{emp.nombreCorto} ({emp.ruc})</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs text-slate-400">Dirección / Sector (ej. Km 32 Granja Santa Rosa)</label>
+                  <input value={sectorGalpon} onChange={(e) => setSectorGalpon(e.target.value)} placeholder="Ej. Km 32 Granja Santa Rosa" className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm mt-1" />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-xs text-slate-400">Número de Galpón</label>
+                    <select value={numeroGalpon} onChange={(e) => setNumeroGalpon(e.target.value)} disabled={Number(cantidadLote) > 1} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-bold mt-1">
+                      <option value="Galpón Único">Galpón Único</option>
+                      <option value="Galpón 1">Galpón 1</option>
+                      <option value="Galpón 2">Galpón 2</option>
+                      <option value="Galpón 3">Galpón 3</option>
+                      <option value="Galpón 4">Galpón 4</option>
+                      <option value="Galpón 5">Galpón 5</option>
+                      <option value="Galpón 6">Galpón 6</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">¿Crear varios del 1 al N?</label>
+                    <select value={cantidadLote} onChange={(e) => setCantidadLote(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-bold mt-1 text-amber-300">
+                      <option value={1}>Solo 1 galpón</option>
+                      <option value={2}>Generar Galpón 1 al 2</option>
+                      <option value={3}>Generar Galpón 1 al 3</option>
+                      <option value={4}>Generar Galpón 1 al 4</option>
+                      <option value={5}>Generar Galpón 1 al 5</option>
+                      <option value={6}>Generar Galpón 1 al 6</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs text-slate-400">Referencia / Galponero</label>
+                  <input value={referenciaGalpon} onChange={(e) => setReferenciaGalpon(e.target.value)} placeholder="Referencia carretera / galponero..." className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm mt-1" />
+                </div>
+                <button type="submit" className="w-full py-3 bg-sky-600 hover:bg-sky-500 font-black rounded-xl text-xs">
+                  GUARDAR DIRECCIÓN Y GALPÓN
+                </button>
+              </form>
+
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {galpones.map(g => (
+                  <div key={g.id} className="bg-slate-950 border border-slate-800 p-3 rounded-2xl flex items-center justify-between gap-2">
+                    <div>
+                      <p className="text-sm font-black text-white">{g.sector} — <span className="text-amber-400">{g.numeroGalpon}</span></p>
+                      <p className="text-xs text-slate-400">{g.referencia}</p>
+                    </div>
+                    <span className={`text-xs font-mono font-bold px-2.5 py-1 rounded-lg ${g.empresaId === 'emp-1' ? 'bg-emerald-950 text-emerald-300 border border-emerald-700' : 'bg-amber-950 text-amber-300 border border-amber-700'}`}>
+                      {nombreEmpresa(g.empresaId)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {subTab === 'PLACAS' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <form onSubmit={agregarPlaca} className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
+                <h3 className="text-sm font-black text-white">Registrar Nueva Placa / Vehículo</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-xs text-slate-400">N° Placa</label>
+                    <input value={nuevaPlaca} onChange={(e) => setNuevaPlaca(e.target.value)} placeholder="Ej. B4K-712" className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-mono uppercase mt-1" />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Marca / Modelo</label>
+                    <input value={modeloPlaca} onChange={(e) => setModeloPlaca(e.target.value)} placeholder="Ej. Hyundai HD78" className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm mt-1" />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs text-slate-400">Empresa Asignada</label>
+                  <select value={empresaPlaca} onChange={(e) => setEmpresaPlaca(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-bold mt-1">
+                    {EMPRESAS.map(emp => <option key={emp.id} value={emp.id}>{emp.nombreCorto}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs text-slate-400">Chofer Habitual</label>
+                  <select value={choferHabitualPlaca} onChange={(e) => setChoferHabitualPlaca(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-bold mt-1">
+                    {choferes.map(ch => <option key={ch.id} value={ch.id}>{ch.nombre}</option>)}
+                  </select>
+                </div>
+                <button type="submit" className="w-full py-3 bg-sky-600 hover:bg-sky-500 font-black rounded-xl text-xs">
+                  + GUARDAR PLACA
+                </button>
+              </form>
+
+              <div className="space-y-2">
+                {placas.map(p => (
+                  <div key={p.id} className="bg-slate-950 border border-slate-800 p-3 rounded-2xl flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-mono font-black text-amber-400">{p.placa} <span className="font-sans text-white font-bold">({p.modelo})</span></p>
+                      <p className="text-xs text-slate-400">Chofer habitual: {nombreChofer(p.choferId)}</p>
+                    </div>
+                    <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-slate-800 text-sky-300">
+                      {nombreEmpresa(p.empresaId)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {subTab === 'CHOFERES' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <form onSubmit={agregarChofer} className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
+                <h3 className="text-sm font-black text-white">Registrar Nuevo Chofer</h3>
+                <div>
+                  <label className="text-xs text-slate-400">Nombre Completo / Apodo</label>
+                  <input value={nombreNuevoChofer} onChange={(e) => setNombreNuevoChofer(e.target.value)} placeholder="Ej. Carlos Mendoza" className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm mt-1" />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-xs text-slate-400">DNI / Licencia</label>
+                    <input value={dniNuevoChofer} onChange={(e) => setDniNuevoChofer(e.target.value)} placeholder="8 dígitos" className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-mono mt-1" />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Celular</label>
+                    <input value={telNuevoChofer} onChange={(e) => setTelNuevoChofer(e.target.value)} placeholder="9XX XXX XXX" className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-mono mt-1" />
+                  </div>
+                </div>
+                <button type="submit" className="w-full py-3 bg-sky-600 hover:bg-sky-500 font-black rounded-xl text-xs">
+                  + GUARDAR CHOFER
+                </button>
+              </form>
+
+              <div className="space-y-2">
+                {choferes.map(ch => (
+                  <div key={ch.id} className="bg-slate-950 border border-slate-800 p-3 rounded-2xl flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-black text-white">{ch.nombre}</p>
+                      <p className="text-xs text-slate-400">DNI: {ch.dni || '—'} • Tel: {ch.telefono || '—'}</p>
+                    </div>
+                    <span className="text-xs bg-emerald-950 text-emerald-300 border border-emerald-700 px-2.5 py-1 rounded-lg font-bold">
+                      ACTIVO
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {subTab === 'CLIENTES' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
+                <h3 className="text-sm font-black text-white">Carga Masiva de Clientes (cod | cliente | apodo)</h3>
+                <textarea
+                  rows={4}
+                  value={csvTexto}
+                  onChange={(e) => setCsvTexto(e.target.value)}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs font-mono"
+                />
+                <button onClick={importarClientes} className="w-full py-3 bg-sky-600 hover:bg-sky-500 font-black rounded-xl text-xs">
+                  IMPORTAR / ACTUALIZAR CLIENTES
+                </button>
+              </div>
+
+              <div className="max-h-60 overflow-y-auto divide-y divide-slate-800 bg-slate-950 border border-slate-800 rounded-2xl p-3 text-xs">
+                {clientes.map(c => (
+                  <div key={c.cod} className="py-2 flex justify-between">
+                    <span><strong className="text-sky-400">[{c.cod}]</strong> {c.apodo}</span>
+                    <span className="text-slate-400 truncate max-w-[180px]">{c.cliente}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       );
     }
