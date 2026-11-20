@@ -260,11 +260,11 @@
       const numFilas = 15;
       const cols = [
         { label: 'N°', w: 8 },
-        { label: 'CANT', w: 13 },
+        { label: 'AVES', w: 13 },
         { label: 'DETALLE', w: 36 },
         { label: 'PESO', w: 16 },
         { label: 'JABA', w: 13 },
-        { label: 'BOLSA', w: 13 },
+        { label: 'CANT', w: 13 },
         { label: 'DSCTO', w: 13 },
         { label: 'TOTAL', w: 19 },
       ];
@@ -439,6 +439,7 @@
       const [placas, setPlacas] = useState([]);
       const [choferes, setChoferes] = useState([]);
       const [clientes, setClientes] = useState([]);
+      const [vendedores, setVendedores] = useState([]);
 
       // Movimientos del Turno
       const [saldoInicial] = useState(0);
@@ -539,7 +540,7 @@
           await cargarDatosDelDiaDesdeNube(client, fechaOperativa);
 
           client
-            .channel('avimoa-realtime-v2')
+            .channel('avimoa-realtime-v3')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'usuarios_app' }, async () => {
               const { data } = await client.from('usuarios_app').select('*');
               if (data) {
@@ -555,6 +556,7 @@
             .on('postgres_changes', { event: '*', schema: 'public', table: 'placas' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
             .on('postgres_changes', { event: '*', schema: 'public', table: 'choferes' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
             .on('postgres_changes', { event: '*', schema: 'public', table: 'clientes' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'vendedores' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
             .on('postgres_changes', { event: '*', schema: 'public', table: 'movimientos_ingreso' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
             .on('postgres_changes', { event: '*', schema: 'public', table: 'guias_pluma' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
             .on('postgres_changes', { event: '*', schema: 'public', table: 'mermas_ante_mortem' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
@@ -579,7 +581,7 @@
 
       const cargarDatosDelDiaDesdeNube = async (client, fecha) => {
         try {
-          const [resIng, resGuias, resMermas, resGalp, resPlacas, resChof, resCli, resCierres, resAuth] = await Promise.all([
+          const [resIng, resGuias, resMermas, resGalp, resPlacas, resChof, resCli, resVend, resCierres, resAuth] = await Promise.all([
             client.from('movimientos_ingreso').select('*').eq('fecha_operativa', fecha),
             client.from('guias_pluma').select('*').eq('fecha_operativa', fecha),
             client.from('mermas_ante_mortem').select('*').eq('fecha_operativa', fecha),
@@ -587,6 +589,7 @@
             client.from('placas').select('*'),
             client.from('choferes').select('*'),
             client.from('clientes').select('*'),
+            client.from('vendedores').select('*'),
             client.from('cierres_turno').select('*').eq('fecha_operativa', fecha),
             client.from('autorizaciones_edicion').select('*').eq('fecha_operativa', fecha),
           ]);
@@ -623,6 +626,12 @@
           setClientes((resCli.data || []).map(r => ({
             cod: r.cod, cliente: r.cliente, apodo: r.apodo, docIdentidad: r.doc_identidad || '', activo: r.activo !== false
           })));
+
+          if (!resVend.error && resVend.data) {
+            setVendedores(resVend.data.map(r => ({
+              id: r.id, nombres: r.nombres, apodo: r.apodo, dni: r.dni || '', activo: r.activo !== false
+            })));
+          }
 
           const cierres = resCierres.data || [];
           const cierrePre = cierres.find(c => c.tipo === 'CONTEO_PRE');
@@ -1319,6 +1328,7 @@
               <ModuloGuiaPluma
                 fechaOperativa={fechaOperativa}
                 clientes={clientes.filter(c => c.activo !== false)}
+                vendedores={vendedores.filter(v => v.activo !== false)}
                 guias={guias}
                 correlativos={correlativos}
                 onGuardarInicioCorrelativo={(emp, num) => {
@@ -1559,6 +1569,8 @@
                 setChoferes={setChoferes}
                 clientes={clientes}
                 setClientes={setClientes}
+                vendedores={vendedores}
+                setVendedores={setVendedores}
                 nombreEmpresa={nombreEmpresa}
                 nombreChofer={nombreChofer}
                 sbUrl={sbUrl}
@@ -1838,9 +1850,9 @@
     }
 
     // =========================================================================
-    // MÓDULO 2: GUÍA PLUMA / NOTA DE PEDIDO (CON EDITAR Y ANULAR)
+    // MÓDULO 2: GUÍA PLUMA / NOTA DE PEDIDO (CLIENTES + VENDEDORES + CANT)
     // =========================================================================
-    function ModuloGuiaPluma({ fechaOperativa, clientes, guias, correlativos, onGuardarInicioCorrelativo, congelado, onRegistrar, onAnularGuia, onError }) {
+    function ModuloGuiaPluma({ fechaOperativa, clientes, vendedores, guias, correlativos, onGuardarInicioCorrelativo, congelado, onRegistrar, onAnularGuia, onError }) {
       const [empresa, setEmpresa] = useState('PLUMÍFERO');
       const [guiaEditando, setGuiaEditando] = useState(null);
       const [anulandoGuiaId, setAnulandoGuiaId] = useState(null);
@@ -1860,23 +1872,39 @@
         }
       }, [empresa, correlativos, guiaEditando]);
 
+      // Buscador desplegable de Clientes
       const [busqueda, setBusqueda] = useState('');
+      const [mostrarListaClientes, setMostrarListaClientes] = useState(false);
       const [clienteSel, setClienteSel] = useState(null);
       const [clienteLibre, setClienteLibre] = useState('');
       const [docIdentidad, setDocIdentidad] = useState('');
-      const [vendedor, setVendedor] = useState('');
+
+      // Buscador desplegable de Vendedores / Despachadores
+      const [busquedaVendedor, setBusquedaVendedor] = useState('');
+      const [mostrarListaVendedores, setMostrarListaVendedores] = useState(false);
+      const [vendedorSel, setVendedorSel] = useState(null);
+      const [vendedorLibre, setVendedorLibre] = useState('');
+
       const [detalleGeneral, setDetalleGeneral] = useState('Pollo Vivo');
       const [precioKg, setPrecioKg] = useState('');
 
       const [filas, setFilas] = useState([{ peso: '', jabas: 5, avesJaba: 8, dscto: 0 }]);
 
-      const filtrados = busqueda.trim()
+      const clientesFiltrados = busqueda.trim()
         ? clientes.filter(c =>
-            c.cod.includes(busqueda) ||
+            c.cod.toLowerCase().includes(busqueda.toLowerCase()) ||
             c.apodo.toLowerCase().includes(busqueda.toLowerCase()) ||
             c.cliente.toLowerCase().includes(busqueda.toLowerCase())
           )
-        : [];
+        : clientes;
+
+      const vendedoresFiltrados = busquedaVendedor.trim()
+        ? vendedores.filter(v =>
+            v.apodo.toLowerCase().includes(busquedaVendedor.toLowerCase()) ||
+            v.nombres.toLowerCase().includes(busquedaVendedor.toLowerCase()) ||
+            (v.dni && v.dni.includes(busquedaVendedor))
+          )
+        : vendedores;
 
       const totalJabas = filas.reduce((a, b) => a + Number(b.jabas || 0), 0);
       const totalAves = filas.reduce((a, b) => a + Number(b.jabas || 0) * Number(b.avesJaba || 0), 0);
@@ -1898,7 +1926,14 @@
           setClienteLibre(g.cliente);
         }
         setDocIdentidad(g.docIdentidad || '');
-        setVendedor(g.vendedor || '');
+        const matchVend = vendedores.find(v => v.apodo.toUpperCase() === (g.vendedor || '').toUpperCase() || v.nombres.toUpperCase() === (g.vendedor || '').toUpperCase());
+        if (matchVend) {
+          setVendedorSel(matchVend);
+          setVendedorLibre('');
+        } else {
+          setVendedorSel(null);
+          setVendedorLibre(g.vendedor || '');
+        }
         setDetalleGeneral(g.detalle || 'Pollo Vivo');
         setPrecioKg(g.precioKg > 0 ? String(g.precioKg) : '');
         setFilas(
@@ -1914,6 +1949,8 @@
         setClienteLibre('');
         setClienteSel(null);
         setDocIdentidad('');
+        setVendedorSel(null);
+        setVendedorLibre('');
         setPrecioKg('');
         setFilas([{ peso: '', jabas: 5, avesJaba: 8, dscto: 0 }]);
       };
@@ -1928,6 +1965,10 @@
         if (!nombreDestinatario) return onError('Seleccione un cliente o escriba el destinatario.');
         if (totalAves <= 0 && totalPeso <= 0) return onError('Ingrese al menos una fila de pesada o aves.');
 
+        const nombreVendedorFinal = vendedorLibre.trim()
+          ? vendedorLibre.trim()
+          : (vendedorSel?.apodo || vendedorSel?.nombres || 'ACOPIO');
+
         const esEdicion = !!guiaEditando;
         const nuevaGuia = {
           id: guiaEditando ? guiaEditando.id : ('g-' + Date.now()),
@@ -1937,7 +1978,7 @@
           cod: clienteLibre.trim() ? '000' : (clienteSel?.cod || '000'),
           cliente: nombreDestinatario,
           docIdentidad: docIdentidad.trim(),
-          vendedor: vendedor.trim() || 'ACOPIO',
+          vendedor: nombreVendedorFinal,
           detalle: detalleGeneral.trim() || 'Pollo Vivo',
           precioKg: pKg,
           jabas: totalJabas,
@@ -2033,7 +2074,8 @@
             )}
 
             <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {/* FILA 1: TALONARIO + DOC IDENTIDAD */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs text-slate-400 mb-1">Talonario Empresa (Cuentas PDF)</label>
                   <select
@@ -2047,54 +2089,87 @@
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-400 mb-1">Vendedor / Despachador</label>
-                  <input
-                    type="text"
-                    value={vendedor}
-                    onChange={(e) => setVendedor(e.target.value)}
-                    placeholder="Nombre del vendedor"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-slate-400 mb-1">Doc. Identidad (Opcional)</label>
+                  <label className="block text-xs text-slate-400 mb-1">Doc. Identidad Cliente (DNI / RUC - Opcional)</label>
                   <input
                     type="text"
                     value={docIdentidad}
                     onChange={(e) => setDocIdentidad(e.target.value)}
-                    placeholder="DNI o RUC"
+                    placeholder="Se autocompleta al elegir cliente o digita..."
                     className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-mono"
                   />
                 </div>
               </div>
 
+              {/* FILA 2: BUSCADOR DESPLEGABLE DE CLIENTES */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs text-slate-400 mb-1">Buscar Cliente Activo (Código o Apodo)</label>
+                <div className="relative">
+                  <div className="flex justify-between items-center mb-1">
+                    <label className="text-xs text-slate-400">Buscar Cliente (Código, Apodo o Nombre)</label>
+                    <button
+                      type="button"
+                      onClick={() => setMostrarListaClientes(!mostrarListaClientes)}
+                      className="text-[11px] font-bold text-sky-400 hover:text-sky-300"
+                    >
+                      {mostrarListaClientes ? '▲ Ocultar' : `▼ Ver lista (${clientes.length})`}
+                    </button>
+                  </div>
                   <input
                     type="text"
                     value={busqueda}
-                    onChange={(e) => { setBusqueda(e.target.value); setClienteLibre(''); }}
-                    placeholder={clienteSel ? `Seleccionado: [${clienteSel.cod}] ${clienteSel.apodo}` : 'Escriba código o nombre...'}
-                    className="w-full bg-slate-800 border border-sky-500/50 rounded-xl p-3 text-sm"
+                    onFocus={() => setMostrarListaClientes(true)}
+                    onChange={(e) => {
+                      setBusqueda(e.target.value);
+                      setMostrarListaClientes(true);
+                      setClienteLibre('');
+                    }}
+                    placeholder="Escribe código, apodo o nombre..."
+                    className="w-full bg-slate-800 border border-sky-500/60 rounded-xl p-3 text-sm"
                   />
-                  {filtrados.length > 0 && (
-                    <div className="bg-slate-800 border border-slate-700 rounded-xl mt-1 divide-y divide-slate-700 max-h-40 overflow-y-auto">
-                      {filtrados.map(c => (
-                        <button
-                          type="button"
-                          key={c.cod}
-                          onClick={() => {
-                            setClienteSel(c);
-                            setDocIdentidad(c.docIdentidad || '');
-                            setBusqueda('');
-                          }}
-                          className="w-full text-left px-3 py-2 hover:bg-slate-700 flex justify-between text-xs"
-                        >
-                          <span className="font-bold">{c.apodo} ({c.cliente})</span>
-                          <span className="font-mono text-sky-400">COD: {c.cod}</span>
-                        </button>
-                      ))}
+
+                  {clienteSel && (
+                    <div className="mt-1.5 bg-sky-950/80 border border-sky-500 px-3 py-1.5 rounded-xl flex items-center justify-between text-xs">
+                      <span>
+                        Cliente: <strong className="text-sky-300">[{clienteSel.cod}] {clienteSel.apodo}</strong> ({clienteSel.cliente})
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => { setClienteSel(null); setDocIdentidad(''); }}
+                        className="text-rose-400 font-bold ml-2"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+
+                  {mostrarListaClientes && (
+                    <div className="bg-slate-800 border border-sky-500/50 rounded-xl mt-1 divide-y divide-slate-700 max-h-48 overflow-y-auto shadow-2xl">
+                      {clientesFiltrados.length === 0 ? (
+                        <div className="px-3 py-2.5 text-xs text-slate-400 flex justify-between items-center">
+                          <span>Sin coincidencias en base de datos.</span>
+                          <button type="button" onClick={() => setMostrarListaClientes(false)} className="text-sky-400 font-bold">Cerrar</button>
+                        </div>
+                      ) : (
+                        clientesFiltrados.map(c => (
+                          <button
+                            type="button"
+                            key={c.cod}
+                            onClick={() => {
+                              setClienteSel(c);
+                              setClienteLibre('');
+                              setDocIdentidad(c.docIdentidad || '');
+                              setBusqueda('');
+                              setMostrarListaClientes(false);
+                            }}
+                            className="w-full text-left px-3 py-2.5 hover:bg-slate-700 flex justify-between items-center text-xs"
+                          >
+                            <div>
+                              <span className="font-black text-white">{c.apodo}</span>
+                              <span className="text-slate-400 ml-1.5">({c.cliente})</span>
+                            </div>
+                            <span className="font-mono text-sky-400 font-bold">COD: {c.cod}</span>
+                          </button>
+                        ))
+                      )}
                     </div>
                   )}
                 </div>
@@ -2104,13 +2179,105 @@
                   <input
                     type="text"
                     value={clienteLibre}
-                    onChange={(e) => { setClienteLibre(e.target.value); setClienteSel(null); }}
+                    onChange={(e) => {
+                      setClienteLibre(e.target.value);
+                      if (e.target.value.trim()) setClienteSel(null);
+                    }}
                     placeholder="Ej. OFICINA CAMAL o cliente nuevo..."
                     className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm"
                   />
                 </div>
               </div>
 
+              {/* FILA 3: BUSCADOR DESPLEGABLE DE VENDEDOR / DESPACHADOR */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="relative">
+                  <div className="flex justify-between items-center mb-1">
+                    <label className="text-xs text-slate-400">Buscar Vendedor / Despachador (Apodo, Nombre o DNI)</label>
+                    <button
+                      type="button"
+                      onClick={() => setMostrarListaVendedores(!mostrarListaVendedores)}
+                      className="text-[11px] font-bold text-amber-400 hover:text-amber-300"
+                    >
+                      {mostrarListaVendedores ? '▲ Ocultar' : `▼ Ver lista (${vendedores.length})`}
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    value={busquedaVendedor}
+                    onFocus={() => setMostrarListaVendedores(true)}
+                    onChange={(e) => {
+                      setBusquedaVendedor(e.target.value);
+                      setMostrarListaVendedores(true);
+                      setVendedorLibre('');
+                    }}
+                    placeholder="Ej. Adolfo o busca por nombre / DNI..."
+                    className="w-full bg-slate-800 border border-amber-500/50 rounded-xl p-3 text-sm"
+                  />
+
+                  {vendedorSel && (
+                    <div className="mt-1.5 bg-amber-950/60 border border-amber-500 px-3 py-1.5 rounded-xl flex items-center justify-between text-xs">
+                      <span>
+                        Vendedor: <strong className="text-amber-300">{vendedorSel.apodo}</strong> ({vendedorSel.nombres}{vendedorSel.dni ? ` • DNI: ${vendedorSel.dni}` : ''})
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setVendedorSel(null)}
+                        className="text-rose-400 font-bold ml-2"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+
+                  {mostrarListaVendedores && (
+                    <div className="bg-slate-800 border border-amber-500/50 rounded-xl mt-1 divide-y divide-slate-700 max-h-44 overflow-y-auto shadow-2xl">
+                      {vendedoresFiltrados.length === 0 ? (
+                        <div className="px-3 py-2.5 text-xs text-slate-400 flex justify-between items-center">
+                          <span>Sin vendedores registrados con ese filtro.</span>
+                          <button type="button" onClick={() => setMostrarListaVendedores(false)} className="text-amber-400 font-bold">Cerrar</button>
+                        </div>
+                      ) : (
+                        vendedoresFiltrados.map(v => (
+                          <button
+                            type="button"
+                            key={v.id}
+                            onClick={() => {
+                              setVendedorSel(v);
+                              setVendedorLibre('');
+                              setBusquedaVendedor('');
+                              setMostrarListaVendedores(false);
+                            }}
+                            className="w-full text-left px-3 py-2.5 hover:bg-slate-700 flex justify-between items-center text-xs"
+                          >
+                            <div>
+                              <span className="font-black text-amber-300">{v.apodo}</span>
+                              <span className="text-slate-300 ml-1.5">({v.nombres})</span>
+                            </div>
+                            {v.dni && <span className="font-mono text-slate-400">DNI: {v.dni}</span>}
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">O escribir Vendedor directo (si no está en lista)</label>
+                  <input
+                    type="text"
+                    value={vendedorLibre}
+                    onChange={(e) => {
+                      setVendedorLibre(e.target.value);
+                      if (e.target.value.trim()) setVendedorSel(null);
+                    }}
+                    placeholder="Nombre o apodo del despachador..."
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm"
+                  />
+                </div>
+              </div>
+
+              {/* FILA 4: DETALLE Y PRECIO */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs text-slate-400 mb-1">Detalle / Glosa en Nota</label>
@@ -2135,12 +2302,13 @@
                 </div>
               </div>
 
+              {/* TABLA DE PESADAS (PESO, JABA, CANT [AVES X JABA], DSCTO, AVES) */}
               <div className="bg-slate-950 border border-slate-800 rounded-2xl p-3 space-y-2">
                 <div className="grid grid-cols-12 gap-1.5 text-[11px] font-bold text-slate-400 text-center px-1">
                   <div className="col-span-1">N°</div>
                   <div className="col-span-3">PESO (KG)</div>
                   <div className="col-span-2">JABA</div>
-                  <div className="col-span-2">BOLSA</div>
+                  <div className="col-span-2 text-amber-300" title="Cantidad de aves por jaba">CANT</div>
                   <div className="col-span-2">DSCTO</div>
                   <div className="col-span-2">AVES</div>
                 </div>
@@ -2168,7 +2336,8 @@
                       value={f.avesJaba}
                       onChange={(e) => { const c = [...filas]; c[i].avesJaba = e.target.value; setFilas(c); }}
                       placeholder="8"
-                      className="col-span-2 bg-slate-800 border border-slate-700 rounded-xl p-2 text-center font-mono"
+                      title="Cantidad de aves por jaba"
+                      className="col-span-2 bg-slate-800 border border-amber-500/40 rounded-xl p-2 text-center font-mono text-amber-200"
                     />
                     <input
                       type="number"
@@ -2202,7 +2371,7 @@
                     }}
                     className="w-full py-2.5 border border-dashed border-amber-500/60 rounded-xl text-xs font-bold text-amber-400 hover:bg-amber-500/10"
                   >
-                    + Agregar Pesada / Repetir Jaba y Bolsa ( &quot; ) — ({filas.length}/15 filas)
+                    + Agregar Pesada / Repetir Jaba y Cant ( &quot; ) — ({filas.length}/15 filas)
                   </button>
                 )}
               </div>
@@ -2971,11 +3140,11 @@
     }
 
     // =========================================================================
-    // MÓDULO 6: USUARIOS Y MAESTROS (EDITAR Y ELIMINAR = BAJA EN BASE DE DATOS)
+    // MÓDULO 6: USUARIOS Y MAESTROS (INCLUYE VENDEDORES / DESPACHADORES)
     // =========================================================================
     function ModuloMaestros({
       usuarioActivo, usuarios, onGuardarUsuario,
-      galpones, setGalpones, placas, setPlacas, choferes, setChoferes, clientes, setClientes,
+      galpones, setGalpones, placas, setPlacas, choferes, setChoferes, clientes, setClientes, vendedores, setVendedores,
       nombreEmpresa, nombreChofer, sbUrl, setSbUrl, sbKey, setSbKey, webhookUrl, setWebhookUrl,
       sbConectado, onConectarSupabase, supabaseRef, notificar
     }) {
@@ -3011,6 +3180,13 @@
       const [dniNuevoChofer, setDniNuevoChofer] = useState('');
       const [telNuevoChofer, setTelNuevoChofer] = useState('');
 
+      // Estados Vendedores / Despachadores (Crear / Editar / Importar)
+      const [editandoVendedorId, setEditandoVendedorId] = useState(null);
+      const [nombresVendForm, setNombresVendForm] = useState('');
+      const [apodoVendForm, setApodoVendForm] = useState('');
+      const [dniVendForm, setDniVendForm] = useState('');
+      const [csvVendTexto, setCsvVendTexto] = useState('');
+
       // Estados Clientes (Crear / Editar / Importar)
       const [editandoClienteCod, setEditandoClienteCod] = useState(null);
       const [codClienteForm, setCodClienteForm] = useState('');
@@ -3023,6 +3199,7 @@
       const galponesActivos = galpones.filter(g => g.activo !== false);
       const placasActivas = placas.filter(p => p.activo !== false);
       const choferesActivos = choferes.filter(c => c.activo !== false);
+      const vendedoresActivos = vendedores.filter(v => v.activo !== false);
       const clientesActivos = clientes.filter(c => c.activo !== false);
 
       useEffect(() => {
@@ -3220,6 +3397,66 @@
         notificar(`🗑️ Chofer ${ch.nombre} eliminado de la app (su historial permanece en BD).`, 'warn');
       };
 
+      // --- VENDEDORES / DESPACHADORES ---
+      const guardarVendedor = async (e) => {
+        e.preventDefault();
+        if (!nombresVendForm.trim() && !apodoVendForm.trim()) {
+          return notificar('Ingresa el nombre o apodo del vendedor/despachador.', 'err');
+        }
+        const obj = {
+          id: editandoVendedorId || ('vend-' + Date.now()),
+          nombres: (nombresVendForm.trim() || apodoVendForm.trim()).toUpperCase(),
+          apodo: apodoVendForm.trim() || nombresVendForm.trim(),
+          dni: dniVendForm.trim(),
+          activo: true,
+        };
+        if (editandoVendedorId) {
+          setVendedores(vendedores.map(v => v.id === editandoVendedorId ? obj : v));
+        } else {
+          setVendedores([...vendedores, obj]);
+        }
+        if (supabaseRef.current) {
+          await supabaseRef.current.from('vendedores').upsert(obj);
+        }
+        setEditandoVendedorId(null);
+        setNombresVendForm('');
+        setApodoVendForm('');
+        setDniVendForm('');
+        notificar(editandoVendedorId ? 'Vendedor / Despachador actualizado.' : 'Vendedor / Despachador registrado.');
+      };
+
+      const importarVendedores = async () => {
+        const lineas = csvVendTexto.split('\n').map(l => l.trim()).filter(Boolean);
+        if (lineas.length === 0) return notificar('Pega al menos una línea de vendedor.', 'err');
+        const aSubir = [];
+        lineas.forEach((linea, idx) => {
+          const partes = linea.split(/\t|,|;/).map(p => p.trim());
+          if (partes.length >= 1 && partes[0]) {
+            aSubir.push({
+              id: 'vend-' + Date.now() + '-' + idx,
+              nombres: partes[0].toUpperCase(),
+              apodo: partes[1] || partes[0],
+              dni: partes[2] || '',
+              activo: true,
+            });
+          }
+        });
+        setVendedores([...vendedores, ...aSubir]);
+        if (supabaseRef.current && aSubir.length > 0) {
+          await supabaseRef.current.from('vendedores').upsert(aSubir);
+        }
+        setCsvVendTexto('');
+        notificar(`Importación completada (${aSubir.length} vendedores guardados).`);
+      };
+
+      const eliminarVendedorBaja = async (v) => {
+        setVendedores(vendedores.map(item => item.id === v.id ? { ...item, activo: false } : item));
+        if (supabaseRef.current) {
+          await supabaseRef.current.from('vendedores').update({ activo: false }).eq('id', v.id);
+        }
+        notificar(`🗑️ Vendedor ${v.apodo} eliminado de la app (respaldado en BD).`, 'warn');
+      };
+
       // --- CLIENTES ---
       const guardarClienteIndividual = async (e) => {
         e.preventDefault();
@@ -3284,7 +3521,7 @@
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-5">
           <div>
             <span className="text-xs font-extrabold text-sky-400 uppercase">Administración Avimoa • Usuarios y Catálogos</span>
-            <h2 className="text-lg font-black text-white">Responsables por DNI, Galpones, Placas, Choferes y Nube</h2>
+            <h2 className="text-lg font-black text-white">Responsables, Galpones, Placas, Choferes, Vendedores y Clientes</h2>
             <p className="text-xs text-slate-400">Al presionar Eliminar, el registro se oculta de la app pero se conserva intacto en la base de datos.</p>
           </div>
 
@@ -3308,6 +3545,9 @@
             </button>
             <button type="button" onClick={() => setSubTab('CHOFERES')} className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'CHOFERES' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}>
               Choferes ({choferesActivos.length})
+            </button>
+            <button type="button" onClick={() => setSubTab('VENDEDORES')} className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'VENDEDORES' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}>
+              Vendedores ({vendedoresActivos.length})
             </button>
             <button type="button" onClick={() => setSubTab('CLIENTES')} className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'CLIENTES' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}>
               Clientes ({clientesActivos.length})
@@ -3725,6 +3965,110 @@
                         type="button"
                         onClick={() => eliminarChoferBaja(ch)}
                         className="px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-rose-950 hover:bg-rose-900 border border-rose-700 text-rose-300"
+                      >
+                        🗑️ Eliminar
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* SUB-PESTAÑA VENDEDORES / DESPACHADORES */}
+          {subTab === 'VENDEDORES' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="space-y-4">
+                <form onSubmit={guardarVendedor} className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-sm font-black text-white">
+                      {editandoVendedorId ? '✏️ Editando Vendedor / Despachador' : 'Registrar Vendedor / Despachador'}
+                    </h3>
+                    {editandoVendedorId && (
+                      <button type="button" onClick={() => { setEditandoVendedorId(null); setNombresVendForm(''); setApodoVendForm(''); setDniVendForm(''); }} className="text-xs text-slate-400">
+                        Cancelar ✕
+                      </button>
+                    )}
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Nombres y Apellidos Completos</label>
+                    <input
+                      value={nombresVendForm}
+                      onChange={(e) => setNombresVendForm(e.target.value)}
+                      placeholder="Ej. Adolfo Ramos Cachi"
+                      className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm mt-1"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-xs text-slate-400">Apodo / Sobrenombre (Para Guía)</label>
+                      <input
+                        value={apodoVendForm}
+                        onChange={(e) => setApodoVendForm(e.target.value)}
+                        placeholder="Ej. Adolfo"
+                        className="w-full bg-slate-800 border border-amber-500/40 rounded-xl p-2.5 text-sm font-bold text-amber-200 mt-1"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-slate-400">DNI (8 dígitos - Opcional)</label>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={8}
+                        value={dniVendForm}
+                        onChange={(e) => setDniVendForm(e.target.value.replace(/\D/g, ''))}
+                        placeholder="Ej. 45896321"
+                        className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-mono mt-1"
+                      />
+                    </div>
+                  </div>
+                  <button type="submit" className="w-full py-3 bg-sky-600 hover:bg-sky-500 font-black rounded-xl text-xs">
+                    {editandoVendedorId ? '💾 GUARDAR CAMBIOS' : '+ GUARDAR VENDEDOR / DESPACHADOR'}
+                  </button>
+                </form>
+
+                <div className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-2">
+                  <h3 className="text-xs font-black text-slate-300 uppercase">Carga Masiva desde Excel (nombres | apodo | dni)</h3>
+                  <textarea
+                    rows={3}
+                    value={csvVendTexto}
+                    onChange={(e) => setCsvVendTexto(e.target.value)}
+                    placeholder="ADOLFO RAMOS CACHI	Adolfo	45896321"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs font-mono"
+                  />
+                  <button type="button" onClick={importarVendedores} className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 font-black rounded-xl text-xs">
+                    IMPORTAR VENDEDORES MASIVO
+                  </button>
+                </div>
+              </div>
+
+              <div className="max-h-[430px] overflow-y-auto divide-y divide-slate-800 bg-slate-950 border border-slate-800 rounded-2xl p-3 text-xs">
+                {vendedoresActivos.length === 0 && (
+                  <p className="text-slate-500 py-2">Sin vendedores o despachadores registrados aún.</p>
+                )}
+                {vendedoresActivos.map(v => (
+                  <div key={v.id} className="py-2.5 flex items-center justify-between gap-2">
+                    <div>
+                      <span className="font-black text-amber-300">{v.apodo}</span>
+                      <p className="text-[11px] text-slate-300">{v.nombres} {v.dni ? `• DNI: ${v.dni}` : ''}</p>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditandoVendedorId(v.id);
+                          setNombresVendForm(v.nombres);
+                          setApodoVendForm(v.apodo);
+                          setDniVendForm(v.dni || '');
+                        }}
+                        className="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-sky-950 border border-sky-700 text-sky-300"
+                      >
+                        ✏️ Editar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => eliminarVendedorBaja(v)}
+                        className="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-rose-950 border border-rose-700 text-rose-300"
                       >
                         🗑️ Eliminar
                       </button>
