@@ -37,15 +37,10 @@
                     <stop offset="100%" stopColor="#10b981" />
                   </linearGradient>
                 </defs>
-                {/* Cresta geométrica */}
                 <path d="M18 11C18 8.5 21 7 23 9C24.5 7 28 8 28 11" stroke="#fbbf24" strokeWidth="2.8" strokeLinecap="round" />
-                {/* Silueta estilizada de ave + onda de trazabilidad */}
                 <path d="M14 25C14 17.5 19.5 13 26.5 13C31.5 13 35 16.5 35 21.5C35 28.5 29.5 35 21.5 35C16.5 35 14 31 14 25Z" stroke="url(#aviGradSm)" strokeWidth="3.2" />
-                {/* Pico tech */}
                 <path d="M35 19.5L41 22L35 24.5" fill="#fbbf24" />
-                {/* Ojo / Nodo digital */}
                 <circle cx="28.5" cy="19.5" r="2.2" fill="#34d399" />
-                {/* Ala / Pulso de control */}
                 <path d="M18 25.5L22.5 25.5L24.5 22.5L27 28.5L29 25.5L32 25.5" stroke="#34d399" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
@@ -76,18 +71,12 @@
                   <stop offset="100%" stopColor="#38bdf8" />
                 </linearGradient>
               </defs>
-              {/* Anillo orbital de trazabilidad */}
               <path d="M12 44C8 37 8 26 14 18C20 10 31 7 41 10" stroke="url(#aviGradLg)" strokeWidth="1.6" strokeDasharray="3 3" strokeLinecap="round" opacity="0.65" />
-              {/* Cresta moderna */}
               <path d="M24 14C24 10.5 28 9 30.5 11.5C32.5 9 37 10.5 37 14.5" stroke="#fbbf24" strokeWidth="3.2" strokeLinecap="round" />
-              {/* Cuerpo / Cabeza estilizada */}
               <path d="M18 33C18 22.5 25.5 16.5 35 16.5C42 16.5 47 21.5 47 28.5C47 38.5 39.5 47.5 28.5 47.5C21.5 47.5 18 42 18 33Z" stroke="url(#aviGradLg)" strokeWidth="3.6" />
-              {/* Pico geométrico */}
               <path d="M47 25.5L55 29L47 32.5" fill="#fbbf24" />
-              {/* Ojo nodo inteligente */}
               <circle cx="38.5" cy="25.5" r="2.8" fill="#34d399" />
               <circle cx="38.5" cy="25.5" r="1" fill="#020617" />
-              {/* Ala con pulso de telemetría / pesaje */}
               <path d="M23 34.5H28.5L31.5 29.5L35 39.5L38 34.5H42.5" stroke="url(#wingGrad)" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
@@ -123,7 +112,7 @@
         razonSocial: 'LOS 7 POLLITOS INVERSIONES E.I.R.L.',
         bancos: [
           'BBVA CTA: 0011-0263-12-0100014514',
-          'CCI: 0011-263-000100014514-12',
+          'CCI: 0011-0263-000100014514-12',
           'INTERBANK CTA: 335-3003134332',
           'CCI: 00333500300313433277'
         ]
@@ -135,7 +124,7 @@
       { value: 'DESPACHO', label: '2. Despacho / Guía Pluma (Notas PDF)' },
       { value: 'CONTEO', label: '3. Conteo Físico & Merma Ante-Mortem' },
       { value: 'FAENADO', label: '4. Faenado & Merma Post-Mortem' },
-      { value: 'SUPERVISION', label: '5. Supervisión / Gerencia (Todos los módulos)' },
+      { value: 'SUPERVISION', label: '5. Administrador / Supervisión (Autoriza ediciones y ve todo)' },
     ];
 
     const PERMISOS_ROL = {
@@ -155,38 +144,8 @@
         pin: '1234',
         intentosFallidos: 0,
         bloqueado: false,
+        activo: true,
       }
-    ];
-
-    const GALPONES_INIT = [
-      { id: 'g-1', sector: 'San Francisco', numeroGalpon: 'Galpón Único', referencia: 'Sector San Francisco Km 18', empresaId: 'emp-1' },
-      { id: 'g-2', sector: 'Km 21', numeroGalpon: 'Galpón 1', referencia: 'Carretera Interoceánica Km 21 (Galponero Dino)', empresaId: 'emp-1' },
-      { id: 'g-3', sector: 'Km 21', numeroGalpon: 'Galpón 2', referencia: 'Carretera Interoceánica Km 21', empresaId: 'emp-1' },
-      { id: 'g-4', sector: 'Km 15', numeroGalpon: 'Galpón 1', referencia: 'Carretera Interoceánica Km 15 - Sector Norte', empresaId: 'emp-2' },
-      { id: 'g-5', sector: 'Km 26', numeroGalpon: 'Galpón 1', referencia: 'Sector Km 26 Gyoel', empresaId: 'emp-2' },
-    ];
-
-    const CHOFERES_INIT = [
-      { id: 'ch-1', nombre: 'Demetrio', dni: '41258963', telefono: '982 114 201', activo: true },
-      { id: 'ch-2', nombre: 'Sr. Peter', dni: '04852147', telefono: '982 441 890', activo: true },
-      { id: 'ch-3', nombre: 'Jesús', dni: '45896321', telefono: '974 552 310', activo: true },
-      { id: 'ch-4', nombre: 'Noé', dni: '47123698', telefono: '951 887 412', activo: true },
-    ];
-
-    const PLACAS_INIT = [
-      { id: 'v-1', placa: 'PLU-801', modelo: 'Hyundai HD', empresaId: 'emp-1', choferId: 'ch-1' },
-      { id: 'v-2', placa: 'X4F-945', modelo: 'Mitsubishi Canter', empresaId: 'emp-1', choferId: 'ch-2' },
-      { id: 'v-3', placa: 'AWN-913', modelo: 'Mitsubishi Fuso', empresaId: 'emp-2', choferId: 'ch-3' },
-      { id: 'v-4', placa: 'X2T-840', modelo: 'Mitsubishi Canter', empresaId: 'emp-2', choferId: 'ch-4' },
-    ];
-
-    const CLIENTES_INIT = [
-      { cod: '018', cliente: 'LUCERO DAMARIS ZEGARRA APAZA', apodo: 'Lucero Apaza', docIdentidad: '' },
-      { cod: '222', cliente: 'JHON CASAS', apodo: 'Jhon Casas', docIdentidad: '' },
-      { cod: '236', cliente: 'YULI MILAGROS', apodo: 'Yuli Milagros', docIdentidad: '' },
-      { cod: '075', cliente: 'TIENDA BETO // CASERITA', apodo: 'Tienda Beto', docIdentidad: '' },
-      { cod: '099', cliente: 'SANTOS', apodo: 'Santos', docIdentidad: '' },
-      { cod: '000', cliente: 'OFICINA CAMAL (MERMA / INTERNO)', apodo: 'OFICINA CAMAL', docIdentidad: '' },
     ];
 
     function generarPinAleatorio4() {
@@ -194,7 +153,7 @@
     }
 
     // =========================================================================
-    // GENERADOR PDF A5 "NOTA DE PEDIDO" (FORMATO TALONARIO CENTRO DE ACOPIO)
+    // GENERADOR PDF A5 "NOTA DE PEDIDO"
     // =========================================================================
     function descargarPDFNotaPedido(guia) {
       const { jsPDF } = window.jspdf;
@@ -211,7 +170,6 @@
       doc.setLineWidth(0.45);
       doc.rect(6, 6, 136, 198);
 
-      // Logo pollito + Centro de Acopio
       doc.setFillColor(...azulClaro);
       doc.circle(16.5, 16.5, 7.5, 'F');
       doc.setDrawColor(...azul);
@@ -234,7 +192,6 @@
       doc.text('VENTA DE POLLOS A PRECIOS ESPECIALES', 54, 17.8, { align: 'center' });
       doc.text('AL POR MAYOR Y MENOR', 54, 21.0, { align: 'center' });
 
-      // Nota de Pedido N°
       doc.setDrawColor(...azul);
       doc.setLineWidth(0.4);
       doc.rect(86, 8.5, 53, 16.5);
@@ -251,7 +208,6 @@
       doc.setFont('courier', 'bold');
       doc.text(`N°  ${String(guia.numero).padStart(6, '0')}`, 112.5, 21.5, { align: 'center' });
 
-      // Bloque Cliente, Vendedor, Fecha y Doc Identidad
       const yDatos = 27.5;
       doc.setDrawColor(...azul);
       doc.setLineWidth(0.35);
@@ -298,7 +254,6 @@
       doc.text((partesFecha[0] || '2026').slice(-2), 132.1, yDatos + 7.0, { align: 'center' });
       doc.text(guia.docIdentidad || '-', 118.5, yDatos + 15.0, { align: 'center' });
 
-      // Tabla 15 filas
       const yTabla = 46;
       const hHeader = 6.2;
       const hFila = 5.6;
@@ -424,6 +379,13 @@
         doc.text(lineaBanco, 77, yPie + 17.0 + idx * 3.5);
       });
 
+      if (guia.anulada) {
+        doc.setTextColor(...rojo);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(26);
+        doc.text('ANULADA', 74, 110, { align: 'center', angle: 35 });
+      }
+
       doc.setFontSize(5.2);
       doc.setTextColor(120, 130, 150);
       doc.text('Generado con Avimoa • Control Avícola', 138, 202.5, { align: 'right' });
@@ -435,14 +397,13 @@
     // APLICACIÓN PRINCIPAL: AVIMOA
     // =========================================================================
     function App() {
-      // Estado Usuarios con persistencia y sincronización Supabase
       const [usuarios, setUsuarios] = useState(() => {
         const guardado = localStorage.getItem('avimoa_usuarios');
         return guardado ? JSON.parse(guardado) : USUARIOS_INIT;
       });
 
       const [usuarioActivo, setUsuarioActivo] = useState(null);
-      const [tipoAccesoLogin, setTipoAccesoLogin] = useState('RESPONSABLE'); // 'RESPONSABLE' | 'DESARROLLADOR'
+      const [tipoAccesoLogin, setTipoAccesoLogin] = useState('RESPONSABLE');
       const [dniInput, setDniInput] = useState('');
       const [pinInput, setPinInput] = useState('');
       const [mostrarPin, setMostrarPin] = useState(false);
@@ -450,13 +411,13 @@
       const [cuentaBloqueadaMsg, setCuentaBloqueadaMsg] = useState(false);
 
       const [tabActiva, setTabActiva] = useState('KARDEX');
-      const [fechaOperativa, setFechaOperativa] = useState('2026-11-19');
+      const [fechaOperativa, setFechaOperativa] = useState(() => new Date().toISOString().slice(0, 10));
       const [online, setOnline] = useState(true);
       const [colaOffline, setColaOffline] = useState([]);
       const [toast, setToast] = useState(null);
 
       // Configuración Supabase / Tiempo Real
-      const [sbUrl, setSbUrl] = useState(() => localStorage.getItem('avimoa_sb_url') || '');
+      const [sbUrl, setSbUrl] = useState(() => localStorage.getItem('avimoa_sb_url') || 'https://lhkzagetgxgaxpjhugxy.supabase.co');
       const [sbKey, setSbKey] = useState(() => localStorage.getItem('avimoa_sb_key') || '');
       const [webhookUrl, setWebhookUrl] = useState(() => localStorage.getItem('avimoa_webhook_url') || '');
       const [sbConectado, setSbConectado] = useState(false);
@@ -468,30 +429,33 @@
         return guardado
           ? JSON.parse(guardado)
           : {
-              'PLUMÍFERO': { numero: 1601, inicializado: false },
-              'LOS 7 POLLITOS': { numero: 1432, inicializado: false },
+              'PLUMÍFERO': { numero: 1, inicializado: false },
+              'LOS 7 POLLITOS': { numero: 1, inicializado: false },
             };
       });
 
-      // Catálogos Maestros Editables
-      const [galpones, setGalpones] = useState(GALPONES_INIT);
-      const [placas, setPlacas] = useState(PLACAS_INIT);
-      const [choferes, setChoferes] = useState(CHOFERES_INIT);
-      const [clientes, setClientes] = useState(CLIENTES_INIT);
+      // Catálogos Maestros (Se filtra activo !== false en la UI para ocultar dados de baja)
+      const [galpones, setGalpones] = useState([]);
+      const [placas, setPlacas] = useState([]);
+      const [choferes, setChoferes] = useState([]);
+      const [clientes, setClientes] = useState([]);
 
       // Movimientos del Turno
       const [saldoInicial] = useState(0);
-      const [ingresos, setIngresos] = useState([
-        { id: 'i-1', sector: 'San Francisco', numeroGalpon: 'Galpón Único', empresa: 'PLUMÍFERO', placa: 'PLU-801', chofer: 'Demetrio', jabas: 200, aves: 1600, modo: 'DIGITAL' }
-      ]);
+      const [ingresos, setIngresos] = useState([]);
       const [guias, setGuias] = useState([]);
       const [mermasAnte, setMermasAnte] = useState([]);
       const [confirmacionPre, setConfirmacionPre] = useState(null);
       const [faenadoManana, setFaenadoManana] = useState(null);
       const [pesoFaenado, setPesoFaenado] = useState(0);
       const [mermaPost, setMermaPost] = useState(0);
+      const [detalleFaenadoObs, setDetalleFaenadoObs] = useState('Lote beneficio turno mañana');
       const [confirmacionPost, setConfirmacionPost] = useState(null);
       const [alertas, setAlertas] = useState([]);
+
+      // Autorizaciones remotas de edición (Conteo Físico & Faenado)
+      const [autorizaciones, setAutorizaciones] = useState([]);
+      const [pinAutorizadorInput, setPinAutorizadorInput] = useState('');
 
       const [mostrarNotas, setMostrarNotas] = useState(false);
       const [notasCliente, setNotasCliente] = useState([]);
@@ -501,6 +465,8 @@
         setToast({ msg, tipo });
         setTimeout(() => setToast(null), 4000);
       };
+
+      const esAdminOSupervisor = usuarioActivo && (usuarioActivo.rol === 'SUPERVISION' || usuarioActivo.rol === 'DESARROLLADOR');
 
       const guardarUsuariosLocalYNube = async (listaActualizada, usuarioModificado = null) => {
         setUsuarios(listaActualizada);
@@ -513,6 +479,7 @@
             pin: usuarioModificado.pin,
             intentos_fallidos: usuarioModificado.intentosFallidos,
             bloqueado: usuarioModificado.bloqueado,
+            activo: usuarioModificado.activo !== false,
             updated_at: new Date().toISOString(),
           });
         }
@@ -553,6 +520,7 @@
               pin: u.pin,
               intentosFallidos: u.intentos_fallidos || 0,
               bloqueado: !!u.bloqueado,
+              activo: u.activo !== false,
             }));
             setUsuarios(mapeados);
             localStorage.setItem('avimoa_usuarios', JSON.stringify(mapeados));
@@ -571,21 +539,27 @@
           await cargarDatosDelDiaDesdeNube(client, fechaOperativa);
 
           client
-            .channel('avimoa-realtime')
+            .channel('avimoa-realtime-v2')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'usuarios_app' }, async () => {
               const { data } = await client.from('usuarios_app').select('*');
               if (data) {
                 const m = data.map(u => ({
                   dni: u.dni, nombre: u.nombre, rol: u.rol, pin: u.pin,
-                  intentosFallidos: u.intentos_fallidos || 0, bloqueado: !!u.bloqueado
+                  intentosFallidos: u.intentos_fallidos || 0, bloqueado: !!u.bloqueado, activo: u.activo !== false
                 }));
                 setUsuarios(m);
                 localStorage.setItem('avimoa_usuarios', JSON.stringify(m));
               }
             })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'galpones' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'placas' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'choferes' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'clientes' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
             .on('postgres_changes', { event: '*', schema: 'public', table: 'movimientos_ingreso' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
             .on('postgres_changes', { event: '*', schema: 'public', table: 'guias_pluma' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
             .on('postgres_changes', { event: '*', schema: 'public', table: 'mermas_ante_mortem' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'cierres_turno' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'autorizaciones_edicion' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
             .on('postgres_changes', { event: '*', schema: 'public', table: 'correlativos_talonario' }, async () => {
               const { data } = await client.from('correlativos_talonario').select('*');
               if (data) {
@@ -605,7 +579,7 @@
 
       const cargarDatosDelDiaDesdeNube = async (client, fecha) => {
         try {
-          const [resIng, resGuias, resMermas, resGalp, resPlacas, resChof, resCli] = await Promise.all([
+          const [resIng, resGuias, resMermas, resGalp, resPlacas, resChof, resCli, resCierres, resAuth] = await Promise.all([
             client.from('movimientos_ingreso').select('*').eq('fecha_operativa', fecha),
             client.from('guias_pluma').select('*').eq('fecha_operativa', fecha),
             client.from('mermas_ante_mortem').select('*').eq('fecha_operativa', fecha),
@@ -613,43 +587,76 @@
             client.from('placas').select('*'),
             client.from('choferes').select('*'),
             client.from('clientes').select('*'),
+            client.from('cierres_turno').select('*').eq('fecha_operativa', fecha),
+            client.from('autorizaciones_edicion').select('*').eq('fecha_operativa', fecha),
           ]);
 
-          if (resIng.data) {
-            setIngresos(resIng.data.map(r => ({
-              id: r.id, sector: r.sector, numeroGalpon: r.numero_galpon, empresa: r.empresa,
-              placa: r.placa, chofer: r.chofer, jabas: r.jabas, aves: r.aves, modo: r.modo
-            })));
+          setIngresos((resIng.data || []).map(r => ({
+            id: r.id, sector: r.sector, numeroGalpon: r.numero_galpon, empresa: r.empresa,
+            placa: r.placa, chofer: r.chofer, jabas: r.jabas, aves: r.aves, modo: r.modo
+          })));
+
+          setGuias((resGuias.data || []).map(r => ({
+            id: r.id, fecha: r.fecha_operativa, empresa: r.empresa, numero: r.numero,
+            cod: r.cod_cliente, cliente: r.cliente, docIdentidad: r.doc_identidad,
+            vendedor: r.vendedor, detalle: r.detalle, precioKg: r.precio_kg,
+            jabas: r.jabas, aves: r.aves, peso: r.peso, totalSoles: r.total_soles,
+            filas: r.filas_json || [], anulada: !!r.anulada, motivoAnulacion: r.motivo_anulacion || ''
+          })));
+
+          setMermasAnte((resMermas.data || []).map(r => ({
+            id: r.id, placa: r.placa, aves: r.aves, peso: r.peso, motivo: r.motivo, conFoto: r.con_foto
+          })));
+
+          setGalpones((resGalp.data || []).map(r => ({
+            id: r.id, sector: r.sector, numeroGalpon: r.numero_galpon, referencia: r.referencia, empresaId: r.empresa_id, activo: r.activo !== false
+          })));
+
+          setPlacas((resPlacas.data || []).map(r => ({
+            id: r.id, placa: r.placa, modelo: r.modelo, empresaId: r.empresa_id, choferId: r.chofer_id, activo: r.activo !== false
+          })));
+
+          setChoferes((resChof.data || []).map(r => ({
+            id: r.id, nombre: r.nombre, dni: r.dni, telefono: r.telefono, activo: r.activo !== false
+          })));
+
+          setClientes((resCli.data || []).map(r => ({
+            cod: r.cod, cliente: r.cliente, apodo: r.apodo, docIdentidad: r.doc_identidad || '', activo: r.activo !== false
+          })));
+
+          const cierres = resCierres.data || [];
+          const cierrePre = cierres.find(c => c.tipo === 'CONTEO_PRE');
+          setConfirmacionPre(cierrePre ? {
+            teorico: cierrePre.teorico, fisico: cierrePre.fisico, diferencia: cierrePre.diferencia,
+            responsable: cierrePre.responsable, hora: cierrePre.hora
+          } : null);
+
+          const cierrePost = cierres.find(c => c.tipo === 'CIERRE_POST');
+          const regFaena = cierres.find(c => c.tipo === 'FAENADO_REG');
+          if (cierrePost) {
+            setFaenadoManana(cierrePost.faenado_aves ?? null);
+            setPesoFaenado(cierrePost.faenado_kg ?? 0);
+            setMermaPost(cierrePost.merma_post ?? 0);
+            if (cierrePost.detalle_obs) setDetalleFaenadoObs(cierrePost.detalle_obs);
+            setConfirmacionPost({
+              teorico: cierrePost.teorico, fisico: cierrePost.fisico, diferencia: cierrePost.diferencia,
+              responsable: cierrePost.responsable, hora: cierrePost.hora
+            });
+          } else if (regFaena) {
+            setFaenadoManana(regFaena.faenado_aves ?? null);
+            setPesoFaenado(regFaena.faenado_kg ?? 0);
+            setMermaPost(regFaena.merma_post ?? 0);
+            if (regFaena.detalle_obs) setDetalleFaenadoObs(regFaena.detalle_obs);
+            setConfirmacionPost(null);
+          } else {
+            setFaenadoManana(null);
+            setPesoFaenado(0);
+            setMermaPost(0);
+            setConfirmacionPost(null);
           }
-          if (resGuias.data) {
-            setGuias(resGuias.data.map(r => ({
-              id: r.id, fecha: r.fecha_operativa, empresa: r.empresa, numero: r.numero,
-              cod: r.cod_cliente, cliente: r.cliente, docIdentidad: r.doc_identidad,
-              vendedor: r.vendedor, detalle: r.detalle, precioKg: r.precio_kg,
-              jabas: r.jabas, aves: r.aves, peso: r.peso, totalSoles: r.total_soles,
-              filas: r.filas_json || []
-            })));
-          }
-          if (resMermas.data) {
-            setMermasAnte(resMermas.data.map(r => ({
-              id: r.id, placa: r.placa, aves: r.aves, peso: r.peso, motivo: r.motivo, conFoto: r.con_foto
-            })));
-          }
-          if (resGalp.data && resGalp.data.length > 0) {
-            setGalpones(resGalp.data.map(r => ({
-              id: r.id, sector: r.sector, numeroGalpon: r.numero_galpon, referencia: r.referencia, empresaId: r.empresa_id
-            })));
-          }
-          if (resPlacas.data && resPlacas.data.length > 0) {
-            setPlacas(resPlacas.data.map(r => ({
-              id: r.id, placa: r.placa, modelo: r.modelo, empresaId: r.empresa_id, choferId: r.chofer_id
-            })));
-          }
-          if (resChof.data && resChof.data.length > 0) setChoferes(resChof.data);
-          if (resCli.data && resCli.data.length > 0) {
-            setClientes(resCli.data.map(r => ({
-              cod: r.cod, cliente: r.cliente, apodo: r.apodo, docIdentidad: r.doc_identidad || ''
-            })));
+
+          if (!resAuth.error && resAuth.data) {
+            setAutorizaciones(resAuth.data);
           }
         } catch (e) {
           console.error(e);
@@ -659,6 +666,16 @@
       useEffect(() => {
         if (sbUrl && sbKey) conectarSupabase(sbUrl, sbKey, true);
       }, []);
+
+      // Respaldo de sincronización cada 5s cuando hay solicitudes de autorización pendientes
+      useEffect(() => {
+        const hayPendiente = autorizaciones.some(a => a.estado === 'PENDIENTE');
+        if (!hayPendiente || !supabaseRef.current) return;
+        const interval = setInterval(() => {
+          cargarDatosDelDiaDesdeNube(supabaseRef.current, fechaOperativa);
+        }, 5000);
+        return () => clearInterval(interval);
+      }, [autorizaciones, fechaOperativa]);
 
       const sincronizarOperacionNube = async (tabla, payload, conceptoOffline) => {
         if (!online || !supabaseRef.current) {
@@ -677,7 +694,70 @@
       };
 
       // =======================================================================
-      // VALIDACIÓN DE LOGIN CON DNI VISIBLE, PIN CON OJITO Y BLOQUEO AL 3ER INTENTO
+      // GESTIÓN DE SOLICITUDES DE AUTORIZACIÓN REMOTA (CONTEO Y FAENADO)
+      // =======================================================================
+      const solicitarAutorizacionEdicion = async (modulo, motivo) => {
+        if (!motivo || motivo.trim().length < 3) {
+          return notificar('Escribe el motivo por el cual necesitas editar este módulo.', 'err');
+        }
+        const nuevaSol = {
+          id: `auth-${modulo}-${Date.now()}`,
+          fecha_operativa: fechaOperativa,
+          modulo,
+          solicitado_por: usuarioActivo.nombre,
+          motivo: motivo.trim(),
+          estado: 'PENDIENTE',
+          autorizado_por: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+        setAutorizaciones(prev => [...prev.filter(a => !(a.modulo === modulo && a.estado === 'PENDIENTE')), nuevaSol]);
+        if (supabaseRef.current && online) {
+          await supabaseRef.current.from('autorizaciones_edicion').upsert(nuevaSol);
+        }
+        notificar(`Solicitud enviada al Administrador para editar ${modulo === 'CONTEO' ? 'Conteo Físico' : 'Faenado'}.`, 'warn');
+      };
+
+      const aprobarSolicitudConPin = async (solicitud) => {
+        if (!esAdminOSupervisor) return;
+        if (pinAutorizadorInput !== usuarioActivo.pin) {
+          return notificar('PIN de Administrador incorrecto. No se autorizó la edición.', 'err');
+        }
+        const aprobada = {
+          ...solicitud,
+          estado: 'APROBADA',
+          autorizado_por: usuarioActivo.nombre,
+          updated_at: new Date().toISOString(),
+        };
+        setAutorizaciones(prev => prev.map(a => a.id === solicitud.id ? aprobada : a));
+        setPinAutorizadorInput('');
+        if (supabaseRef.current && online) {
+          await supabaseRef.current.from('autorizaciones_edicion').upsert(aprobada);
+        }
+        notificar(`✅ Edición de ${solicitud.modulo === 'CONTEO' ? 'Conteo Físico' : 'Faenado'} AUTORIZADA.`);
+      };
+
+      const rechazarSolicitud = async (solicitud) => {
+        const rechazada = { ...solicitud, estado: 'RECHAZADA', updated_at: new Date().toISOString() };
+        setAutorizaciones(prev => prev.map(a => a.id === solicitud.id ? rechazada : a));
+        if (supabaseRef.current && online) {
+          await supabaseRef.current.from('autorizaciones_edicion').upsert(rechazada);
+        }
+        notificar('Solicitud rechazada.', 'warn');
+      };
+
+      const consumirAutorizacionEdicion = async (modulo) => {
+        const activa = autorizaciones.find(a => a.modulo === modulo && a.estado === 'APROBADA');
+        if (!activa) return;
+        const usada = { ...activa, estado: 'USADA', updated_at: new Date().toISOString() };
+        setAutorizaciones(prev => prev.map(a => a.id === activa.id ? usada : a));
+        if (supabaseRef.current && online) {
+          await supabaseRef.current.from('autorizaciones_edicion').upsert(usada);
+        }
+      };
+
+      // =======================================================================
+      // VALIDACIÓN DE LOGIN CON DNI VISIBLE, PIN CON OJITO, BLOQUEO Y BAJAS
       // =======================================================================
       const handleLoginSubmit = async (e) => {
         e.preventDefault();
@@ -694,7 +774,6 @@
           return;
         }
 
-        // Si hay conexión Supabase, consultar estado fresco del usuario en la nube
         let listaBase = [...usuarios];
         if (supabaseRef.current && online) {
           const { data } = await supabaseRef.current.from('usuarios_app').select('*').eq('dni', dniLimpio).maybeSingle();
@@ -707,6 +786,7 @@
               pin: data.pin,
               intentosFallidos: data.intentos_fallidos || 0,
               bloqueado: !!data.bloqueado,
+              activo: data.activo !== false,
             };
             if (idx >= 0) listaBase[idx] = objNube;
             else listaBase.push(objNube);
@@ -721,9 +801,14 @@
 
         const user = listaBase[userIdx];
 
-        // Verificar que coincida el tipo de acceso elegido (Desarrollador vs Responsable)
+        if (user.activo === false) {
+          setCuentaBloqueadaMsg(true);
+          setLoginError('⛔ Este usuario fue dado de baja y ya no tiene acceso al sistema.');
+          return;
+        }
+
         if (tipoAccesoLogin === 'DESARROLLADOR' && user.rol !== 'DESARROLLADOR') {
-          setLoginError('Este DNI corresponde a un Responsable de módulo. Cambie a la opción "Responsable".');
+          setLoginError('Este DNI corresponde a un Responsable/Administrador. Cambie a la opción "Responsable".');
           return;
         }
         if (tipoAccesoLogin === 'RESPONSABLE' && user.rol === 'DESARROLLADOR') {
@@ -731,14 +816,12 @@
           return;
         }
 
-        // Verificar bloqueo previo
         if (user.bloqueado) {
           setCuentaBloqueadaMsg(true);
           setLoginError('USUARIO BLOQUEADO tras 3 intentos fallidos. Solo el Desarrollador puede generar un nuevo PIN.');
           return;
         }
 
-        // Validar PIN
         if (user.pin !== pinInput) {
           const nuevosIntentos = (user.intentosFallidos || 0) + 1;
           const debeBloquear = user.rol !== 'DESARROLLADOR' && nuevosIntentos >= 3;
@@ -763,7 +846,6 @@
           return;
         }
 
-        // Acceso Exitoso: reiniciar contador de intentos fallidos
         const userLimpio = { ...user, intentosFallidos: 0, bloqueado: false };
         listaBase[userIdx] = userLimpio;
         await guardarUsuariosLocalYNube(listaBase, userLimpio);
@@ -781,8 +863,9 @@
       const nombreEmpresa = (empId) => EMPRESAS.find(e => e.id === empId)?.nombreCorto || 'CONSOLIDADO';
       const nombreChofer = (chId) => choferes.find(c => c.id === chId)?.nombre || 'Sin asignar';
 
+      // Cálculos Kardex (las guías anuladas NO restan aves)
       const totalIngresosAves = ingresos.reduce((a, b) => a + b.aves, 0);
-      const totalVentasVivoAves = guias.reduce((a, b) => a + b.aves, 0);
+      const totalVentasVivoAves = guias.filter(g => !g.anulada).reduce((a, b) => a + b.aves, 0);
       const totalMermaAnteAves = mermasAnte.reduce((a, b) => a + b.aves, 0);
       const saldoTeoricoPreFaenado = saldoInicial + totalIngresosAves - totalVentasVivoAves - totalMermaAnteAves;
       const basePreFaenado = confirmacionPre ? confirmacionPre.fisico : saldoTeoricoPreFaenado;
@@ -807,15 +890,14 @@
       };
 
       // =======================================================================
-      // PANTALLA DE INGRESO (LOGIN AVIMOA: RESPONSABLE VS DESARROLLADOR)
+      // PANTALLA DE INGRESO (LOGIN AVIMOA)
       // =======================================================================
       if (!usuarioActivo) {
-        const bloqueadosCount = usuarios.filter(u => u.bloqueado).length;
+        const bloqueadosCount = usuarios.filter(u => u.bloqueado && u.activo !== false).length;
 
         return (
           <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-slate-950">
             <div className="w-full max-w-md bg-slate-900/95 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-6">
-              {/* LOGO AVIMOA */}
               <div className="pt-1">
                 <LogoAvimoa />
                 <div className="flex justify-center mt-2">
@@ -830,7 +912,6 @@
                 </div>
               </div>
 
-              {/* SELECTOR DOS OPCIONES: RESPONSABLE vs DESARROLLADOR */}
               <div className="grid grid-cols-2 gap-1.5 bg-slate-950 p-1.5 rounded-2xl border border-slate-800">
                 <button
                   type="button"
@@ -845,7 +926,7 @@
                       : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  <span>👷</span> RESPONSABLE
+                  <span>👷</span> RESPONSABLE / ADMIN
                 </button>
                 <button
                   type="button"
@@ -869,11 +950,10 @@
                 </button>
               </div>
 
-              {/* FORMULARIO DNI VISIBLE + PIN CON OJITO */}
               <form onSubmit={handleLoginSubmit} className="space-y-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-300 uppercase mb-1.5">
-                    Número de DNI ({tipoAccesoLogin === 'DESARROLLADOR' ? 'Desarrollador' : 'Responsable de Módulo'})
+                    Número de DNI ({tipoAccesoLogin === 'DESARROLLADOR' ? 'Desarrollador' : 'Responsable / Administrador'})
                   </label>
                   <input
                     type="text"
@@ -972,7 +1052,12 @@
         { id: 'MAESTROS', label: '6. Usuarios, Maestros & Nube' },
       ].filter((t) => PERMISOS_ROL[usuarioActivo.rol].includes(t.id));
 
-      const usuariosBloqueados = usuarios.filter(u => u.bloqueado);
+      const usuariosBloqueados = usuarios.filter(u => u.bloqueado && u.activo !== false);
+      const solicitudesPendientes = autorizaciones.filter(a => a.estado === 'PENDIENTE');
+      const authConteoAprobada = autorizaciones.find(a => a.modulo === 'CONTEO' && a.estado === 'APROBADA');
+      const authConteoPendiente = autorizaciones.find(a => a.modulo === 'CONTEO' && a.estado === 'PENDIENTE');
+      const authFaenadoAprobada = autorizaciones.find(a => a.modulo === 'FAENADO' && a.estado === 'APROBADA');
+      const authFaenadoPendiente = autorizaciones.find(a => a.modulo === 'FAENADO' && a.estado === 'PENDIENTE');
 
       return (
         <div className="min-h-screen bg-slate-950 text-slate-100 pb-20">
@@ -986,7 +1071,7 @@
                     <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase ${
                       usuarioActivo.rol === 'DESARROLLADOR' ? 'bg-emerald-500 text-slate-950' : 'bg-amber-500 text-slate-950'
                     }`}>
-                      {usuarioActivo.rol}
+                      {usuarioActivo.rol === 'SUPERVISION' ? 'ADMINISTRADOR' : usuarioActivo.rol}
                     </span>
                     <span className="text-xs font-bold text-white">{usuarioActivo.nombre}</span>
                     {sbConectado && (
@@ -1068,6 +1153,54 @@
             </nav>
           </header>
 
+          {/* BANNER DE AUTORIZACIÓN EN VIVO PARA EL ADMINISTRADOR / SUPERVISIÓN */}
+          {esAdminOSupervisor && solicitudesPendientes.length > 0 && (
+            <div className="max-w-5xl mx-auto px-4 pt-4">
+              <div className="bg-amber-950/90 border-2 border-amber-400 rounded-3xl p-4 shadow-2xl space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full bg-amber-400 animate-ping"></span>
+                  <h3 className="text-sm font-black text-amber-300 uppercase">
+                    🔔 Solicitud de Autorización para Editar ({solicitudesPendientes.length})
+                  </h3>
+                </div>
+                {solicitudesPendientes.map(sol => (
+                  <div key={sol.id} className="bg-slate-950/90 border border-amber-500/40 rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-black text-white">
+                        Módulo: <span className="text-amber-400">{sol.modulo === 'CONTEO' ? '3. CONTEO FÍSICO' : '4. FAENADO / CIERRE'}</span> • Solicitado por: <span className="text-sky-300">{sol.solicitado_por}</span>
+                      </p>
+                      <p className="text-xs text-slate-300 mt-0.5">Motivo: <strong>&ldquo;{sol.motivo}&rdquo;</strong></p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="password"
+                        maxLength={4}
+                        value={pinAutorizadorInput}
+                        onChange={(e) => setPinAutorizadorInput(e.target.value.replace(/\D/g, ''))}
+                        placeholder="Tu PIN Admin"
+                        className="w-32 bg-slate-900 border border-amber-400 rounded-xl px-3 py-2 text-center font-mono text-sm font-black text-amber-300"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => aprobarSolicitudConPin(sol)}
+                        className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-4 py-2 rounded-xl text-xs"
+                      >
+                        ✅ AUTORIZAR
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => rechazarSolicitud(sol)}
+                        className="bg-rose-950 hover:bg-rose-900 border border-rose-600 text-rose-200 font-bold px-3 py-2 rounded-xl text-xs"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {toast && (
             <div className="fixed bottom-4 right-4 left-4 md:left-auto md:w-96 z-50">
               <div
@@ -1126,7 +1259,7 @@
                 <p className="text-2xl font-black text-emerald-400">+{totalIngresosAves}</p>
               </div>
               <div className="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl">
-                <p className="text-xs text-slate-400">Guías Pluma (Vivo)</p>
+                <p className="text-xs text-slate-400">Guías Pluma Activas</p>
                 <p className="text-2xl font-black text-sky-400">-{totalVentasVivoAves}</p>
               </div>
               <div className="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl">
@@ -1141,13 +1274,18 @@
 
             {tabActiva === 'INGRESOS' && (
               <ModuloIngresoGalpon
-                galpones={galpones}
-                placas={placas}
-                choferes={choferes}
+                galpones={galpones.filter(g => g.activo !== false)}
+                placas={placas.filter(p => p.activo !== false)}
+                choferes={choferes.filter(c => c.activo !== false)}
+                ingresos={ingresos}
                 nombreEmpresa={nombreEmpresa}
                 congelado={!!confirmacionPre}
-                onRegistrar={(nuevo) => {
-                  setIngresos([...ingresos, nuevo]);
+                onRegistrar={(nuevo, esEdicion) => {
+                  if (esEdicion) {
+                    setIngresos(ingresos.map(item => item.id === nuevo.id ? nuevo : item));
+                  } else {
+                    setIngresos([...ingresos, nuevo]);
+                  }
                   sincronizarOperacionNube(
                     'movimientos_ingreso',
                     {
@@ -1164,7 +1302,14 @@
                     },
                     `Ingreso ${nuevo.placa}: ${nuevo.aves} aves`
                   );
-                  notificar(`Ingreso registrado: +${nuevo.aves} aves (${nuevo.sector} - ${nuevo.numeroGalpon})`);
+                  notificar(esEdicion ? `Ingreso actualizado (${nuevo.aves} aves).` : `Ingreso registrado: +${nuevo.aves} aves (${nuevo.sector} - ${nuevo.numeroGalpon})`);
+                }}
+                onEliminarIngreso={async (idIng) => {
+                  setIngresos(ingresos.filter(i => i.id !== idIng));
+                  if (supabaseRef.current && online) {
+                    await supabaseRef.current.from('movimientos_ingreso').delete().eq('id', idIng);
+                  }
+                  notificar('Ingreso eliminado del turno.', 'warn');
                 }}
                 onError={(msg) => notificar(msg, 'err')}
               />
@@ -1173,7 +1318,7 @@
             {tabActiva === 'GUIAS' && (
               <ModuloGuiaPluma
                 fechaOperativa={fechaOperativa}
-                clientes={clientes}
+                clientes={clientes.filter(c => c.activo !== false)}
                 guias={guias}
                 correlativos={correlativos}
                 onGuardarInicioCorrelativo={(emp, num) => {
@@ -1181,10 +1326,14 @@
                   notificar(`Correlativo inicial de ${emp} guardado en N° ${String(num).padStart(6, '0')}.`);
                 }}
                 congelado={!!confirmacionPre}
-                onRegistrar={(guia, descargarAhora) => {
-                  setGuias([...guias, guia]);
-                  const siguiente = Number(guia.numero) + 1;
-                  actualizarCorrelativoEmpresa(guia.empresa, siguiente, true);
+                onRegistrar={(guia, descargarAhora, esEdicion) => {
+                  if (esEdicion) {
+                    setGuias(guias.map(g => g.id === guia.id ? guia : g));
+                  } else {
+                    setGuias([...guias, guia]);
+                    const siguiente = Number(guia.numero) + 1;
+                    actualizarCorrelativoEmpresa(guia.empresa, siguiente, true);
+                  }
 
                   sincronizarOperacionNube(
                     'guias_pluma',
@@ -1204,16 +1353,29 @@
                       peso: guia.peso,
                       total_soles: guia.totalSoles,
                       filas_json: guia.filas,
+                      anulada: !!guia.anulada,
+                      motivo_anulacion: guia.motivoAnulacion || null,
                     },
                     `Guía #${guia.numero}: ${guia.aves} aves`
                   );
 
                   if (descargarAhora) {
                     descargarPDFNotaPedido(guia);
-                    notificar(`Nota de Pedido N° ${guia.numero} emitida y PDF descargado.`);
+                    notificar(`Nota de Pedido N° ${guia.numero} ${esEdicion ? 'actualizada' : 'emitida'} y PDF descargado.`);
                   } else {
-                    notificar(`Nota de Pedido N° ${guia.numero} guardada (-${guia.aves} aves).`);
+                    notificar(`Nota de Pedido N° ${guia.numero} ${esEdicion ? 'actualizada' : 'guardada'} (-${guia.aves} aves).`);
                   }
+                }}
+                onAnularGuia={async (guiaObj, motivo) => {
+                  const anuladaObj = { ...guiaObj, anulada: true, motivoAnulacion: motivo };
+                  setGuias(guias.map(g => g.id === guiaObj.id ? anuladaObj : g));
+                  if (supabaseRef.current && online) {
+                    await supabaseRef.current.from('guias_pluma').update({
+                      anulada: true,
+                      motivo_anulacion: motivo,
+                    }).eq('id', guiaObj.id);
+                  }
+                  notificar(`🚫 Guía N° ${guiaObj.numero} ANULADA. Sus ${guiaObj.aves} aves regresaron al saldo disponible.`, 'warn');
                 }}
                 onError={(msg) => notificar(msg, 'err')}
               />
@@ -1221,12 +1383,15 @@
 
             {tabActiva === 'CONTEO_ANTE' && (
               <ModuloConteoAnteMortem
-                placas={placas}
+                placas={placas.filter(p => p.activo !== false)}
                 nombreChofer={nombreChofer}
                 mermasAnte={mermasAnte}
                 saldoTeorico={saldoTeoricoPreFaenado}
                 confirmacionPre={confirmacionPre}
                 usuario={usuarioActivo}
+                authAprobada={authConteoAprobada}
+                authPendiente={authConteoPendiente}
+                onSolicitarAuth={(motivo) => solicitarAutorizacionEdicion('CONTEO', motivo)}
                 onAgregarMerma={(m) => {
                   setMermasAnte([...mermasAnte, m]);
                   sincronizarOperacionNube(
@@ -1244,12 +1409,19 @@
                   );
                   notificar(`Merma Ante-Mortem registrada (-${m.aves} aves)`, 'warn');
                 }}
-                onConfirmarFisico={(acta) => {
+                onEliminarMerma={async (idMerma) => {
+                  setMermasAnte(mermasAnte.filter(m => m.id !== idMerma));
+                  if (supabaseRef.current && online) {
+                    await supabaseRef.current.from('mermas_ante_mortem').delete().eq('id', idMerma);
+                  }
+                  notificar('Merma Ante-Mortem eliminada.', 'warn');
+                }}
+                onConfirmarFisico={async (acta, fueEdicion) => {
                   setConfirmacionPre(acta);
                   if (acta.diferencia !== 0) {
                     setAlertas([...alertas, `NO-CUADRE CONTEO FÍSICO: Teórico ${acta.teorico} vs Físico ${acta.fisico} (Diff: ${acta.diferencia})`]);
                   }
-                  sincronizarOperacionNube(
+                  await sincronizarOperacionNube(
                     'cierres_turno',
                     {
                       id: `pre-${fechaOperativa}`,
@@ -1263,7 +1435,12 @@
                     },
                     'Acta Saldo Físico'
                   );
-                  notificar('Acta de Saldo Físico sellada con PIN. Turno congelado.');
+                  if (fueEdicion) {
+                    await consumirAutorizacionEdicion('CONTEO');
+                    notificar('Corrección de Conteo Físico guardada. Módulo bloqueado nuevamente.');
+                  } else {
+                    notificar('Acta de Saldo Físico sellada con PIN. Turno congelado.');
+                  }
                 }}
                 onError={(msg) => notificar(msg, 'err')}
               />
@@ -1273,22 +1450,51 @@
               <ModuloFaenadoPostMortem
                 basePreFaenado={basePreFaenado}
                 faenadoManana={faenadoManana}
+                pesoFaenado={pesoFaenado}
                 mermaPost={mermaPost}
+                detalleFaenadoObs={detalleFaenadoObs}
                 saldoTeoricoPost={saldoTeoricoPostFaenado}
                 confirmacionPost={confirmacionPost}
                 usuario={usuarioActivo}
-                onRegistrarFaenado={(f, pKg, mp) => {
+                authAprobada={authFaenadoAprobada}
+                authPendiente={authFaenadoPendiente}
+                onSolicitarAuth={(motivo) => solicitarAutorizacionEdicion('FAENADO', motivo)}
+                onRegistrarFaenado={async (f, pKg, mp, obsTxt, fueEdicion) => {
                   setFaenadoManana(f);
                   setPesoFaenado(pKg);
                   setMermaPost(mp);
-                  notificar(`Faenado registrado (${f} aves / ${pKg} kg) y Merma Post-Mortem (${mp} aves).`);
+                  setDetalleFaenadoObs(obsTxt);
+                  await sincronizarOperacionNube(
+                    'cierres_turno',
+                    {
+                      id: confirmacionPost ? `post-${fechaOperativa}` : `faena-${fechaOperativa}`,
+                      fecha_operativa: fechaOperativa,
+                      tipo: confirmacionPost ? 'CIERRE_POST' : 'FAENADO_REG',
+                      teorico: basePreFaenado - f - mp,
+                      fisico: confirmacionPost ? confirmacionPost.fisico : 0,
+                      diferencia: confirmacionPost ? confirmacionPost.fisico - (basePreFaenado - f - mp) : 0,
+                      faenado_aves: f,
+                      faenado_kg: pKg,
+                      merma_post: mp,
+                      detalle_obs: obsTxt,
+                      responsable: usuarioActivo.nombre,
+                      hora: new Date().toLocaleTimeString(),
+                    },
+                    'Registro Faenado'
+                  );
+                  if (fueEdicion) {
+                    await consumirAutorizacionEdicion('FAENADO');
+                    notificar('Corrección de Faenado guardada. Módulo bloqueado nuevamente.');
+                  } else {
+                    notificar(`Faenado registrado (${f} aves / ${pKg} kg) y Merma Post-Mortem (${mp} aves).`);
+                  }
                 }}
-                onConfirmarPost={(acta) => {
+                onConfirmarPost={async (acta, fueEdicion) => {
                   setConfirmacionPost(acta);
                   if (acta.diferencia !== 0) {
                     setAlertas([...alertas, `NO-CUADRE POST-FAENADO: Remanente Teórico ${acta.teorico} vs Físico ${acta.fisico}`]);
                   }
-                  sincronizarOperacionNube(
+                  await sincronizarOperacionNube(
                     'cierres_turno',
                     {
                       id: `post-${fechaOperativa}`,
@@ -1300,12 +1506,18 @@
                       faenado_aves: faenadoManana || 0,
                       faenado_kg: pesoFaenado || 0,
                       merma_post: mermaPost || 0,
+                      detalle_obs: detalleFaenadoObs,
                       responsable: acta.responsable,
                       hora: acta.hora,
                     },
                     'Cierre Post-Faenado'
                   );
-                  notificar('Cierre Post-Faenado confirmado con PIN.');
+                  if (fueEdicion) {
+                    await consumirAutorizacionEdicion('FAENADO');
+                    notificar('Corrección de Cierre Post-Faenado guardada. Módulo bloqueado nuevamente.');
+                  } else {
+                    notificar('Cierre Post-Faenado confirmado con PIN.');
+                  }
                 }}
                 onError={(msg) => notificar(msg, 'err')}
               />
@@ -1370,18 +1582,41 @@
     }
 
     // =========================================================================
-    // MÓDULO 1: INGRESO DE GALPÓN
+    // MÓDULO 1: INGRESO DE GALPÓN (CON EDITAR Y ELIMINAR)
     // =========================================================================
-    function ModuloIngresoGalpon({ galpones, placas, choferes, nombreEmpresa, congelado, onRegistrar, onError }) {
+    function ModuloIngresoGalpon({ galpones, placas, choferes, ingresos, nombreEmpresa, congelado, onRegistrar, onEliminarIngreso, onError }) {
       const sectoresUnicos = [...new Set(galpones.map(g => g.sector))];
-      const [sectorSel, setSectorSel] = useState(sectoresUnicos[0] || '');
-      const galponesDelSector = galpones.filter(g => g.sector === sectorSel);
-      const [galponId, setGalponId] = useState(galponesDelSector[0]?.id || '');
-
-      const [placaId, setPlacaId] = useState(placas[0]?.id || '');
-      const [choferId, setChoferId] = useState(placas[0]?.choferId || choferes[0]?.id || '');
+      const [editandoId, setEditandoId] = useState(null);
+      const [sectorSel, setSectorSel] = useState('');
+      const [galponId, setGalponId] = useState('');
+      const [placaId, setPlacaId] = useState('');
+      const [choferId, setChoferId] = useState('');
       const [jabas, setJabas] = useState(60);
       const [avesPorJaba, setAvesPorJaba] = useState(9);
+
+      useEffect(() => {
+        if (!editandoId && sectoresUnicos.length > 0 && (!sectorSel || !sectoresUnicos.includes(sectorSel))) {
+          const primerSector = sectoresUnicos[0];
+          setSectorSel(primerSector);
+          const gLista = galpones.filter(g => g.sector === primerSector);
+          setGalponId(gLista[0]?.id || '');
+        }
+      }, [galpones]);
+
+      useEffect(() => {
+        if (!editandoId && placas.length > 0 && (!placaId || !placas.some(p => p.id === placaId))) {
+          setPlacaId(placas[0].id);
+          if (placas[0].choferId) setChoferId(placas[0].choferId);
+        }
+      }, [placas]);
+
+      useEffect(() => {
+        if (!editandoId && choferes.length > 0 && (!choferId || !choferes.some(c => c.id === choferId))) {
+          setChoferId(choferes[0].id);
+        }
+      }, [choferes]);
+
+      const galponesDelSector = galpones.filter(g => g.sector === sectorSel);
 
       const handleCambioSector = (nuevoSector) => {
         setSectorSel(nuevoSector);
@@ -1392,18 +1627,38 @@
       const handleCambioPlaca = (nuevaPlacaId) => {
         setPlacaId(nuevaPlacaId);
         const veh = placas.find(p => p.id === nuevaPlacaId);
-        if (veh?.choferId) setChoferId(veh.choferId);
+        if (veh?.choferId && choferes.some(c => c.id === veh.choferId)) {
+          setChoferId(veh.choferId);
+        }
+      };
+
+      const cargarIngresoParaEditar = (ing) => {
+        if (congelado) return onError('Turno congelado por Conteo Físico.');
+        setEditandoId(ing.id);
+        setSectorSel(ing.sector);
+        const gMatch = galpones.find(g => g.sector === ing.sector && g.numeroGalpon === ing.numeroGalpon);
+        if (gMatch) setGalponId(gMatch.id);
+        const pMatch = placas.find(p => p.placa === ing.placa);
+        if (pMatch) setPlacaId(pMatch.id);
+        const cMatch = choferes.find(c => c.nombre === ing.chofer);
+        if (cMatch) setChoferId(cMatch.id);
+        setJabas(ing.jabas);
+        setAvesPorJaba(ing.jabas > 0 ? Math.round(ing.aves / ing.jabas) : 9);
       };
 
       const galponObj = galpones.find(g => g.id === galponId) || galponesDelSector[0];
       const placaObj = placas.find(p => p.id === placaId);
       const choferObj = choferes.find(c => c.id === choferId);
 
+      const faltanCatalogos = galpones.length === 0 || placas.length === 0 || choferes.length === 0;
+
       const handleGuardar = (e) => {
         e.preventDefault();
-        if (congelado) return onError('Turno congelado por Conteo Físico. Solicite permiso a Supervisión.');
+        if (congelado) return onError('Turno congelado por Conteo Físico.');
+        if (faltanCatalogos) return onError('Primero registra tus Galpones, Placas y Choferes activos en el Módulo 6.');
+        const esEd = !!editandoId;
         onRegistrar({
-          id: 'ing-' + Date.now(),
+          id: editandoId || ('ing-' + Date.now()),
           sector: galponObj?.sector || sectorSel,
           numeroGalpon: galponObj?.numeroGalpon || 'Galpón 1',
           empresa: nombreEmpresa(galponObj?.empresaId || placaObj?.empresaId),
@@ -1412,139 +1667,208 @@
           jabas: Number(jabas),
           aves: Number(jabas) * Number(avesPorJaba),
           modo: 'DIGITAL',
-        });
+        }, esEd);
+        setEditandoId(null);
       };
 
       return (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-5">
-          <div>
-            <span className="text-xs font-extrabold text-amber-400 uppercase">Módulo 1 • Traslado de Granja</span>
-            <h2 className="text-lg font-black text-white">Ingreso de Pollo Vivo (Galpón → Acopio)</h2>
-            <p className="text-xs text-slate-400">Selecciona Dirección, N° de Galpón, Placa y Chofer asignado.</p>
+        <div className="space-y-6">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-5">
+            <div className="flex justify-between items-start gap-2">
+              <div>
+                <span className="text-xs font-extrabold text-amber-400 uppercase">Módulo 1 • Traslado de Granja</span>
+                <h2 className="text-lg font-black text-white">
+                  {editandoId ? '✏️ Editando Ingreso de Pollo Vivo' : 'Ingreso de Pollo Vivo (Galpón → Acopio)'}
+                </h2>
+              </div>
+              {editandoId && (
+                <button
+                  type="button"
+                  onClick={() => setEditandoId(null)}
+                  className="bg-slate-800 border border-slate-600 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-300"
+                >
+                  Cancelar Edición ✕
+                </button>
+              )}
+            </div>
+
+            {faltanCatalogos && (
+              <div className="bg-amber-950/60 border border-amber-500/60 p-3.5 rounded-2xl text-xs text-amber-200 font-bold">
+                ⚠️ Faltan catálogos activos (Galpones: {galpones.length}, Placas: {placas.length}, Choferes: {choferes.length}). Ve a <strong>6. Usuarios, Maestros & Nube</strong> para registrar tus datos reales.
+              </div>
+            )}
+
+            <form onSubmit={handleGuardar} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">1. Dirección / Sector de Granja</label>
+                  <select
+                    value={sectorSel}
+                    onChange={(e) => handleCambioSector(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold"
+                  >
+                    {sectoresUnicos.length === 0 && <option value="">— Sin sectores registrados —</option>}
+                    {sectoresUnicos.map((sec) => (
+                      <option key={sec} value={sec}>{sec}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">2. Número de Galpón (Deduce Empresa)</label>
+                  <select
+                    value={galponId}
+                    onChange={(e) => setGalponId(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold text-amber-300"
+                  >
+                    {galponesDelSector.length === 0 && <option value="">— Sin galpones activos —</option>}
+                    {galponesDelSector.map((g) => (
+                      <option key={g.id} value={g.id}>
+                        {g.numeroGalpon} — [{nombreEmpresa(g.empresaId)}]
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">3. Placa del Vehículo</label>
+                  <select
+                    value={placaId}
+                    onChange={(e) => handleCambioPlaca(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold"
+                  >
+                    {placas.length === 0 && <option value="">— Sin placas activas —</option>}
+                    {placas.map((v) => (
+                      <option key={v.id} value={v.id}>
+                        {v.placa} ({v.modelo}) — [{nombreEmpresa(v.empresaId)}]
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">4. Chofer del Viaje</label>
+                  <select
+                    value={choferId}
+                    onChange={(e) => setChoferId(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold"
+                  >
+                    {choferes.length === 0 && <option value="">— Sin choferes activos —</option>}
+                    {choferes.map((ch) => (
+                      <option key={ch.id} value={ch.id}>
+                        {ch.nombre} {ch.dni ? `(DNI: ${ch.dni})` : ''}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3 bg-slate-950 p-4 rounded-2xl border border-slate-800">
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">Cant. Jabas</label>
+                  <input
+                    type="number"
+                    min={1}
+                    value={jabas}
+                    onChange={(e) => setJabas(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">Pollos x Jaba</label>
+                  <input
+                    type="number"
+                    min={1}
+                    value={avesPorJaba}
+                    onChange={(e) => setAvesPorJaba(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg"
+                  />
+                </div>
+                <div className="flex flex-col justify-center items-center">
+                  <span className="text-xs text-slate-400">Total Ingreso</span>
+                  <span className="text-2xl font-black text-emerald-400">+{Number(jabas) * Number(avesPorJaba)}</span>
+                </div>
+              </div>
+
+              <button type="submit" className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 rounded-2xl font-black text-base">
+                {editandoId ? '💾 GUARDAR CAMBIOS DE INGRESO' : 'REGISTRAR INGRESO DE CARRO'}
+              </button>
+            </form>
           </div>
 
-          <form onSubmit={handleGuardar} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs text-slate-400 mb-1">1. Dirección / Sector de Granja</label>
-                <select
-                  value={sectorSel}
-                  onChange={(e) => handleCambioSector(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold"
-                >
-                  {sectoresUnicos.map((sec) => (
-                    <option key={sec} value={sec}>{sec}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs text-slate-400 mb-1">2. Número de Galpón (Deduce Empresa)</label>
-                <select
-                  value={galponId}
-                  onChange={(e) => setGalponId(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold text-amber-300"
-                >
-                  {galponesDelSector.map((g) => (
-                    <option key={g.id} value={g.id}>
-                      {g.numeroGalpon} — [{nombreEmpresa(g.empresaId)}]
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs text-slate-400 mb-1">3. Placa del Vehículo</label>
-                <select
-                  value={placaId}
-                  onChange={(e) => handleCambioPlaca(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold"
-                >
-                  {placas.map((v) => (
-                    <option key={v.id} value={v.id}>
-                      {v.placa} ({v.modelo}) — [{nombreEmpresa(v.empresaId)}]
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs text-slate-400 mb-1">4. Chofer del Viaje</label>
-                <select
-                  value={choferId}
-                  onChange={(e) => setChoferId(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold"
-                >
-                  {choferes.map((ch) => (
-                    <option key={ch.id} value={ch.id}>
-                      {ch.nombre} {ch.dni ? `(DNI: ${ch.dni})` : ''}
-                    </option>
-                  ))}
-                </select>
+          {ingresos.length > 0 && (
+            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-3">
+              <h3 className="text-sm font-black text-white uppercase">Ingresos Registrados Hoy ({ingresos.length})</h3>
+              <div className="divide-y divide-slate-800">
+                {ingresos.map((ing) => (
+                  <div key={ing.id} className="py-3 flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <p className="text-sm font-bold text-white">
+                        {ing.sector} — <span className="text-amber-400">{ing.numeroGalpon}</span> ({ing.empresa})
+                      </p>
+                      <p className="text-xs text-slate-400">
+                        Placa: <strong className="text-slate-200">{ing.placa}</strong> • Chofer: {ing.chofer} • <strong className="text-emerald-400">+{ing.aves} aves</strong> ({ing.jabas} jabas)
+                      </p>
+                    </div>
+                    {!congelado && (
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => cargarIngresoParaEditar(ing)}
+                          className="bg-sky-950 hover:bg-sky-900 border border-sky-700 text-sky-300 px-3 py-1.5 rounded-xl text-xs font-extrabold"
+                        >
+                          ✏️ Editar
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onEliminarIngreso(ing.id)}
+                          className="bg-rose-950 hover:bg-rose-900 border border-rose-700 text-rose-300 px-3 py-1.5 rounded-xl text-xs font-extrabold"
+                        >
+                          🗑️ Eliminar
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
-
-            <div className="grid grid-cols-3 gap-3 bg-slate-950 p-4 rounded-2xl border border-slate-800">
-              <div>
-                <label className="block text-xs text-slate-400 mb-1">Cant. Jabas</label>
-                <input
-                  type="number"
-                  min={1}
-                  value={jabas}
-                  onChange={(e) => setJabas(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg"
-                />
-              </div>
-              <div>
-                <label className="block text-xs text-slate-400 mb-1">Pollos x Jaba</label>
-                <input
-                  type="number"
-                  min={1}
-                  value={avesPorJaba}
-                  onChange={(e) => setAvesPorJaba(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg"
-                />
-              </div>
-              <div className="flex flex-col justify-center items-center">
-                <span className="text-xs text-slate-400">Total Ingreso</span>
-                <span className="text-2xl font-black text-emerald-400">+{Number(jabas) * Number(avesPorJaba)}</span>
-              </div>
-            </div>
-
-            <button type="submit" className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 rounded-2xl font-black text-base">
-              REGISTRAR INGRESO DE CARRO
-            </button>
-          </form>
+          )}
         </div>
       );
     }
 
     // =========================================================================
-    // MÓDULO 2: GUÍA PLUMA / NOTA DE PEDIDO (CORRELATIVO + PDF DESCARGABLE)
+    // MÓDULO 2: GUÍA PLUMA / NOTA DE PEDIDO (CON EDITAR Y ANULAR)
     // =========================================================================
-    function ModuloGuiaPluma({ fechaOperativa, clientes, guias, correlativos, onGuardarInicioCorrelativo, congelado, onRegistrar, onError }) {
+    function ModuloGuiaPluma({ fechaOperativa, clientes, guias, correlativos, onGuardarInicioCorrelativo, congelado, onRegistrar, onAnularGuia, onError }) {
       const [empresa, setEmpresa] = useState('PLUMÍFERO');
+      const [guiaEditando, setGuiaEditando] = useState(null);
+      const [anulandoGuiaId, setAnulandoGuiaId] = useState(null);
+      const [motivoAnulacion, setMotivoAnulacion] = useState('');
+
       const corrInfo = correlativos[empresa] || { numero: 1, inicializado: false };
-      const numeroFormateado = String(corrInfo.numero).padStart(6, '0');
+      const numeroFormateado = guiaEditando ? guiaEditando.numero : String(corrInfo.numero).padStart(6, '0');
 
       const [editandoCorrelativo, setEditandoCorrelativo] = useState(!corrInfo.inicializado);
       const [inputInicioCorr, setInputInicioCorr] = useState(String(corrInfo.numero));
 
       useEffect(() => {
-        const info = correlativos[empresa] || { numero: 1, inicializado: false };
-        setInputInicioCorr(String(info.numero));
-        setEditandoCorrelativo(!info.inicializado);
-      }, [empresa, correlativos]);
+        if (!guiaEditando) {
+          const info = correlativos[empresa] || { numero: 1, inicializado: false };
+          setInputInicioCorr(String(info.numero));
+          setEditandoCorrelativo(!info.inicializado);
+        }
+      }, [empresa, correlativos, guiaEditando]);
 
       const [busqueda, setBusqueda] = useState('');
-      const [clienteSel, setClienteSel] = useState(clientes[1] || clientes[0]);
+      const [clienteSel, setClienteSel] = useState(null);
       const [clienteLibre, setClienteLibre] = useState('');
       const [docIdentidad, setDocIdentidad] = useState('');
-      const [vendedor, setVendedor] = useState('Ferci');
+      const [vendedor, setVendedor] = useState('');
       const [detalleGeneral, setDetalleGeneral] = useState('Pollo Vivo');
       const [precioKg, setPrecioKg] = useState('');
 
-      const [filas, setFilas] = useState([{ peso: 141, jabas: 5, avesJaba: 8, dscto: 0 }]);
+      const [filas, setFilas] = useState([{ peso: '', jabas: 5, avesJaba: 8, dscto: 0 }]);
 
       const filtrados = busqueda.trim()
         ? clientes.filter(c =>
@@ -1561,9 +1885,42 @@
       const pKg = Number(precioKg || 0);
       const totalSoles = pKg > 0 ? Math.max(0, totalPeso * pKg - totalDscto) : 0;
 
+      const iniciarEdicionGuia = (g) => {
+        if (congelado) return onError('Turno congelado por Conteo Físico.');
+        setGuiaEditando(g);
+        setEmpresa(g.empresa);
+        if (g.cod && g.cod !== '000') {
+          const matchCli = clientes.find(c => c.cod === g.cod);
+          setClienteSel(matchCli || { cod: g.cod, apodo: g.cliente, cliente: g.cliente });
+          setClienteLibre('');
+        } else {
+          setClienteSel(null);
+          setClienteLibre(g.cliente);
+        }
+        setDocIdentidad(g.docIdentidad || '');
+        setVendedor(g.vendedor || '');
+        setDetalleGeneral(g.detalle || 'Pollo Vivo');
+        setPrecioKg(g.precioKg > 0 ? String(g.precioKg) : '');
+        setFilas(
+          g.filas && g.filas.length > 0
+            ? g.filas.map(f => ({ peso: f.peso, jabas: f.jabas, avesJaba: f.avesJaba, dscto: f.dscto || 0 }))
+            : [{ peso: g.peso, jabas: g.jabas, avesJaba: g.jabas > 0 ? Math.round(g.aves / g.jabas) : 8, dscto: 0 }]
+        );
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      const cancelarEdicionGuia = () => {
+        setGuiaEditando(null);
+        setClienteLibre('');
+        setClienteSel(null);
+        setDocIdentidad('');
+        setPrecioKg('');
+        setFilas([{ peso: '', jabas: 5, avesJaba: 8, dscto: 0 }]);
+      };
+
       const emitirGuia = (descargarPdfAhora) => {
         if (congelado) return onError('Turno congelado por Conteo Físico.');
-        if (!corrInfo.inicializado) {
+        if (!guiaEditando && !corrInfo.inicializado) {
           setEditandoCorrelativo(true);
           return onError('Primero fija y guarda el N° de inicio de correlativo del talonario.');
         }
@@ -1571,8 +1928,9 @@
         if (!nombreDestinatario) return onError('Seleccione un cliente o escriba el destinatario.');
         if (totalAves <= 0 && totalPeso <= 0) return onError('Ingrese al menos una fila de pesada o aves.');
 
+        const esEdicion = !!guiaEditando;
         const nuevaGuia = {
-          id: 'g-' + Date.now(),
+          id: guiaEditando ? guiaEditando.id : ('g-' + Date.now()),
           fecha: fechaOperativa,
           empresa,
           numero: numeroFormateado,
@@ -1586,6 +1944,8 @@
           aves: totalAves,
           peso: totalPeso,
           totalSoles,
+          anulada: false,
+          motivoAnulacion: '',
           filas: filas.map(f => ({
             peso: Number(f.peso || 0),
             jabas: Number(f.jabas || 0),
@@ -1595,18 +1955,21 @@
           }))
         };
 
-        onRegistrar(nuevaGuia, descargarPdfAhora);
+        onRegistrar(nuevaGuia, descargarPdfAhora, esEdicion);
+        setGuiaEditando(null);
         setClienteLibre('');
         setFilas([{ peso: '', jabas: 5, avesJaba: 8, dscto: 0 }]);
       };
 
       return (
         <div className="space-y-6">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-5">
+          <div className={`bg-slate-900 border ${guiaEditando ? 'border-amber-400' : 'border-slate-800'} rounded-3xl p-5 space-y-5`}>
             <div className="flex flex-wrap justify-between items-start gap-3">
               <div>
                 <span className="text-xs font-extrabold text-sky-400 uppercase">Módulo 2 • Nota de Pedido / Guía Pluma</span>
-                <h2 className="text-lg font-black text-white">Emisión de Guía Pluma y PDF para Cliente</h2>
+                <h2 className="text-lg font-black text-white">
+                  {guiaEditando ? `✏️ Editando Nota de Pedido N° ${guiaEditando.numero}` : 'Emisión de Guía Pluma y PDF para Cliente'}
+                </h2>
                 <p className="text-xs text-slate-400">Replica el talonario físico (hasta 15 pesadas) con cuentas bancarias por empresa.</p>
               </div>
 
@@ -1615,17 +1978,27 @@
                   <p className="text-[10px] text-slate-400 uppercase font-bold">Nota de Pedido ({empresa})</p>
                   <p className="text-lg font-mono font-black text-rose-400">N° {numeroFormateado}</p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setEditandoCorrelativo(!editandoCorrelativo)}
-                  className="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500 text-amber-300 px-2.5 py-1.5 rounded-xl text-xs font-extrabold"
-                >
-                  ⚙️ {corrInfo.inicializado ? 'Ajustar Correlativo' : 'Iniciar Correlativo'}
-                </button>
+                {guiaEditando ? (
+                  <button
+                    type="button"
+                    onClick={cancelarEdicionGuia}
+                    className="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-extrabold"
+                  >
+                    Cancelar ✕
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setEditandoCorrelativo(!editandoCorrelativo)}
+                    className="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500 text-amber-300 px-2.5 py-1.5 rounded-xl text-xs font-extrabold"
+                  >
+                    ⚙️ {corrInfo.inicializado ? 'Ajustar Correlativo' : 'Iniciar Correlativo'}
+                  </button>
+                )}
               </div>
             </div>
 
-            {editandoCorrelativo && (
+            {editandoCorrelativo && !guiaEditando && (
               <div className="bg-amber-950/40 border border-amber-500/60 p-4 rounded-2xl flex flex-wrap items-end justify-between gap-3">
                 <div className="space-y-1 flex-1 min-w-[200px]">
                   <p className="text-xs font-black text-amber-300 uppercase">
@@ -1665,6 +2038,7 @@
                   <label className="block text-xs text-slate-400 mb-1">Talonario Empresa (Cuentas PDF)</label>
                   <select
                     value={empresa}
+                    disabled={!!guiaEditando}
                     onChange={(e) => setEmpresa(e.target.value)}
                     className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold text-amber-300"
                   >
@@ -1678,7 +2052,7 @@
                     type="text"
                     value={vendedor}
                     onChange={(e) => setVendedor(e.target.value)}
-                    placeholder="Ej. Ferci"
+                    placeholder="Nombre del vendedor"
                     className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold"
                   />
                 </div>
@@ -1696,12 +2070,12 @@
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-slate-400 mb-1">Buscar Cliente Registrado (Código o Apodo)</label>
+                  <label className="block text-xs text-slate-400 mb-1">Buscar Cliente Activo (Código o Apodo)</label>
                   <input
                     type="text"
                     value={busqueda}
                     onChange={(e) => { setBusqueda(e.target.value); setClienteLibre(''); }}
-                    placeholder={clienteSel ? `Seleccionado: [${clienteSel.cod}] ${clienteSel.apodo}` : 'Escriba código ej. 222 o Jhon...'}
+                    placeholder={clienteSel ? `Seleccionado: [${clienteSel.cod}] ${clienteSel.apodo}` : 'Escriba código o nombre...'}
                     className="w-full bg-slate-800 border border-sky-500/50 rounded-xl p-3 text-sm"
                   />
                   {filtrados.length > 0 && (
@@ -1730,7 +2104,7 @@
                   <input
                     type="text"
                     value={clienteLibre}
-                    onChange={(e) => setClienteLibre(e.target.value)}
+                    onChange={(e) => { setClienteLibre(e.target.value); setClienteSel(null); }}
                     placeholder="Ej. OFICINA CAMAL o cliente nuevo..."
                     className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm"
                   />
@@ -1804,8 +2178,17 @@
                       placeholder="0"
                       className="col-span-2 bg-slate-800 border border-slate-700 rounded-xl p-2 text-center font-mono text-xs"
                     />
-                    <div className="col-span-2 text-center font-mono text-xs font-black text-sky-400">
-                      {Number(f.jabas || 0) * Number(f.avesJaba || 0)}
+                    <div className="col-span-2 text-center font-mono text-xs font-black text-sky-400 flex items-center justify-center gap-1">
+                      <span>{Number(f.jabas || 0) * Number(f.avesJaba || 0)}</span>
+                      {filas.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => setFilas(filas.filter((_, idx) => idx !== i))}
+                          className="text-rose-400 hover:text-rose-300 ml-1"
+                        >
+                          ✕
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -1837,14 +2220,14 @@
                   onClick={() => emitirGuia(true)}
                   className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-2xl font-black text-sm shadow-lg"
                 >
-                  📄 GUARDAR Y DESCARGAR PDF (CLIENTE)
+                  {guiaEditando ? '💾 ACTUALIZAR GUÍA Y DESCARGAR PDF' : '📄 GUARDAR Y DESCARGAR PDF (CLIENTE)'}
                 </button>
                 <button
                   type="button"
                   onClick={() => emitirGuia(false)}
                   className="w-full py-4 bg-sky-600 hover:bg-sky-500 text-white rounded-2xl font-black text-sm"
                 >
-                  ✓ SOLO GUARDAR GUÍA EN SISTEMA
+                  {guiaEditando ? '✓ SOLO ACTUALIZAR GUÍA' : '✓ SOLO GUARDAR GUÍA EN SISTEMA'}
                 </button>
               </div>
             </div>
@@ -1857,24 +2240,89 @@
             ) : (
               <div className="divide-y divide-slate-800">
                 {guias.map((g) => (
-                  <div key={g.id} className="py-3 flex flex-wrap items-center justify-between gap-2">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono font-black text-rose-400 text-sm">N° {String(g.numero).padStart(6, '0')}</span>
-                        <span className="text-xs bg-slate-800 px-2 py-0.5 rounded font-bold text-amber-300">{g.empresa}</span>
-                        <span className="text-sm font-bold text-white">{g.cliente}</span>
+                  <div key={g.id} className={`py-3 space-y-2 ${g.anulada ? 'opacity-70' : ''}`}>
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className={`font-mono font-black text-sm ${g.anulada ? 'line-through text-slate-500' : 'text-rose-400'}`}>
+                            N° {String(g.numero).padStart(6, '0')}
+                          </span>
+                          <span className="text-xs bg-slate-800 px-2 py-0.5 rounded font-bold text-amber-300">{g.empresa}</span>
+                          <span className={`text-sm font-bold ${g.anulada ? 'line-through text-slate-400' : 'text-white'}`}>{g.cliente}</span>
+                          {g.anulada && (
+                            <span className="bg-rose-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full">
+                              🚫 ANULADA
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          {g.jabas} jabas • {g.aves} aves • {Number(g.peso).toFixed(1)} kg {g.vendedor ? `• Vendedor: ${g.vendedor}` : ''}
+                          {g.anulada && g.motivoAnulacion ? ` • Motivo: "${g.motivoAnulacion}"` : ''}
+                        </p>
                       </div>
-                      <p className="text-xs text-slate-400 mt-0.5">
-                        {g.jabas} jabas • {g.aves} aves • {Number(g.peso).toFixed(1)} kg {g.vendedor ? `• Vendedor: ${g.vendedor}` : ''}
-                      </p>
+
+                      <div className="flex flex-wrap items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => descargarPDFNotaPedido(g)}
+                          className="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-xl text-xs font-extrabold"
+                        >
+                          ⬇ PDF
+                        </button>
+                        {!g.anulada && !congelado && (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => iniciarEdicionGuia(g)}
+                              className="bg-sky-950 hover:bg-sky-900 border border-sky-700 text-sky-300 px-3 py-1.5 rounded-xl text-xs font-extrabold"
+                            >
+                              ✏️ Editar
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setAnulandoGuiaId(g.id);
+                                setMotivoAnulacion('');
+                              }}
+                              className="bg-rose-950 hover:bg-rose-900 border border-rose-700 text-rose-300 px-3 py-1.5 rounded-xl text-xs font-extrabold"
+                            >
+                              🚫 Anular
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => descargarPDFNotaPedido(g)}
-                      className="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-xl text-xs font-extrabold"
-                    >
-                      ⬇ Descargar PDF
-                    </button>
+
+                    {anulandoGuiaId === g.id && (
+                      <div className="bg-rose-950/60 border border-rose-500 p-3 rounded-2xl flex flex-wrap items-center gap-2">
+                        <input
+                          type="text"
+                          value={motivoAnulacion}
+                          onChange={(e) => setMotivoAnulacion(e.target.value)}
+                          placeholder="Escribe el motivo de anulación (obligatorio)..."
+                          className="flex-1 min-w-[200px] bg-slate-900 border border-rose-400 rounded-xl px-3 py-2 text-xs text-white"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (motivoAnulacion.trim().length < 3) return onError('Indica el motivo para anular la guía.');
+                            onAnularGuia(g, motivoAnulacion.trim());
+                            setAnulandoGuiaId(null);
+                            setMotivoAnulacion('');
+                          }}
+                          className="bg-rose-600 hover:bg-rose-500 text-white font-black px-3.5 py-2 rounded-xl text-xs"
+                        >
+                          CONFIRMAR ANULACIÓN
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setAnulandoGuiaId(null)}
+                          className="bg-slate-800 text-slate-300 px-3 py-2 rounded-xl text-xs font-bold"
+                        >
+                          Cancelar
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -1885,29 +2333,47 @@
     }
 
     // =========================================================================
-    // MÓDULO 3: CONTEO Y MERMA ANTE-MORTEM
+    // MÓDULO 3: CONTEO Y MERMA ANTE-MORTEM (BLOQUEADO HASTA AUTORIZACIÓN ADMIN)
     // =========================================================================
-    function ModuloConteoAnteMortem({ placas, nombreChofer, mermasAnte, saldoTeorico, confirmacionPre, usuario, onAgregarMerma, onConfirmarFisico, onError }) {
+    function ModuloConteoAnteMortem({
+      placas, nombreChofer, mermasAnte, saldoTeorico, confirmacionPre, usuario,
+      authAprobada, authPendiente, onSolicitarAuth, onAgregarMerma, onEliminarMerma, onConfirmarFisico, onError
+    }) {
       const [avesMuertas, setAvesMuertas] = useState(1);
       const [pesoMerma, setPesoMerma] = useState(2.8);
-      const [placa, setPlaca] = useState(placas[0]?.placa || '');
+      const [placa, setPlaca] = useState('');
       const [fotoCapturada, setFotoCapturada] = useState(false);
+
+      const [solicitandoAuthUI, setSolicitandoAuthUI] = useState(false);
+      const [motivoSolAuth, setMotivoSolAuth] = useState('');
+
+      useEffect(() => {
+        if (placas.length > 0 && (!placa || !placas.some(p => p.placa === placa))) {
+          setPlaca(placas[0].placa);
+        }
+      }, [placas]);
 
       const [lotes, setLotes] = useState([{ jabas: Math.floor(saldoTeorico / 8), avesJaba: 8 }]);
       const [pin, setPin] = useState('');
       const [obs, setObs] = useState('');
+
+      const estaSellado = !!confirmacionPre;
+      const puedeEditarSellado = estaSellado && !!authAprobada;
 
       const acumuladoAnte = mermasAnte.reduce((a, b) => a + b.aves, 0);
       const requiereFoto = (acumuladoAnte + Number(avesMuertas)) > 2;
 
       const handleMerma = (e) => {
         e.preventDefault();
+        if (estaSellado && !puedeEditarSellado) {
+          return onError('Conteo Físico sellado. Solicita autorización al Administrador para modificar.');
+        }
         if (requiereFoto && !fotoCapturada) {
           return onError('CANDADO ANTI-FRAUDE: Supera el límite acumulado de 2 aves. Capture foto en vivo obligatoria.');
         }
         onAgregarMerma({
           id: 'ma-' + Date.now(),
-          placa,
+          placa: placa || 'S/P',
           aves: Number(avesMuertas),
           peso: Number(pesoMerma),
           motivo: 'Muerte en transporte / espera',
@@ -1941,8 +2407,10 @@
           diferencia: diff,
           responsable: usuario.nombre,
           hora: new Date().toLocaleTimeString(),
-        });
+        }, puedeEditarSellado);
         setPin('');
+        setSolicitandoAuthUI(false);
+        setMotivoSolAuth('');
       };
 
       return (
@@ -1953,7 +2421,7 @@
                 <span className="text-xs font-extrabold text-sky-400 uppercase">Módulo 3A • Verificación Física en Campo</span>
                 <h3 className="text-base font-black text-white">Acta de Confirmación de Saldo Físico</h3>
               </div>
-              {!confirmacionPre && (
+              {(!estaSellado || puedeEditarSellado) && (
                 <button
                   type="button"
                   onClick={igualarSaldoApp}
@@ -1966,18 +2434,66 @@
 
             <div className="grid grid-cols-3 gap-2 text-center bg-slate-950 p-3 rounded-2xl">
               <div><p className="text-xs text-slate-400">Saldo Teórico App</p><p className="font-black text-xl text-sky-400">{saldoTeorico}</p></div>
-              <div><p className="text-xs text-slate-400">Físico Contado</p><p className="font-black text-xl text-white">{totalFisico}</p></div>
-              <div><p className="text-xs text-slate-400">Diferencia</p><p className={`font-black text-xl ${diff === 0 ? 'text-emerald-400' : 'text-rose-400'}`}>{diff}</p></div>
+              <div><p className="text-xs text-slate-400">Físico Contado</p><p className="font-black text-xl text-white">{estaSellado && !puedeEditarSellado ? confirmacionPre.fisico : totalFisico}</p></div>
+              <div><p className="text-xs text-slate-400">Diferencia</p><p className={`font-black text-xl ${(estaSellado && !puedeEditarSellado ? confirmacionPre.diferencia : diff) === 0 ? 'text-emerald-400' : 'text-rose-400'}`}>{estaSellado && !puedeEditarSellado ? confirmacionPre.diferencia : diff}</p></div>
             </div>
 
-            {confirmacionPre ? (
-              <div className="bg-emerald-950/60 border border-emerald-600 p-4 rounded-2xl text-xs space-y-1">
-                <p className="font-black text-emerald-300">✓ SALDO FÍSICO CONFIRMADO Y SELLADO</p>
-                <p>Responsable: {confirmacionPre.responsable} ({confirmacionPre.hora})</p>
-                <p>Conteo Físico: {confirmacionPre.fisico} aves (Dif: {confirmacionPre.diferencia})</p>
+            {estaSellado && !puedeEditarSellado ? (
+              <div className="space-y-3">
+                <div className="bg-emerald-950/60 border border-emerald-600 p-4 rounded-2xl text-xs space-y-1">
+                  <p className="font-black text-emerald-300">🔒 SALDO FÍSICO SELLADO (PROTEGIDO CONTRA EDICIÓN)</p>
+                  <p>Responsable: {confirmacionPre.responsable} ({confirmacionPre.hora})</p>
+                  <p>Conteo Físico: {confirmacionPre.fisico} aves (Dif: {confirmacionPre.diferencia})</p>
+                </div>
+
+                {authPendiente ? (
+                  <div className="bg-amber-950/70 border border-amber-500 p-3.5 rounded-2xl text-xs text-amber-200 font-bold animate-pulse">
+                    ⏳ Esperando que el Administrador ingrese su PIN desde su celular o computadora para autorizar la edición...
+                  </div>
+                ) : !solicitandoAuthUI ? (
+                  <button
+                    type="button"
+                    onClick={() => setSolicitandoAuthUI(true)}
+                    className="w-full py-3 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500 text-amber-300 rounded-xl font-black text-xs"
+                  >
+                    🔓 SOLICITAR AUTORIZACIÓN AL ADMINISTRADOR PARA EDITAR
+                  </button>
+                ) : (
+                  <div className="bg-slate-950 border border-amber-500 p-3.5 rounded-2xl space-y-2.5">
+                    <p className="text-xs font-black text-amber-300">Solicitar Autorización de Edición al Administrador</p>
+                    <input
+                      type="text"
+                      value={motivoSolAuth}
+                      onChange={(e) => setMotivoSolAuth(e.target.value)}
+                      placeholder="Ej. Faltó sumar 2 jabas del lote..."
+                      className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => onSolicitarAuth(motivoSolAuth)}
+                        className="flex-1 py-2.5 bg-amber-500 text-slate-950 font-black rounded-xl text-xs"
+                      >
+                        ENVIAR SOLICITUD
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSolicitandoAuthUI(false)}
+                        className="px-3 py-2.5 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <form onSubmit={handleConfirmar} className="space-y-3">
+                {puedeEditarSellado && (
+                  <div className="bg-emerald-950 border border-emerald-400 p-3 rounded-xl text-xs text-emerald-200 font-bold">
+                    ✅ Autorizado por {authAprobada.autorizado_por}. Realiza la corrección y firma con tu PIN.
+                  </div>
+                )}
                 <div className="flex justify-between items-center">
                   <span className="text-xs font-bold text-slate-400 uppercase">Desglose Contado</span>
                   <button
@@ -2030,7 +2546,7 @@
                   className="w-full bg-slate-800 border border-amber-500/60 rounded-xl p-3 text-center font-mono text-lg"
                 />
                 <button type="submit" className="w-full py-3.5 bg-sky-600 hover:bg-sky-500 rounded-xl font-black text-sm">
-                  FIRMAR CON PIN Y SELLAR SALDO FÍSICO
+                  {puedeEditarSellado ? '💾 GUARDAR CORRECCIÓN Y RE-SELLAR' : 'FIRMAR CON PIN Y SELLAR SALDO FÍSICO'}
                 </button>
               </form>
             )}
@@ -2044,6 +2560,7 @@
               <div>
                 <label className="text-xs text-slate-400">Vehículo / Placa</label>
                 <select value={placa} onChange={(e) => setPlaca(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold">
+                  {placas.length === 0 && <option value="S/P">— Sin placas activas —</option>}
                   {placas.map(v => <option key={v.id} value={v.placa}>{v.placa} — {nombreChofer(v.choferId)}</option>)}
                 </select>
               </div>
@@ -2084,29 +2601,68 @@
                 REGISTRAR MERMA ANTE-MORTEM
               </button>
             </form>
+
+            {mermasAnte.length > 0 && (
+              <div className="border-t border-slate-800 pt-3 space-y-1.5">
+                {mermasAnte.map(m => (
+                  <div key={m.id} className="flex items-center justify-between text-xs bg-slate-950 px-3 py-2 rounded-xl">
+                    <span>{m.placa} — <strong className="text-rose-400">-{m.aves} aves</strong> ({m.peso} kg)</span>
+                    {(!estaSellado || puedeEditarSellado) && (
+                      <button type="button" onClick={() => onEliminarMerma(m.id)} className="text-rose-400 font-bold">🗑️</button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       );
     }
 
     // =========================================================================
-    // MÓDULO 4: FAENADO Y MERMA POST-MORTEM
+    // MÓDULO 4: FAENADO Y MERMA POST-MORTEM (BLOQUEADO HASTA AUTORIZACIÓN ADMIN)
     // =========================================================================
-    function ModuloFaenadoPostMortem({ basePreFaenado, faenadoManana, mermaPost, saldoTeoricoPost, confirmacionPost, usuario, onRegistrarFaenado, onConfirmarPost, onError }) {
+    function ModuloFaenadoPostMortem({
+      basePreFaenado, faenadoManana, pesoFaenado, mermaPost, detalleFaenadoObs,
+      saldoTeoricoPost, confirmacionPost, usuario, authAprobada, authPendiente,
+      onSolicitarAuth, onRegistrarFaenado, onConfirmarPost, onError
+    }) {
       const [cantFaenado, setCantFaenado] = useState(faenadoManana ?? basePreFaenado);
-      const [pesoTotalKg, setPesoTotalKg] = useState(2850);
-      const [cantPostMortem, setCantPostMortem] = useState(mermaPost);
-      const [detalleObs, setDetalleObs] = useState('Lote beneficio turno mañana');
-      const [saldoRemanenteFisico, setSaldoRemanenteFisico] = useState(0);
+      const [pesoTotalKg, setPesoTotalKg] = useState(pesoFaenado || 0);
+      const [cantPostMortem, setCantPostMortem] = useState(mermaPost || 0);
+      const [detalleObs, setDetalleObs] = useState(detalleFaenadoObs || 'Lote beneficio turno mañana');
+      const [saldoRemanenteFisico, setSaldoRemanenteFisico] = useState(confirmacionPost?.fisico || 0);
       const [pin, setPin] = useState('');
+
+      const [solicitandoAuthUI, setSolicitandoAuthUI] = useState(false);
+      const [motivoSolAuth, setMotivoSolAuth] = useState('');
+
+      useEffect(() => {
+        if (faenadoManana !== null) setCantFaenado(faenadoManana);
+        if (pesoFaenado) setPesoTotalKg(pesoFaenado);
+        if (mermaPost !== undefined) setCantPostMortem(mermaPost);
+        if (detalleFaenadoObs) setDetalleObs(detalleFaenadoObs);
+        if (confirmacionPost) setSaldoRemanenteFisico(confirmacionPost.fisico);
+      }, [faenadoManana, pesoFaenado, mermaPost, detalleFaenadoObs, confirmacionPost]);
+
+      const yaRegistradoFaena = faenadoManana !== null || !!confirmacionPost;
+      const bloqueadoEdicion = yaRegistradoFaena && !authAprobada;
 
       const handleGuardarFaenado = (e) => {
         e.preventDefault();
-        onRegistrarFaenado(Number(cantFaenado), Number(pesoTotalKg), Number(cantPostMortem));
+        if (bloqueadoEdicion) {
+          return onError('El faenado ya fue registrado. Solicita autorización al Administrador para editar.');
+        }
+        onRegistrarFaenado(Number(cantFaenado), Number(pesoTotalKg), Number(cantPostMortem), detalleObs, !!authAprobada);
+        setSolicitandoAuthUI(false);
+        setMotivoSolAuth('');
       };
 
       const handleCierrePost = (e) => {
         e.preventDefault();
+        if (confirmacionPost && !authAprobada) {
+          return onError('El cierre ya fue sellado. Solicita autorización al Administrador para editar.');
+        }
         if (pin !== usuario.pin) {
           return onError('PIN incorrecto. Ingresa tu PIN personal para confirmar el cierre.');
         }
@@ -2116,82 +2672,146 @@
           diferencia: Number(saldoRemanenteFisico) - saldoTeoricoPost,
           responsable: usuario.nombre,
           hora: new Date().toLocaleTimeString(),
-        });
+        }, !!authAprobada);
         setPin('');
+        setSolicitandoAuthUI(false);
+        setMotivoSolAuth('');
       };
 
       return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-4">
-            <span className="text-xs font-extrabold text-purple-400 uppercase">Módulo 4A • Turno Mañana</span>
-            <h3 className="text-base font-black text-white">Faenado y Merma Post-Mortem</h3>
-            <p className="text-xs text-slate-400">Disponible Pre-Faena: <strong className="text-sky-400">{basePreFaenado} aves</strong></p>
-            <form onSubmit={handleGuardarFaenado} className="space-y-3">
-              <div className="grid grid-cols-2 gap-2">
+        <div className="space-y-4">
+          {bloqueadoEdicion && (
+            <div className="bg-slate-900 border border-amber-500/60 rounded-3xl p-4 space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <label className="text-xs text-slate-400">Cantidad Aves Faenado</label>
-                  <input type="number" value={cantFaenado} onChange={(e) => setCantFaenado(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg" />
+                  <p className="text-xs font-black text-amber-400 uppercase">🔒 Módulo Protegido Contra Edición</p>
+                  <p className="text-xs text-slate-300">Para corregir cantidades, kilos o remanente de faenado se requiere autorización con PIN del Administrador.</p>
                 </div>
-                <div>
-                  <label className="text-xs text-slate-400">Peso Total (kg)</label>
-                  <input type="number" step="0.1" value={pesoTotalKg} onChange={(e) => setPesoTotalKg(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg" />
-                </div>
+                {!authPendiente && !solicitandoAuthUI && (
+                  <button
+                    type="button"
+                    onClick={() => setSolicitandoAuthUI(true)}
+                    className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs"
+                  >
+                    🔓 SOLICITAR AUTORIZACIÓN PARA EDITAR
+                  </button>
+                )}
               </div>
-              <div>
-                <label className="text-xs text-slate-400">Merma Post-Mortem (Decomiso / Descarte Línea)</label>
-                <input type="number" value={cantPostMortem} onChange={(e) => setCantPostMortem(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg text-rose-400" />
-              </div>
-              <div>
-                <label className="text-xs text-slate-400">Detalle / Observación</label>
-                <input type="text" value={detalleObs} onChange={(e) => setDetalleObs(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs" />
-              </div>
-              <button type="submit" className="w-full py-3.5 bg-purple-600 hover:bg-purple-500 rounded-xl font-black text-sm">
-                REGISTRAR FAENADO MAÑANA
-              </button>
-            </form>
-          </div>
 
-          <div className="bg-slate-900 border border-emerald-500/40 rounded-3xl p-5 space-y-4">
-            <span className="text-xs font-extrabold text-emerald-400 uppercase">Módulo 4B • Cierre Final del Día</span>
-            <h3 className="text-base font-black text-white">Confirmación Saldo Post-Faenado</h3>
-            <p className="text-xs text-slate-400">Aves vivas remanentes en acopio (arrastre para siguiente noche).</p>
-            {confirmacionPost ? (
-              <div className="bg-emerald-950/60 border border-emerald-600 p-4 rounded-2xl text-xs space-y-1">
-                <p className="font-black text-emerald-300">✓ CIERRE POST-FAENADO SELLADO</p>
-                <p>Responsable: {confirmacionPost.responsable} ({confirmacionPost.hora})</p>
-                <p>Saldo Remanente Confirmado: {confirmacionPost.fisico} aves</p>
-              </div>
-            ) : (
-              <form onSubmit={handleCierrePost} className="space-y-3">
-                <div className="grid grid-cols-2 gap-2 bg-slate-950 p-3 rounded-xl text-center">
+              {authPendiente && (
+                <div className="bg-amber-950/70 border border-amber-500 p-3 rounded-2xl text-xs text-amber-200 font-bold animate-pulse">
+                  ⏳ Esperando autorización del Administrador desde su celular o computadora...
+                </div>
+              )}
+
+              {solicitandoAuthUI && !authPendiente && (
+                <div className="bg-slate-950 border border-amber-500 p-3.5 rounded-2xl flex flex-wrap gap-2">
+                  <input
+                    type="text"
+                    value={motivoSolAuth}
+                    onChange={(e) => setMotivoSolAuth(e.target.value)}
+                    placeholder="Motivo de edición en Faenado (obligatorio)..."
+                    className="flex-1 min-w-[200px] bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => onSolicitarAuth(motivoSolAuth)}
+                    className="bg-amber-500 text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs"
+                  >
+                    ENVIAR SOLICITUD
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSolicitandoAuthUI(false)}
+                    className="bg-slate-800 text-slate-300 font-bold px-3 py-2.5 rounded-xl text-xs"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {authAprobada && (
+            <div className="bg-emerald-950 border border-emerald-400 p-3.5 rounded-2xl text-xs text-emerald-200 font-bold">
+              ✅ Edición de Faenado AUTORIZADA por {authAprobada.autorizado_por}. Guarda tus cambios para volver a sellar el módulo.
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-4">
+              <span className="text-xs font-extrabold text-purple-400 uppercase">Módulo 4A • Turno Mañana</span>
+              <h3 className="text-base font-black text-white">Faenado y Merma Post-Mortem</h3>
+              <p className="text-xs text-slate-400">Disponible Pre-Faena: <strong className="text-sky-400">{basePreFaenado} aves</strong></p>
+              <form onSubmit={handleGuardarFaenado} className="space-y-3">
+                <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <p className="text-xs text-slate-400">Remanente Teórico</p>
-                    <p className="font-black text-xl text-sky-400">{saldoTeoricoPost}</p>
+                    <label className="text-xs text-slate-400">Cantidad Aves Faenado</label>
+                    <input type="number" disabled={bloqueadoEdicion} value={cantFaenado} onChange={(e) => setCantFaenado(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg disabled:opacity-60" />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-400">Descuadre</p>
-                    <p className={`font-black text-xl ${Number(saldoRemanenteFisico) - saldoTeoricoPost === 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-                      {Number(saldoRemanenteFisico) - saldoTeoricoPost}
-                    </p>
+                    <label className="text-xs text-slate-400">Peso Total (kg)</label>
+                    <input type="number" step="0.1" disabled={bloqueadoEdicion} value={pesoTotalKg} onChange={(e) => setPesoTotalKg(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg disabled:opacity-60" />
                   </div>
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400">Aves Vivas Remanentes Contadas</label>
-                  <input type="number" value={saldoRemanenteFisico} onChange={(e) => setSaldoRemanenteFisico(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg" />
+                  <label className="text-xs text-slate-400">Merma Post-Mortem (Decomiso / Descarte Línea)</label>
+                  <input type="number" disabled={bloqueadoEdicion} value={cantPostMortem} onChange={(e) => setCantPostMortem(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg text-rose-400 disabled:opacity-60" />
                 </div>
-                <input
-                  type="password"
-                  maxLength={4}
-                  value={pin}
-                  onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
-                  placeholder="Ingresa tu PIN personal para cerrar"
-                  className="w-full bg-slate-800 border border-emerald-500/60 rounded-xl p-3 text-center font-mono text-lg"
-                />
-                <button type="submit" className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-black text-sm">
-                  CONFIRMAR SALDO POST-FAENADO
-                </button>
+                <div>
+                  <label className="text-xs text-slate-400">Detalle / Observación</label>
+                  <input type="text" disabled={bloqueadoEdicion} value={detalleObs} onChange={(e) => setDetalleObs(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs disabled:opacity-60" />
+                </div>
+                {!bloqueadoEdicion && (
+                  <button type="submit" className="w-full py-3.5 bg-purple-600 hover:bg-purple-500 rounded-xl font-black text-sm">
+                    {authAprobada ? '💾 GUARDAR CORRECCIÓN DE FAENADO' : 'REGISTRAR FAENADO MAÑANA'}
+                  </button>
+                )}
               </form>
-            )}
+            </div>
+
+            <div className="bg-slate-900 border border-emerald-500/40 rounded-3xl p-5 space-y-4">
+              <span className="text-xs font-extrabold text-emerald-400 uppercase">Módulo 4B • Cierre Final del Día</span>
+              <h3 className="text-base font-black text-white">Confirmación Saldo Post-Faenado</h3>
+              <p className="text-xs text-slate-400">Aves vivas remanentes en acopio (arrastre para siguiente noche).</p>
+              {confirmacionPost && !authAprobada ? (
+                <div className="bg-emerald-950/60 border border-emerald-600 p-4 rounded-2xl text-xs space-y-1">
+                  <p className="font-black text-emerald-300">✓ CIERRE POST-FAENADO SELLADO</p>
+                  <p>Responsable: {confirmacionPost.responsable} ({confirmacionPost.hora})</p>
+                  <p>Saldo Remanente Confirmado: {confirmacionPost.fisico} aves</p>
+                </div>
+              ) : (
+                <form onSubmit={handleCierrePost} className="space-y-3">
+                  <div className="grid grid-cols-2 gap-2 bg-slate-950 p-3 rounded-xl text-center">
+                    <div>
+                      <p className="text-xs text-slate-400">Remanente Teórico</p>
+                      <p className="font-black text-xl text-sky-400">{saldoTeoricoPost}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-400">Descuadre</p>
+                      <p className={`font-black text-xl ${Number(saldoRemanenteFisico) - saldoTeoricoPost === 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                        {Number(saldoRemanenteFisico) - saldoTeoricoPost}
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Aves Vivas Remanentes Contadas</label>
+                    <input type="number" value={saldoRemanenteFisico} onChange={(e) => setSaldoRemanenteFisico(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-center font-black text-lg" />
+                  </div>
+                  <input
+                    type="password"
+                    maxLength={4}
+                    value={pin}
+                    onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
+                    placeholder="Ingresa tu PIN personal para cerrar"
+                    className="w-full bg-slate-800 border border-emerald-500/60 rounded-xl p-3 text-center font-mono text-lg"
+                  />
+                  <button type="submit" className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-black text-sm">
+                    {authAprobada ? '💾 GUARDAR CORRECCIÓN Y CERRAR' : 'CONFIRMAR SALDO POST-FAENADO'}
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       );
@@ -2211,8 +2831,8 @@
           filas.push([fechaOperativa, 'NOCHE', `${i.sector} - ${i.numeroGalpon} (${i.placa} - ${i.chofer})`, i.empresa, i.jabas, i.aves, 0, saldo]);
         });
         guias.forEach(g => {
-          saldo -= g.aves;
-          filas.push([fechaOperativa, 'NOCHE', `Guía #${g.numero} - [${g.cod}] ${g.cliente}`, g.empresa, g.jabas, 0, g.aves, saldo]);
+          if (!g.anulada) saldo -= g.aves;
+          filas.push([fechaOperativa, 'NOCHE', `Guía #${g.numero}${g.anulada ? ' [ANULADA]' : ''} - [${g.cod}] ${g.cliente}`, g.empresa, g.anulada ? 0 : g.jabas, 0, g.anulada ? 0 : g.aves, saldo]);
         });
         mermasAnte.forEach(m => {
           saldo -= m.aves;
@@ -2289,16 +2909,23 @@
                   );
                 })}
                 {guias.map((g) => {
-                  saldoCorriente -= g.aves;
+                  if (!g.anulada) saldoCorriente -= g.aves;
                   return (
-                    <tr key={g.id} className="bg-sky-950/20">
+                    <tr key={g.id} className={g.anulada ? 'bg-rose-950/15 text-slate-500' : 'bg-sky-950/20'}>
                       <td className="py-2.5 px-2 font-bold text-sky-400">NOCHE</td>
-                      <td className="py-2.5 px-2">Guía #{g.numero} — [{g.cod}] {g.cliente}</td>
+                      <td className="py-2.5 px-2">
+                        {g.anulada ? (
+                          <span className="line-through">Guía #{g.numero} — [{g.cod}] {g.cliente}</span>
+                        ) : (
+                          <>Guía #{g.numero} — [{g.cod}] {g.cliente}</>
+                        )}
+                        {g.anulada && <span className="ml-2 bg-rose-600 text-white text-[10px] font-black px-1.5 py-0.5 rounded">ANULADA</span>}
+                      </td>
                       <td className="py-2.5 px-2 font-mono">{g.empresa}</td>
-                      <td className="py-2.5 px-2 text-right">{g.jabas}</td>
+                      <td className="py-2.5 px-2 text-right">{g.anulada ? 0 : g.jabas}</td>
                       <td className="py-2.5 px-2 text-right">0</td>
-                      <td className="py-2.5 px-2 text-right font-bold text-sky-400">-{g.aves}</td>
-                      <td className="py-2.5 px-2 text-right font-black">{saldoCorriente}</td>
+                      <td className="py-2.5 px-2 text-right font-bold text-sky-400">{g.anulada ? '0' : `-${g.aves}`}</td>
+                      <td className="py-2.5 px-2 text-right font-black text-white">{saldoCorriente}</td>
                     </tr>
                   );
                 })}
@@ -2344,7 +2971,7 @@
     }
 
     // =========================================================================
-    // MÓDULO 6: USUARIOS (DNI + PIN ALEATORIO + DESBLOQUEO), MAESTROS Y NUBE
+    // MÓDULO 6: USUARIOS Y MAESTROS (EDITAR Y ELIMINAR = BAJA EN BASE DE DATOS)
     // =========================================================================
     function ModuloMaestros({
       usuarioActivo, usuarios, onGuardarUsuario,
@@ -2355,35 +2982,57 @@
       const esDev = usuarioActivo.rol === 'DESARROLLADOR';
       const [subTab, setSubTab] = useState(esDev ? 'USUARIOS' : 'GALPONES');
 
-      // Estados Nuevo Responsable / Desarrollador
+      // Estados Usuarios (Crear / Editar)
+      const [editandoUserDni, setEditandoUserDni] = useState(null);
       const [dniNuevoUser, setDniNuevoUser] = useState('');
       const [nombreNuevoUser, setNombreNuevoUser] = useState('');
       const [rolNuevoUser, setRolNuevoUser] = useState('TRASLADO');
       const [pinGeneradoPreview, setPinGeneradoPreview] = useState(() => generarPinAleatorio4());
       const [ultimoCredencialCreado, setUltimoCredencialCreado] = useState(null);
 
-      // Estados Galpones
+      // Estados Galpones (Crear / Editar)
+      const [editandoGalponId, setEditandoGalponId] = useState(null);
       const [empresaGalpon, setEmpresaGalpon] = useState('emp-1');
       const [sectorGalpon, setSectorGalpon] = useState('');
       const [numeroGalpon, setNumeroGalpon] = useState('Galpón 1');
       const [referenciaGalpon, setReferenciaGalpon] = useState('');
       const [cantidadLote, setCantidadLote] = useState(1);
 
-      // Estados Placas
+      // Estados Placas (Crear / Editar)
+      const [editandoPlacaId, setEditandoPlacaId] = useState(null);
       const [nuevaPlaca, setNuevaPlaca] = useState('');
       const [modeloPlaca, setModeloPlaca] = useState('');
       const [empresaPlaca, setEmpresaPlaca] = useState('emp-1');
-      const [choferHabitualPlaca, setChoferHabitualPlaca] = useState(choferes[0]?.id || '');
+      const [choferHabitualPlaca, setChoferHabitualPlaca] = useState('');
 
-      // Estados Choferes
+      // Estados Choferes (Crear / Editar)
+      const [editandoChoferId, setEditandoChoferId] = useState(null);
       const [nombreNuevoChofer, setNombreNuevoChofer] = useState('');
       const [dniNuevoChofer, setDniNuevoChofer] = useState('');
       const [telNuevoChofer, setTelNuevoChofer] = useState('');
 
-      // Estados Clientes
-      const [csvTexto, setCsvTexto] = useState('045\tMARIA ELENA QUISPE\tMaria Quispe\t41258963');
+      // Estados Clientes (Crear / Editar / Importar)
+      const [editandoClienteCod, setEditandoClienteCod] = useState(null);
+      const [codClienteForm, setCodClienteForm] = useState('');
+      const [nombreClienteForm, setNombreClienteForm] = useState('');
+      const [apodoClienteForm, setApodoClienteForm] = useState('');
+      const [docClienteForm, setDocClienteForm] = useState('');
+      const [csvTexto, setCsvTexto] = useState('');
 
-      const crearResponsableConPin = async (e) => {
+      const usuariosActivos = usuarios.filter(u => u.activo !== false);
+      const galponesActivos = galpones.filter(g => g.activo !== false);
+      const placasActivas = placas.filter(p => p.activo !== false);
+      const choferesActivos = choferes.filter(c => c.activo !== false);
+      const clientesActivos = clientes.filter(c => c.activo !== false);
+
+      useEffect(() => {
+        if (!editandoPlacaId && choferesActivos.length > 0 && !choferHabitualPlaca) {
+          setChoferHabitualPlaca(choferesActivos[0].id);
+        }
+      }, [choferes]);
+
+      // --- USUARIOS ---
+      const guardarResponsable = async (e) => {
         e.preventDefault();
         if (dniNuevoUser.trim().length !== 8) {
           return notificar('El DNI debe tener exactamente 8 dígitos.', 'err');
@@ -2391,140 +3040,244 @@
         if (!nombreNuevoUser.trim()) {
           return notificar('Ingrese el nombre del responsable.', 'err');
         }
+        const existente = usuarios.find(u => u.dni === dniNuevoUser.trim());
         const pinFinal = pinGeneradoPreview || generarPinAleatorio4();
         const nuevoObj = {
           dni: dniNuevoUser.trim(),
           nombre: nombreNuevoUser.trim(),
-          rol: rolNuevoUser,
+          rol: existente?.rol === 'DESARROLLADOR' ? 'DESARROLLADOR' : rolNuevoUser,
           pin: pinFinal,
           intentosFallidos: 0,
           bloqueado: false,
+          activo: true,
         };
         await onGuardarUsuario(nuevoObj);
         setUltimoCredencialCreado(nuevoObj);
+        setEditandoUserDni(null);
         setDniNuevoUser('');
         setNombreNuevoUser('');
         setPinGeneradoPreview(generarPinAleatorio4());
-        notificar(`Usuario ${nuevoObj.nombre} creado con PIN aleatorio ${pinFinal}.`);
+        notificar(editandoUserDni ? `Usuario ${nuevoObj.nombre} actualizado.` : `Usuario ${nuevoObj.nombre} creado con PIN ${pinFinal}.`);
+      };
+
+      const eliminarUsuarioBaja = async (u) => {
+        const actualizado = { ...u, activo: false, bloqueado: false };
+        await onGuardarUsuario(actualizado);
+        notificar(`🗑️ ${u.nombre} eliminado de la app (respaldado en base de datos).`, 'warn');
       };
 
       const desbloquearYRegenerarPin = async (u) => {
         const nuevoPin = generarPinAleatorio4();
-        const actualizado = {
-          ...u,
-          pin: nuevoPin,
-          intentosFallidos: 0,
-          bloqueado: false,
-        };
+        const actualizado = { ...u, pin: nuevoPin, intentosFallidos: 0, bloqueado: false };
         await onGuardarUsuario(actualizado);
         setUltimoCredencialCreado(actualizado);
-        notificar(`Nuevo PIN aleatorio generado para ${u.nombre}: ${nuevoPin}`);
+        notificar(`Nuevo PIN generado para ${u.nombre}: ${nuevoPin}`);
       };
 
       const copiarCredencialesWhatsApp = (u) => {
         const rolDesc = ROLES_MODULO.find(r => r.value === u.rol)?.label || u.rol;
         const mensaje = `🐔 *AVIMOA — Acceso al Sistema*\n👤 *Responsable:* ${u.nombre}\n📋 *Módulo:* ${rolDesc}\n🪪 *DNI:* ${u.dni}\n🔑 *PIN de Acceso:* ${u.pin}\n🔗 *Enlace:* ${window.location.href}`;
         navigator.clipboard?.writeText(mensaje);
-        notificar('Credenciales copiadas al portapapeles listas para pegar en WhatsApp.');
+        notificar('Credenciales copiadas al portapapeles.');
       };
 
-      const agregarGalpon = async (e) => {
+      // --- GALPONES / DIRECCIONES ---
+      const guardarGalpon = async (e) => {
         e.preventDefault();
         if (!sectorGalpon.trim()) return;
-        const cant = Number(cantidadLote);
-        const nuevos = [];
-        if (cant > 1) {
-          for (let i = 1; i <= cant; i++) {
-            nuevos.push({
-              id: 'g-' + Date.now() + '-' + i,
-              sector: sectorGalpon.trim(),
-              numeroGalpon: `Galpón ${i}`,
-              referencia: referenciaGalpon.trim() || sectorGalpon.trim(),
-              empresaId: empresaGalpon,
-            });
-          }
-          notificar(`Se crearon ${cant} galpones (Galpón 1 al ${cant}) en ${sectorGalpon}.`);
-        } else {
-          nuevos.push({
-            id: 'g-' + Date.now(),
+
+        if (editandoGalponId) {
+          const actualizado = {
+            id: editandoGalponId,
             sector: sectorGalpon.trim(),
             numeroGalpon,
             referencia: referenciaGalpon.trim() || sectorGalpon.trim(),
             empresaId: empresaGalpon,
-          });
-          notificar(`Dirección ${sectorGalpon} (${numeroGalpon}) registrada.`);
-        }
-        setGalpones([...galpones, ...nuevos]);
-        if (supabaseRef.current) {
-          await supabaseRef.current.from('galpones').upsert(
-            nuevos.map(n => ({ id: n.id, sector: n.sector, numero_galpon: n.numeroGalpon, referencia: n.referencia, empresa_id: n.empresaId }))
-          );
+            activo: true,
+          };
+          setGalpones(galpones.map(g => g.id === editandoGalponId ? actualizado : g));
+          if (supabaseRef.current) {
+            await supabaseRef.current.from('galpones').upsert({
+              id: actualizado.id, sector: actualizado.sector, numero_galpon: actualizado.numeroGalpon,
+              referencia: actualizado.referencia, empresa_id: actualizado.empresaId, activo: true
+            });
+          }
+          setEditandoGalponId(null);
+          notificar('Dirección / Galpón actualizado.');
+        } else {
+          const cant = Number(cantidadLote);
+          const nuevos = [];
+          if (cant > 1) {
+            for (let i = 1; i <= cant; i++) {
+              nuevos.push({
+                id: 'g-' + Date.now() + '-' + i,
+                sector: sectorGalpon.trim(),
+                numeroGalpon: `Galpón ${i}`,
+                referencia: referenciaGalpon.trim() || sectorGalpon.trim(),
+                empresaId: empresaGalpon,
+                activo: true,
+              });
+            }
+            notificar(`Se crearon ${cant} galpones (Galpón 1 al ${cant}) en ${sectorGalpon}.`);
+          } else {
+            nuevos.push({
+              id: 'g-' + Date.now(),
+              sector: sectorGalpon.trim(),
+              numeroGalpon,
+              referencia: referenciaGalpon.trim() || sectorGalpon.trim(),
+              empresaId: empresaGalpon,
+              activo: true,
+            });
+            notificar(`Dirección ${sectorGalpon} (${numeroGalpon}) registrada.`);
+          }
+          setGalpones([...galpones, ...nuevos]);
+          if (supabaseRef.current) {
+            await supabaseRef.current.from('galpones').upsert(
+              nuevos.map(n => ({ id: n.id, sector: n.sector, numero_galpon: n.numeroGalpon, referencia: n.referencia, empresa_id: n.empresaId, activo: true }))
+            );
+          }
         }
         setSectorGalpon('');
         setReferenciaGalpon('');
         setCantidadLote(1);
       };
 
-      const agregarPlaca = async (e) => {
+      const eliminarGalponBaja = async (g) => {
+        setGalpones(galpones.map(item => item.id === g.id ? { ...item, activo: false } : item));
+        if (supabaseRef.current) {
+          await supabaseRef.current.from('galpones').update({ activo: false }).eq('id', g.id);
+        }
+        notificar(`🗑️ ${g.sector} (${g.numeroGalpon}) eliminado de la app (conservado en BD).`, 'warn');
+      };
+
+      // --- PLACAS ---
+      const guardarPlaca = async (e) => {
         e.preventDefault();
         if (!nuevaPlaca.trim()) return;
         const obj = {
-          id: 'v-' + Date.now(),
+          id: editandoPlacaId || ('v-' + Date.now()),
           placa: nuevaPlaca.trim().toUpperCase(),
           modelo: modeloPlaca.trim() || 'Camión Furgón',
           empresaId: empresaPlaca,
           choferId: choferHabitualPlaca,
+          activo: true,
         };
-        setPlacas([...placas, obj]);
+        if (editandoPlacaId) {
+          setPlacas(placas.map(p => p.id === editandoPlacaId ? obj : p));
+        } else {
+          setPlacas([...placas, obj]);
+        }
         if (supabaseRef.current) {
           await supabaseRef.current.from('placas').upsert({
-            id: obj.id, placa: obj.placa, modelo: obj.modelo, empresa_id: obj.empresaId, chofer_id: obj.choferId
+            id: obj.id, placa: obj.placa, modelo: obj.modelo, empresa_id: obj.empresaId, chofer_id: obj.choferId, activo: true
           });
         }
+        setEditandoPlacaId(null);
         setNuevaPlaca('');
         setModeloPlaca('');
-        notificar('Placa / Vehículo registrado en el catálogo.');
+        notificar(editandoPlacaId ? 'Placa actualizada.' : 'Placa / Vehículo registrado.');
       };
 
-      const agregarChofer = async (e) => {
+      const eliminarPlacaBaja = async (p) => {
+        setPlacas(placas.map(item => item.id === p.id ? { ...item, activo: false } : item));
+        if (supabaseRef.current) {
+          await supabaseRef.current.from('placas').update({ activo: false }).eq('id', p.id);
+        }
+        notificar(`🗑️ Placa ${p.placa} eliminada de la app (conservada en BD).`, 'warn');
+      };
+
+      // --- CHOFERES ---
+      const guardarChofer = async (e) => {
         e.preventDefault();
         if (!nombreNuevoChofer.trim()) return;
         const obj = {
-          id: 'ch-' + Date.now(),
+          id: editandoChoferId || ('ch-' + Date.now()),
           nombre: nombreNuevoChofer.trim(),
           dni: dniNuevoChofer.trim(),
           telefono: telNuevoChofer.trim(),
           activo: true,
         };
-        setChoferes([...choferes, obj]);
+        if (editandoChoferId) {
+          setChoferes(choferes.map(c => c.id === editandoChoferId ? obj : c));
+        } else {
+          setChoferes([...choferes, obj]);
+        }
         if (supabaseRef.current) {
           await supabaseRef.current.from('choferes').upsert(obj);
         }
+        setEditandoChoferId(null);
         setNombreNuevoChofer('');
         setDniNuevoChofer('');
         setTelNuevoChofer('');
-        notificar('Chofer registrado correctamente.');
+        notificar(editandoChoferId ? 'Datos del chofer actualizados.' : 'Chofer registrado correctamente.');
+      };
+
+      const eliminarChoferBaja = async (ch) => {
+        setChoferes(choferes.map(item => item.id === ch.id ? { ...item, activo: false } : item));
+        if (supabaseRef.current) {
+          await supabaseRef.current.from('choferes').update({ activo: false }).eq('id', ch.id);
+        }
+        notificar(`🗑️ Chofer ${ch.nombre} eliminado de la app (su historial permanece en BD).`, 'warn');
+      };
+
+      // --- CLIENTES ---
+      const guardarClienteIndividual = async (e) => {
+        e.preventDefault();
+        if (!codClienteForm.trim() || !apodoClienteForm.trim()) return;
+        const obj = {
+          cod: codClienteForm.trim(),
+          cliente: (nombreClienteForm.trim() || apodoClienteForm.trim()).toUpperCase(),
+          apodo: apodoClienteForm.trim(),
+          docIdentidad: docClienteForm.trim(),
+          activo: true,
+        };
+        const idx = clientes.findIndex(c => c.cod === obj.cod);
+        const copia = [...clientes];
+        if (idx >= 0) copia[idx] = obj;
+        else copia.push(obj);
+        setClientes(copia);
+        if (supabaseRef.current) {
+          await supabaseRef.current.from('clientes').upsert({
+            cod: obj.cod, cliente: obj.cliente, apodo: obj.apodo, doc_identidad: obj.docIdentidad, activo: true
+          });
+        }
+        setEditandoClienteCod(null);
+        setCodClienteForm('');
+        setNombreClienteForm('');
+        setApodoClienteForm('');
+        setDocClienteForm('');
+        notificar(idx >= 0 ? 'Cliente actualizado.' : 'Cliente registrado.');
       };
 
       const importarClientes = async () => {
         const lineas = csvTexto.split('\n').map(l => l.trim()).filter(Boolean);
+        if (lineas.length === 0) return notificar('Pega al menos una línea de cliente.', 'err');
         const nuevos = [...clientes];
         const aSubir = [];
         lineas.forEach(linea => {
           const partes = linea.split(/\t|,|;/).map(p => p.trim());
           if (partes.length >= 3) {
             const idx = nuevos.findIndex(c => c.cod === partes[0]);
-            const obj = { cod: partes[0], cliente: partes[1].toUpperCase(), apodo: partes[2], docIdentidad: partes[3] || '' };
+            const obj = { cod: partes[0], cliente: partes[1].toUpperCase(), apodo: partes[2], docIdentidad: partes[3] || '', activo: true };
             if (idx >= 0) nuevos[idx] = obj;
             else nuevos.push(obj);
-            aSubir.push({ cod: obj.cod, cliente: obj.cliente, apodo: obj.apodo, doc_identidad: obj.docIdentidad });
+            aSubir.push({ cod: obj.cod, cliente: obj.cliente, apodo: obj.apodo, doc_identidad: obj.docIdentidad, activo: true });
           }
         });
         setClientes(nuevos);
         if (supabaseRef.current && aSubir.length > 0) {
           await supabaseRef.current.from('clientes').upsert(aSubir);
         }
-        notificar(`Importación masiva completada (${lineas.length} clientes procesados).`);
+        setCsvTexto('');
+        notificar(`Importación completada (${aSubir.length} clientes guardados).`);
+      };
+
+      const eliminarClienteBaja = async (c) => {
+        setClientes(clientes.map(item => item.cod === c.cod ? { ...item, activo: false } : item));
+        if (supabaseRef.current) {
+          await supabaseRef.current.from('clientes').update({ activo: false }).eq('cod', c.cod);
+        }
+        notificar(`🗑️ Cliente ${c.apodo} eliminado de la app (respaldado en BD).`, 'warn');
       };
 
       return (
@@ -2532,6 +3285,7 @@
           <div>
             <span className="text-xs font-extrabold text-sky-400 uppercase">Administración Avimoa • Usuarios y Catálogos</span>
             <h2 className="text-lg font-black text-white">Responsables por DNI, Galpones, Placas, Choferes y Nube</h2>
+            <p className="text-xs text-slate-400">Al presionar Eliminar, el registro se oculta de la app pero se conserva intacto en la base de datos.</p>
           </div>
 
           <div className="flex flex-wrap gap-2 bg-slate-950 p-2 rounded-2xl border border-slate-800">
@@ -2543,20 +3297,20 @@
                   subTab === 'USUARIOS' ? 'bg-amber-500 text-slate-950' : 'text-amber-300 hover:text-white'
                 }`}
               >
-                👥 Usuarios & PIN ({usuarios.length})
+                👥 Usuarios & PIN ({usuariosActivos.length})
               </button>
             )}
             <button type="button" onClick={() => setSubTab('GALPONES')} className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'GALPONES' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}>
-              Direcciones / Galpones ({galpones.length})
+              Direcciones / Galpones ({galponesActivos.length})
             </button>
             <button type="button" onClick={() => setSubTab('PLACAS')} className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'PLACAS' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}>
-              Placas ({placas.length})
+              Placas ({placasActivas.length})
             </button>
             <button type="button" onClick={() => setSubTab('CHOFERES')} className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'CHOFERES' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}>
-              Choferes ({choferes.length})
+              Choferes ({choferesActivos.length})
             </button>
             <button type="button" onClick={() => setSubTab('CLIENTES')} className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'CLIENTES' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}>
-              Clientes ({clientes.length})
+              Clientes ({clientesActivos.length})
             </button>
             {esDev && (
               <button type="button" onClick={() => setSubTab('NUBE')} className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'NUBE' ? 'bg-emerald-600 text-white' : 'text-emerald-400 hover:text-emerald-300'}`}>
@@ -2565,7 +3319,7 @@
             )}
           </div>
 
-          {/* SUB-PESTAÑA EXCLUSIVA DESARROLLADOR: USUARIOS POR DNI, PIN ALEATORIO Y DESBLOQUEO */}
+          {/* SUB-PESTAÑA USUARIOS */}
           {subTab === 'USUARIOS' && esDev && (
             <div className="space-y-5">
               {ultimoCredencialCreado && (
@@ -2587,18 +3341,28 @@
               )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <form onSubmit={crearResponsableConPin} className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
-                  <h3 className="text-sm font-black text-white">Asignar Responsable por Módulo (DNI + PIN Aleatorio)</h3>
+                <form onSubmit={guardarResponsable} className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-sm font-black text-white">
+                      {editandoUserDni ? `✏️ Editando Usuario (${editandoUserDni})` : 'Asignar Responsable / Administrador'}
+                    </h3>
+                    {editandoUserDni && (
+                      <button type="button" onClick={() => { setEditandoUserDni(null); setDniNuevoUser(''); setNombreNuevoUser(''); }} className="text-xs text-slate-400">
+                        Cancelar ✕
+                      </button>
+                    )}
+                  </div>
                   <div>
                     <label className="text-xs text-slate-400">Número de DNI (8 dígitos)</label>
                     <input
                       type="text"
                       inputMode="numeric"
                       maxLength={8}
+                      disabled={!!editandoUserDni}
                       value={dniNuevoUser}
                       onChange={(e) => setDniNuevoUser(e.target.value.replace(/\D/g, ''))}
                       placeholder="Ej. 71234568"
-                      className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-mono mt-1"
+                      className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-mono mt-1 disabled:opacity-60"
                     />
                   </div>
                   <div>
@@ -2612,7 +3376,7 @@
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Módulo Asignado</label>
+                    <label className="text-xs text-slate-400">Módulo / Perfil Asignado</label>
                     <select
                       value={rolNuevoUser}
                       onChange={(e) => setRolNuevoUser(e.target.value)}
@@ -2626,32 +3390,37 @@
 
                   <div className="bg-slate-900 border border-slate-700 p-3 rounded-xl flex items-center justify-between">
                     <div>
-                      <p className="text-[11px] text-slate-400">PIN Aleatorio Generado</p>
-                      <p className="text-xl font-mono font-black text-emerald-400 tracking-widest">{pinGeneradoPreview}</p>
+                      <p className="text-[11px] text-slate-400">PIN de Acceso (4 dígitos)</p>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={4}
+                        value={pinGeneradoPreview}
+                        onChange={(e) => setPinGeneradoPreview(e.target.value.replace(/\D/g, ''))}
+                        className="w-28 bg-slate-800 border border-slate-600 rounded-lg px-2 py-1 text-lg font-mono font-black text-emerald-400 tracking-widest mt-0.5"
+                      />
                     </div>
                     <button
                       type="button"
                       onClick={() => setPinGeneradoPreview(generarPinAleatorio4())}
                       className="bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-2 rounded-xl text-xs font-bold text-amber-300"
                     >
-                      🎲 Otro PIN
+                      🎲 Aleatorio
                     </button>
                   </div>
 
                   <button type="submit" className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs">
-                    + GUARDAR RESPONSABLE Y GENERAR ACCESO
+                    {editandoUserDni ? '💾 GUARDAR CAMBIOS DE USUARIO' : '+ GUARDAR RESPONSABLE Y GENERAR ACCESO'}
                   </button>
                 </form>
 
-                <div className="space-y-2.5 max-h-[430px] overflow-y-auto">
-                  <h3 className="text-xs font-black text-slate-400 uppercase">Usuarios Registrados y Estado de Bloqueo</h3>
-                  {usuarios.map(u => (
+                <div className="space-y-2.5 max-h-[450px] overflow-y-auto">
+                  <h3 className="text-xs font-black text-slate-400 uppercase">Usuarios Activos ({usuariosActivos.length})</h3>
+                  {usuariosActivos.map(u => (
                     <div
                       key={u.dni}
                       className={`p-3.5 rounded-2xl border space-y-2 ${
-                        u.bloqueado
-                          ? 'bg-rose-950/40 border-rose-500'
-                          : 'bg-slate-950 border-slate-800'
+                        u.bloqueado ? 'bg-rose-950/40 border-rose-500' : 'bg-slate-950 border-slate-800'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2">
@@ -2665,33 +3434,55 @@
                             )}
                           </div>
                           <p className="text-xs text-slate-400 mt-0.5">
-                            DNI: <strong className="font-mono text-slate-200">{u.dni}</strong> • Módulo: <strong className="text-amber-300">{u.rol}</strong>
+                            DNI: <strong className="font-mono text-slate-200">{u.dni}</strong> • Perfil: <strong className="text-amber-300">{u.rol === 'SUPERVISION' ? 'ADMINISTRADOR' : u.rol}</strong>
                           </p>
                           <p className="text-xs text-slate-400">
-                            PIN Actual: <strong className="font-mono text-emerald-400">{u.pin}</strong> • Intentos fallidos: {u.intentosFallidos || 0}/3
+                            PIN Actual: <strong className="font-mono text-emerald-400">{u.pin}</strong>
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex flex-wrap gap-2 pt-1">
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditandoUserDni(u.dni);
+                            setDniNuevoUser(u.dni);
+                            setNombreNuevoUser(u.nombre);
+                            setRolNuevoUser(u.rol === 'DESARROLLADOR' ? 'SUPERVISION' : u.rol);
+                            setPinGeneradoPreview(u.pin);
+                          }}
+                          className="px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-sky-950 hover:bg-sky-900 border border-sky-700 text-sky-300"
+                        >
+                          ✏️ Editar
+                        </button>
                         <button
                           type="button"
                           onClick={() => desbloquearYRegenerarPin(u)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-extrabold ${
+                          className={`px-2.5 py-1.5 rounded-xl text-xs font-extrabold ${
                             u.bloqueado
                               ? 'bg-rose-600 hover:bg-rose-500 text-white'
                               : 'bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700'
                           }`}
                         >
-                          {u.bloqueado ? '🔓 Desbloquear y Generar Nuevo PIN' : '🎲 Regenerar Nuevo PIN'}
+                          {u.bloqueado ? '🔓 Desbloquear' : '🎲 Nuevo PIN'}
                         </button>
                         <button
                           type="button"
                           onClick={() => copiarCredencialesWhatsApp(u)}
-                          className="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-950 hover:bg-emerald-900 border border-emerald-700 text-emerald-300"
+                          className="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-950 hover:bg-emerald-900 border border-emerald-700 text-emerald-300"
                         >
-                          📋 Copiar WhatsApp
+                          📋 WhatsApp
                         </button>
+                        {u.rol !== 'DESARROLLADOR' && (
+                          <button
+                            type="button"
+                            onClick={() => eliminarUsuarioBaja(u)}
+                            className="px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-rose-950 hover:bg-rose-900 border border-rose-700 text-rose-300 ml-auto"
+                          >
+                            🗑️ Eliminar
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -2700,10 +3491,20 @@
             </div>
           )}
 
+          {/* SUB-PESTAÑA GALPONES / DIRECCIONES */}
           {subTab === 'GALPONES' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <form onSubmit={agregarGalpon} className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
-                <h3 className="text-sm font-black text-white">Nueva Dirección / Galpón</h3>
+              <form onSubmit={guardarGalpon} className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-sm font-black text-white">
+                    {editandoGalponId ? '✏️ Editando Dirección / Galpón' : 'Nueva Dirección / Galpón'}
+                  </h3>
+                  {editandoGalponId && (
+                    <button type="button" onClick={() => { setEditandoGalponId(null); setSectorGalpon(''); setReferenciaGalpon(''); }} className="text-xs text-slate-400">
+                      Cancelar ✕
+                    </button>
+                  )}
+                </div>
                 <div>
                   <label className="text-xs text-slate-400">Empresa Titular (Obligatorio)</label>
                   <select value={empresaGalpon} onChange={(e) => setEmpresaGalpon(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-bold mt-1">
@@ -2717,7 +3518,7 @@
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <label className="text-xs text-slate-400">Número de Galpón</label>
-                    <select value={numeroGalpon} onChange={(e) => setNumeroGalpon(e.target.value)} disabled={Number(cantidadLote) > 1} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-bold mt-1">
+                    <select value={numeroGalpon} onChange={(e) => setNumeroGalpon(e.target.value)} disabled={!editandoGalponId && Number(cantidadLote) > 1} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-bold mt-1">
                       <option value="Galpón Único">Galpón Único</option>
                       <option value="Galpón 1">Galpón 1</option>
                       <option value="Galpón 2">Galpón 2</option>
@@ -2727,47 +3528,79 @@
                       <option value="Galpón 6">Galpón 6</option>
                     </select>
                   </div>
-                  <div>
-                    <label className="text-xs text-slate-400">¿Crear varios del 1 al N?</label>
-                    <select value={cantidadLote} onChange={(e) => setCantidadLote(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-bold mt-1 text-amber-300">
-                      <option value={1}>Solo 1 galpón</option>
-                      <option value={2}>Generar Galpón 1 al 2</option>
-                      <option value={3}>Generar Galpón 1 al 3</option>
-                      <option value={4}>Generar Galpón 1 al 4</option>
-                      <option value={5}>Generar Galpón 1 al 5</option>
-                      <option value={6}>Generar Galpón 1 al 6</option>
-                    </select>
-                  </div>
+                  {!editandoGalponId && (
+                    <div>
+                      <label className="text-xs text-slate-400">¿Crear varios del 1 al N?</label>
+                      <select value={cantidadLote} onChange={(e) => setCantidadLote(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-bold mt-1 text-amber-300">
+                        <option value={1}>Solo 1 galpón</option>
+                        <option value={2}>Generar Galpón 1 al 2</option>
+                        <option value={3}>Generar Galpón 1 al 3</option>
+                        <option value={4}>Generar Galpón 1 al 4</option>
+                        <option value={5}>Generar Galpón 1 al 5</option>
+                        <option value={6}>Generar Galpón 1 al 6</option>
+                      </select>
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label className="text-xs text-slate-400">Referencia / Galponero</label>
                   <input value={referenciaGalpon} onChange={(e) => setReferenciaGalpon(e.target.value)} placeholder="Referencia carretera / galponero..." className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm mt-1" />
                 </div>
                 <button type="submit" className="w-full py-3 bg-sky-600 hover:bg-sky-500 font-black rounded-xl text-xs">
-                  GUARDAR DIRECCIÓN Y GALPÓN
+                  {editandoGalponId ? '💾 GUARDAR CAMBIOS' : 'GUARDAR DIRECCIÓN Y GALPÓN'}
                 </button>
               </form>
 
               <div className="space-y-2 max-h-96 overflow-y-auto">
-                {galpones.map(g => (
+                {galponesActivos.length === 0 && (
+                  <p className="text-xs text-slate-500 bg-slate-950 p-4 rounded-2xl border border-slate-800">Sin galpones registrados aún.</p>
+                )}
+                {galponesActivos.map(g => (
                   <div key={g.id} className="bg-slate-950 border border-slate-800 p-3 rounded-2xl flex items-center justify-between gap-2">
                     <div>
                       <p className="text-sm font-black text-white">{g.sector} — <span className="text-amber-400">{g.numeroGalpon}</span></p>
-                      <p className="text-xs text-slate-400">{g.referencia}</p>
+                      <p className="text-xs text-slate-400">{g.referencia} • <strong className="text-emerald-400">{nombreEmpresa(g.empresaId)}</strong></p>
                     </div>
-                    <span className={`text-xs font-mono font-bold px-2.5 py-1 rounded-lg ${g.empresaId === 'emp-1' ? 'bg-emerald-950 text-emerald-300 border border-emerald-700' : 'bg-amber-950 text-amber-300 border border-amber-700'}`}>
-                      {nombreEmpresa(g.empresaId)}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditandoGalponId(g.id);
+                          setEmpresaGalpon(g.empresaId);
+                          setSectorGalpon(g.sector);
+                          setNumeroGalpon(g.numeroGalpon);
+                          setReferenciaGalpon(g.referencia || '');
+                        }}
+                        className="px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-sky-950 hover:bg-sky-900 border border-sky-700 text-sky-300"
+                      >
+                        ✏️ Editar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => eliminarGalponBaja(g)}
+                        className="px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-rose-950 hover:bg-rose-900 border border-rose-700 text-rose-300"
+                      >
+                        🗑️ Eliminar
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
+          {/* SUB-PESTAÑA PLACAS */}
           {subTab === 'PLACAS' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <form onSubmit={agregarPlaca} className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
-                <h3 className="text-sm font-black text-white">Registrar Nueva Placa / Vehículo</h3>
+              <form onSubmit={guardarPlaca} className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-sm font-black text-white">{editandoPlacaId ? '✏️ Editando Placa' : 'Registrar Nueva Placa / Vehículo'}</h3>
+                  {editandoPlacaId && (
+                    <button type="button" onClick={() => { setEditandoPlacaId(null); setNuevaPlaca(''); setModeloPlaca(''); }} className="text-xs text-slate-400">
+                      Cancelar ✕
+                    </button>
+                  )}
+                </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <label className="text-xs text-slate-400">N° Placa</label>
@@ -2787,34 +3620,65 @@
                 <div>
                   <label className="text-xs text-slate-400">Chofer Habitual</label>
                   <select value={choferHabitualPlaca} onChange={(e) => setChoferHabitualPlaca(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-bold mt-1">
-                    {choferes.map(ch => <option key={ch.id} value={ch.id}>{ch.nombre}</option>)}
+                    <option value="">— Sin asignar aún —</option>
+                    {choferesActivos.map(ch => <option key={ch.id} value={ch.id}>{ch.nombre}</option>)}
                   </select>
                 </div>
                 <button type="submit" className="w-full py-3 bg-sky-600 hover:bg-sky-500 font-black rounded-xl text-xs">
-                  + GUARDAR PLACA
+                  {editandoPlacaId ? '💾 GUARDAR CAMBIOS DE PLACA' : '+ GUARDAR PLACA'}
                 </button>
               </form>
 
-              <div className="space-y-2">
-                {placas.map(p => (
-                  <div key={p.id} className="bg-slate-950 border border-slate-800 p-3 rounded-2xl flex items-center justify-between">
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {placasActivas.length === 0 && (
+                  <p className="text-xs text-slate-500 bg-slate-950 p-4 rounded-2xl border border-slate-800">Sin placas registradas aún.</p>
+                )}
+                {placasActivas.map(p => (
+                  <div key={p.id} className="bg-slate-950 border border-slate-800 p-3 rounded-2xl flex items-center justify-between gap-2">
                     <div>
                       <p className="text-sm font-mono font-black text-amber-400">{p.placa} <span className="font-sans text-white font-bold">({p.modelo})</span></p>
-                      <p className="text-xs text-slate-400">Chofer habitual: {nombreChofer(p.choferId)}</p>
+                      <p className="text-xs text-slate-400">Chofer: {nombreChofer(p.choferId)} • {nombreEmpresa(p.empresaId)}</p>
                     </div>
-                    <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-slate-800 text-sky-300">
-                      {nombreEmpresa(p.empresaId)}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditandoPlacaId(p.id);
+                          setNuevaPlaca(p.placa);
+                          setModeloPlaca(p.modelo);
+                          setEmpresaPlaca(p.empresaId);
+                          setChoferHabitualPlaca(p.choferId || '');
+                        }}
+                        className="px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-sky-950 hover:bg-sky-900 border border-sky-700 text-sky-300"
+                      >
+                        ✏️ Editar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => eliminarPlacaBaja(p)}
+                        className="px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-rose-950 hover:bg-rose-900 border border-rose-700 text-rose-300"
+                      >
+                        🗑️ Eliminar
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
+          {/* SUB-PESTAÑA CHOFERES */}
           {subTab === 'CHOFERES' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <form onSubmit={agregarChofer} className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
-                <h3 className="text-sm font-black text-white">Registrar Nuevo Chofer</h3>
+              <form onSubmit={guardarChofer} className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-sm font-black text-white">{editandoChoferId ? '✏️ Editando Chofer' : 'Registrar Nuevo Chofer'}</h3>
+                  {editandoChoferId && (
+                    <button type="button" onClick={() => { setEditandoChoferId(null); setNombreNuevoChofer(''); setDniNuevoChofer(''); setTelNuevoChofer(''); }} className="text-xs text-slate-400">
+                      Cancelar ✕
+                    </button>
+                  )}
+                </div>
                 <div>
                   <label className="text-xs text-slate-400">Nombre Completo / Apodo</label>
                   <input value={nombreNuevoChofer} onChange={(e) => setNombreNuevoChofer(e.target.value)} placeholder="Ej. Carlos Mendoza" className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm mt-1" />
@@ -2830,58 +3694,145 @@
                   </div>
                 </div>
                 <button type="submit" className="w-full py-3 bg-sky-600 hover:bg-sky-500 font-black rounded-xl text-xs">
-                  + GUARDAR CHOFER
+                  {editandoChoferId ? '💾 GUARDAR CAMBIOS DE CHOFER' : '+ GUARDAR CHOFER'}
                 </button>
               </form>
 
-              <div className="space-y-2">
-                {choferes.map(ch => (
-                  <div key={ch.id} className="bg-slate-950 border border-slate-800 p-3 rounded-2xl flex items-center justify-between">
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {choferesActivos.length === 0 && (
+                  <p className="text-xs text-slate-500 bg-slate-950 p-4 rounded-2xl border border-slate-800">Sin choferes registrados aún.</p>
+                )}
+                {choferesActivos.map(ch => (
+                  <div key={ch.id} className="bg-slate-950 border border-slate-800 p-3 rounded-2xl flex items-center justify-between gap-2">
                     <div>
                       <p className="text-sm font-black text-white">{ch.nombre}</p>
                       <p className="text-xs text-slate-400">DNI: {ch.dni || '—'} • Tel: {ch.telefono || '—'}</p>
                     </div>
-                    <span className="text-xs bg-emerald-950 text-emerald-300 border border-emerald-700 px-2.5 py-1 rounded-lg font-bold">
-                      ACTIVO
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditandoChoferId(ch.id);
+                          setNombreNuevoChofer(ch.nombre);
+                          setDniNuevoChofer(ch.dni || '');
+                          setTelNuevoChofer(ch.telefono || '');
+                        }}
+                        className="px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-sky-950 hover:bg-sky-900 border border-sky-700 text-sky-300"
+                      >
+                        ✏️ Editar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => eliminarChoferBaja(ch)}
+                        className="px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-rose-950 hover:bg-rose-900 border border-rose-700 text-rose-300"
+                      >
+                        🗑️ Eliminar
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
+          {/* SUB-PESTAÑA CLIENTES */}
           {subTab === 'CLIENTES' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
-                <h3 className="text-sm font-black text-white">Carga Masiva de Clientes (cod | cliente | apodo | dni)</h3>
-                <textarea
-                  rows={4}
-                  value={csvTexto}
-                  onChange={(e) => setCsvTexto(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs font-mono"
-                />
-                <button onClick={importarClientes} className="w-full py-3 bg-sky-600 hover:bg-sky-500 font-black rounded-xl text-xs">
-                  IMPORTAR / ACTUALIZAR CLIENTES
-                </button>
+              <div className="space-y-4">
+                <form onSubmit={guardarClienteIndividual} className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-sm font-black text-white">{editandoClienteCod ? `✏️ Editando Cliente [${editandoClienteCod}]` : 'Registrar / Editar Cliente'}</h3>
+                    {editandoClienteCod && (
+                      <button type="button" onClick={() => { setEditandoClienteCod(null); setCodClienteForm(''); setNombreClienteForm(''); setApodoClienteForm(''); setDocClienteForm(''); }} className="text-xs text-slate-400">
+                        Cancelar ✕
+                      </button>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-xs text-slate-400">Código</label>
+                      <input disabled={!!editandoClienteCod} value={codClienteForm} onChange={(e) => setCodClienteForm(e.target.value)} placeholder="Ej. 001" className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs font-mono mt-1 disabled:opacity-60" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-slate-400">DNI / RUC</label>
+                      <input value={docClienteForm} onChange={(e) => setDocClienteForm(e.target.value)} placeholder="Opcional" className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs font-mono mt-1" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-xs text-slate-400">Apodo / Nombre Corto</label>
+                      <input value={apodoClienteForm} onChange={(e) => setApodoClienteForm(e.target.value)} placeholder="Ej. Sra. Rosa" className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs mt-1" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-slate-400">Nombre Completo / Razón</label>
+                      <input value={nombreClienteForm} onChange={(e) => setNombreClienteForm(e.target.value)} placeholder="Nombre completo" className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs mt-1" />
+                    </div>
+                  </div>
+                  <button type="submit" className="w-full py-2.5 bg-sky-600 hover:bg-sky-500 font-black rounded-xl text-xs">
+                    {editandoClienteCod ? '💾 GUARDAR CAMBIOS' : '+ GUARDAR CLIENTE'}
+                  </button>
+                </form>
+
+                <div className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-2">
+                  <h3 className="text-xs font-black text-slate-300 uppercase">Carga Masiva desde Excel (cod | nombre | apodo | dni)</h3>
+                  <textarea
+                    rows={3}
+                    value={csvTexto}
+                    onChange={(e) => setCsvTexto(e.target.value)}
+                    placeholder="001	ROSA PEREZ	Sra. Rosa	41258963"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs font-mono"
+                  />
+                  <button type="button" onClick={importarClientes} className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 font-black rounded-xl text-xs">
+                    IMPORTAR LISTA MASIVA
+                  </button>
+                </div>
               </div>
 
-              <div className="max-h-60 overflow-y-auto divide-y divide-slate-800 bg-slate-950 border border-slate-800 rounded-2xl p-3 text-xs">
-                {clientes.map(c => (
-                  <div key={c.cod} className="py-2 flex justify-between">
-                    <span><strong className="text-sky-400">[{c.cod}]</strong> {c.apodo}</span>
-                    <span className="text-slate-400 truncate max-w-[180px]">{c.cliente}</span>
+              <div className="max-h-[430px] overflow-y-auto divide-y divide-slate-800 bg-slate-950 border border-slate-800 rounded-2xl p-3 text-xs">
+                {clientesActivos.length === 0 && (
+                  <p className="text-slate-500 py-2">Sin clientes registrados aún.</p>
+                )}
+                {clientesActivos.map(c => (
+                  <div key={c.cod} className="py-2.5 flex items-center justify-between gap-2">
+                    <div>
+                      <span><strong className="text-sky-400">[{c.cod}]</strong> <strong className="text-white">{c.apodo}</strong></span>
+                      <p className="text-[11px] text-slate-400 truncate max-w-[190px]">{c.cliente} {c.docIdentidad ? `• ${c.docIdentidad}` : ''}</p>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditandoClienteCod(c.cod);
+                          setCodClienteForm(c.cod);
+                          setNombreClienteForm(c.cliente);
+                          setApodoClienteForm(c.apodo);
+                          setDocClienteForm(c.docIdentidad || '');
+                        }}
+                        className="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-sky-950 border border-sky-700 text-sky-300"
+                      >
+                        ✏️ Editar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => eliminarClienteBaja(c)}
+                        className="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-rose-950 border border-rose-700 text-rose-300"
+                      >
+                        🗑️ Eliminar
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
+          {/* SUB-PESTAÑA NUBE */}
           {subTab === 'NUBE' && esDev && (
             <div className="bg-slate-950 border border-emerald-500/40 p-5 rounded-2xl space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-base font-black text-emerald-400">Conexión en Tiempo Real (Supabase + Google Drive Sheets)</h3>
-                  <p className="text-xs text-slate-400">Sincroniza usuarios, bloqueos, correlativos y movimientos entre todos los celulares al instante.</p>
+                  <p className="text-xs text-slate-400">Sincroniza usuarios, autorizaciones por PIN, bajas y movimientos al instante.</p>
                 </div>
                 <span className={`px-3 py-1 rounded-full text-xs font-black ${sbConectado ? 'bg-emerald-950 text-emerald-300 border border-emerald-500' : 'bg-slate-800 text-slate-400'}`}>
                   {sbConectado ? '● CONECTADO' : '○ LOCAL / SIN NUBE'}
@@ -2895,7 +3846,7 @@
                     type="text"
                     value={sbUrl}
                     onChange={(e) => setSbUrl(e.target.value)}
-                    placeholder="https://xxxxx.supabase.co"
+                    placeholder="https://lhkzagetgxgaxpjhugxy.supabase.co"
                     className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs font-mono mt-1"
                   />
                 </div>
