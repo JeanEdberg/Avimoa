@@ -540,7 +540,7 @@
           await cargarDatosDelDiaDesdeNube(client, fechaOperativa);
 
           client
-            .channel('avimoa-realtime-v3')
+            .channel('avimoa-realtime-v4')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'usuarios_app' }, async () => {
               const { data } = await client.from('usuarios_app').select('*');
               if (data) {
@@ -608,7 +608,7 @@
           })));
 
           setMermasAnte((resMermas.data || []).map(r => ({
-            id: r.id, placa: r.placa, aves: r.aves, peso: r.peso, motivo: r.motivo, conFoto: r.con_foto
+            id: r.id, placa: r.placa || 'ACOPIO GENERAL', aves: r.aves, peso: r.peso, motivo: r.motivo, conFoto: r.con_foto
           })));
 
           setGalpones((resGalp.data || []).map(r => ({
@@ -2502,7 +2502,7 @@
     }
 
     // =========================================================================
-    // MÓDULO 3: CONTEO Y MERMA ANTE-MORTEM (BLOQUEADO HASTA AUTORIZACIÓN ADMIN)
+    // MÓDULO 3: CONTEO Y MERMA ANTE-MORTEM (PLACA OPCIONAL + CANDADO PIN)
     // =========================================================================
     function ModuloConteoAnteMortem({
       placas, nombreChofer, mermasAnte, saldoTeorico, confirmacionPre, usuario,
@@ -2510,15 +2510,15 @@
     }) {
       const [avesMuertas, setAvesMuertas] = useState(1);
       const [pesoMerma, setPesoMerma] = useState(2.8);
-      const [placa, setPlaca] = useState('');
+      const [placa, setPlaca] = useState('ACOPIO GENERAL');
       const [fotoCapturada, setFotoCapturada] = useState(false);
 
       const [solicitandoAuthUI, setSolicitandoAuthUI] = useState(false);
       const [motivoSolAuth, setMotivoSolAuth] = useState('');
 
       useEffect(() => {
-        if (placas.length > 0 && (!placa || !placas.some(p => p.placa === placa))) {
-          setPlaca(placas[0].placa);
+        if (placa !== 'ACOPIO GENERAL' && !placas.some(p => p.placa === placa)) {
+          setPlaca('ACOPIO GENERAL');
         }
       }, [placas]);
 
@@ -2542,7 +2542,7 @@
         }
         onAgregarMerma({
           id: 'ma-' + Date.now(),
-          placa: placa || 'S/P',
+          placa: placa || 'ACOPIO GENERAL',
           aves: Number(avesMuertas),
           peso: Number(pesoMerma),
           motivo: 'Muerte en transporte / espera',
@@ -2727,9 +2727,9 @@
             <p className="text-xs text-slate-400">Acumulado actual: <strong className="text-white">{acumuladoAnte} aves</strong> (Límite sin foto: 2 aves).</p>
             <form onSubmit={handleMerma} className="space-y-3">
               <div>
-                <label className="text-xs text-slate-400">Vehículo / Placa</label>
+                <label className="text-xs text-slate-400">Vehículo / Placa (Opcional)</label>
                 <select value={placa} onChange={(e) => setPlaca(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold">
-                  {placas.length === 0 && <option value="S/P">— Sin placas activas —</option>}
+                  <option value="ACOPIO GENERAL">— Acopio General / Sin placa específica —</option>
                   {placas.map(v => <option key={v.id} value={v.placa}>{v.placa} — {nombreChofer(v.choferId)}</option>)}
                 </select>
               </div>
