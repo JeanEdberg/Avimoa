@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Control Avícola Consolidado — Plumífero & Los 7 Pollitos</title>
+  <title>Avimoa — Control Avícola Inteligente</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body { background-color: #020617; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
     input, select, textarea { font-size: 16px !important; }
@@ -17,20 +19,123 @@
   <div id="root"></div>
 
   <script type="text/babel">
-    const { useState } = React;
+    const { useState, useEffect, useRef } = React;
+
+    // =========================================================================
+    // LOGO VECTORIAL MODERNO E INNOVADOR: AVIMOA
+    // =========================================================================
+    function LogoAvimoa({ compact = false }) {
+      if (compact) {
+        return (
+          <div className="flex items-center gap-2.5 select-none">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500/20 via-slate-900 to-emerald-500/20 border border-amber-400/40 flex items-center justify-center shadow-lg">
+              <svg viewBox="0 0 48 48" className="w-6 h-6" fill="none">
+                <defs>
+                  <linearGradient id="aviGradSm" x1="6" y1="6" x2="42" y2="42" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#fbbf24" />
+                    <stop offset="55%" stopColor="#f59e0b" />
+                    <stop offset="100%" stopColor="#10b981" />
+                  </linearGradient>
+                </defs>
+                {/* Cresta geométrica */}
+                <path d="M18 11C18 8.5 21 7 23 9C24.5 7 28 8 28 11" stroke="#fbbf24" strokeWidth="2.8" strokeLinecap="round" />
+                {/* Silueta estilizada de ave + onda de trazabilidad */}
+                <path d="M14 25C14 17.5 19.5 13 26.5 13C31.5 13 35 16.5 35 21.5C35 28.5 29.5 35 21.5 35C16.5 35 14 31 14 25Z" stroke="url(#aviGradSm)" strokeWidth="3.2" />
+                {/* Pico tech */}
+                <path d="M35 19.5L41 22L35 24.5" fill="#fbbf24" />
+                {/* Ojo / Nodo digital */}
+                <circle cx="28.5" cy="19.5" r="2.2" fill="#34d399" />
+                {/* Ala / Pulso de control */}
+                <path d="M18 25.5L22.5 25.5L24.5 22.5L27 28.5L29 25.5L32 25.5" stroke="#34d399" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <div>
+              <div className="flex items-baseline tracking-tight leading-none">
+                <span className="text-lg font-black text-white">AVI</span>
+                <span className="text-lg font-black bg-gradient-to-r from-amber-400 to-emerald-400 bg-clip-text text-transparent">MOA</span>
+              </div>
+              <p className="text-[9px] font-bold tracking-[0.18em] text-slate-400 uppercase">Control Avícola</p>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="flex flex-col items-center select-none">
+          <div className="relative w-20 h-20 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/60 border border-amber-400/40 shadow-[0_0_35px_rgba(245,158,11,0.18)] flex items-center justify-center mb-3">
+            <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-slate-950 animate-pulse"></div>
+            <svg viewBox="0 0 64 64" className="w-13 h-13" fill="none">
+              <defs>
+                <linearGradient id="aviGradLg" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#fde047" />
+                  <stop offset="50%" stopColor="#f59e0b" />
+                  <stop offset="100%" stopColor="#10b981" />
+                </linearGradient>
+                <linearGradient id="wingGrad" x1="18" y1="32" x2="44" y2="42" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#34d399" />
+                  <stop offset="100%" stopColor="#38bdf8" />
+                </linearGradient>
+              </defs>
+              {/* Anillo orbital de trazabilidad */}
+              <path d="M12 44C8 37 8 26 14 18C20 10 31 7 41 10" stroke="url(#aviGradLg)" strokeWidth="1.6" strokeDasharray="3 3" strokeLinecap="round" opacity="0.65" />
+              {/* Cresta moderna */}
+              <path d="M24 14C24 10.5 28 9 30.5 11.5C32.5 9 37 10.5 37 14.5" stroke="#fbbf24" strokeWidth="3.2" strokeLinecap="round" />
+              {/* Cuerpo / Cabeza estilizada */}
+              <path d="M18 33C18 22.5 25.5 16.5 35 16.5C42 16.5 47 21.5 47 28.5C47 38.5 39.5 47.5 28.5 47.5C21.5 47.5 18 42 18 33Z" stroke="url(#aviGradLg)" strokeWidth="3.6" />
+              {/* Pico geométrico */}
+              <path d="M47 25.5L55 29L47 32.5" fill="#fbbf24" />
+              {/* Ojo nodo inteligente */}
+              <circle cx="38.5" cy="25.5" r="2.8" fill="#34d399" />
+              <circle cx="38.5" cy="25.5" r="1" fill="#020617" />
+              {/* Ala con pulso de telemetría / pesaje */}
+              <path d="M23 34.5H28.5L31.5 29.5L35 39.5L38 34.5H42.5" stroke="url(#wingGrad)" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          <div className="flex items-baseline tracking-tight">
+            <span className="text-3xl font-black text-white">AVI</span>
+            <span className="text-3xl font-black bg-gradient-to-r from-amber-400 via-amber-300 to-emerald-400 bg-clip-text text-transparent">MOA</span>
+          </div>
+          <p className="text-[11px] font-bold tracking-[0.22em] text-slate-400 uppercase mt-0.5">
+            Trazabilidad & Control Avícola
+          </p>
+        </div>
+      );
+    }
 
     const EMPRESAS = [
-      { id: 'emp-1', nombreCorto: 'PLUMÍFERO', ruc: '20601234561', razonSocial: 'INVERSIONES Y NEGOCIACIONES PLUMÍFERO E.I.R.L.' },
-      { id: 'emp-2', nombreCorto: 'LOS 7 POLLITOS', ruc: '20609876543', razonSocial: 'LOS 7 POLLITOS INVERSIONES E.I.R.L.' },
+      {
+        id: 'emp-1',
+        nombreCorto: 'PLUMÍFERO',
+        ruc: '20601234561',
+        razonSocial: 'INVERSIONES Y NEGOCIACIONES PLUMIFERO E.I.R.L.',
+        bancos: [
+          'BCP: 485-2351962-0-79',
+          'CCI: 00248500235196207915',
+          'BBVA: 0011-0263-11-0100036291',
+          'CCI: 011-263-000100036291-11',
+          'YAPE: 931 171473'
+        ]
+      },
+      {
+        id: 'emp-2',
+        nombreCorto: 'LOS 7 POLLITOS',
+        ruc: '20609876543',
+        razonSocial: 'LOS 7 POLLITOS INVERSIONES E.I.R.L.',
+        bancos: [
+          'BBVA CTA: 0011-0263-12-0100014514',
+          'CCI: 0011-263-000100014514-12',
+          'INTERBANK CTA: 335-3003134332',
+          'CCI: 00333500300313433277'
+        ]
+      },
     ];
 
-    const USUARIOS_DEMO = [
-      { id: 'u-1', nombre: 'Jean Guevara (Dev)', rol: 'DESARROLLADOR', pin: '1234', desc: 'Acceso Total + Maestros + Consola' },
-      { id: 'u-2', nombre: 'Gerencia / Supervisión', rol: 'SUPERVISION', pin: '1111', desc: 'Acceso Total + Kardex + Maestros' },
-      { id: 'u-3', nombre: 'Operador Galpón', rol: 'TRASLADO', pin: '4444', desc: 'Solo Ingreso / Salida de Galpón' },
-      { id: 'u-4', nombre: 'Despachador Acopio', rol: 'DESPACHO', pin: '5555', desc: 'Solo Emisión de Guías Pluma' },
-      { id: 'u-5', nombre: 'Encargado Conteo', rol: 'CONTEO', pin: '2222', desc: 'Conteo Físico + Merma Ante-Mortem' },
-      { id: 'u-6', nombre: 'Jefe de Faenado', rol: 'FAENADO', pin: '3333', desc: 'Faenado Mañana + Post-Mortem + Cierre' },
+    const ROLES_MODULO = [
+      { value: 'TRASLADO', label: '1. Traslado Galpón (Ingreso Pollo Vivo)' },
+      { value: 'DESPACHO', label: '2. Despacho / Guía Pluma (Notas PDF)' },
+      { value: 'CONTEO', label: '3. Conteo Físico & Merma Ante-Mortem' },
+      { value: 'FAENADO', label: '4. Faenado & Merma Post-Mortem' },
+      { value: 'SUPERVISION', label: '5. Supervisión / Gerencia (Todos los módulos)' },
     ];
 
     const PERMISOS_ROL = {
@@ -41,6 +146,17 @@
       SUPERVISION: ['INGRESOS', 'GUIAS', 'CONTEO_ANTE', 'FAENADO_POST', 'KARDEX', 'MAESTROS'],
       DESARROLLADOR: ['INGRESOS', 'GUIAS', 'CONTEO_ANTE', 'FAENADO_POST', 'KARDEX', 'MAESTROS'],
     };
+
+    const USUARIOS_INIT = [
+      {
+        dni: '47720216',
+        nombre: 'Jean Guevara (Desarrollador)',
+        rol: 'DESARROLLADOR',
+        pin: '1234',
+        intentosFallidos: 0,
+        bloqueado: false,
+      }
+    ];
 
     const GALPONES_INIT = [
       { id: 'g-1', sector: 'San Francisco', numeroGalpon: 'Galpón Único', referencia: 'Sector San Francisco Km 18', empresaId: 'emp-1' },
@@ -65,23 +181,297 @@
     ];
 
     const CLIENTES_INIT = [
-      { cod: '018', cliente: 'LUCERO DAMARIS ZEGARRA APAZA', apodo: 'Lucero Apaza' },
-      { cod: '222', cliente: 'JHON CASAS', apodo: 'Jhon Casas' },
-      { cod: '236', cliente: 'YULI MILAGROS', apodo: 'Yuli Milagros' },
-      { cod: '075', cliente: 'TIENDA BETO // CASERITA', apodo: 'Tienda Beto' },
-      { cod: '099', cliente: 'SANTOS', apodo: 'Santos' },
+      { cod: '018', cliente: 'LUCERO DAMARIS ZEGARRA APAZA', apodo: 'Lucero Apaza', docIdentidad: '' },
+      { cod: '222', cliente: 'JHON CASAS', apodo: 'Jhon Casas', docIdentidad: '' },
+      { cod: '236', cliente: 'YULI MILAGROS', apodo: 'Yuli Milagros', docIdentidad: '' },
+      { cod: '075', cliente: 'TIENDA BETO // CASERITA', apodo: 'Tienda Beto', docIdentidad: '' },
+      { cod: '099', cliente: 'SANTOS', apodo: 'Santos', docIdentidad: '' },
+      { cod: '000', cliente: 'OFICINA CAMAL (MERMA / INTERNO)', apodo: 'OFICINA CAMAL', docIdentidad: '' },
     ];
 
-    function App() {
-      const [usuarioActivo, setUsuarioActivo] = useState(null);
-      const [pinInput, setPinInput] = useState('');
-      const [pinError, setPinError] = useState('');
-      const [tabActiva, setTabActiva] = useState('KARDEX');
+    function generarPinAleatorio4() {
+      return String(Math.floor(1000 + Math.random() * 9000));
+    }
 
-      const [fechaOperativa, setFechaOperativa] = useState('2026-11-18');
+    // =========================================================================
+    // GENERADOR PDF A5 "NOTA DE PEDIDO" (FORMATO TALONARIO CENTRO DE ACOPIO)
+    // =========================================================================
+    function descargarPDFNotaPedido(guia) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a5' });
+
+      const azul = [28, 63, 148];
+      const azulClaro = [235, 242, 255];
+      const rojo = [210, 35, 42];
+      const negro = [15, 23, 42];
+
+      const empInfo = EMPRESAS.find(e => e.nombreCorto === guia.empresa) || EMPRESAS[0];
+
+      doc.setDrawColor(...azul);
+      doc.setLineWidth(0.45);
+      doc.rect(6, 6, 136, 198);
+
+      // Logo pollito + Centro de Acopio
+      doc.setFillColor(...azulClaro);
+      doc.circle(16.5, 16.5, 7.5, 'F');
+      doc.setDrawColor(...azul);
+      doc.circle(16.5, 16.5, 7.5, 'S');
+      doc.setFillColor(...azul);
+      doc.circle(16.5, 15, 3.2, 'F');
+      doc.circle(16.5, 19.5, 4.2, 'F');
+      doc.setFillColor(255, 255, 255);
+      doc.circle(15.3, 14.5, 0.7, 'F');
+      doc.circle(17.7, 14.5, 0.7, 'F');
+      doc.setFillColor(245, 158, 11);
+      doc.triangle(15.8, 15.6, 17.2, 15.6, 16.5, 16.8, 'F');
+
+      doc.setTextColor(...azul);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12.5);
+      doc.text('"CENTRO DE ACOPIO"', 54, 13.5, { align: 'center' });
+
+      doc.setFontSize(6.3);
+      doc.text('VENTA DE POLLOS A PRECIOS ESPECIALES', 54, 17.8, { align: 'center' });
+      doc.text('AL POR MAYOR Y MENOR', 54, 21.0, { align: 'center' });
+
+      // Nota de Pedido N°
+      doc.setDrawColor(...azul);
+      doc.setLineWidth(0.4);
+      doc.rect(86, 8.5, 53, 16.5);
+      doc.setFillColor(...azulClaro);
+      doc.rect(86, 8.5, 53, 6.5, 'F');
+      doc.line(86, 15, 139, 15);
+
+      doc.setTextColor(...azul);
+      doc.setFontSize(10.5);
+      doc.text('NOTA DE PEDIDO', 112.5, 13.0, { align: 'center' });
+
+      doc.setTextColor(...rojo);
+      doc.setFontSize(13);
+      doc.setFont('courier', 'bold');
+      doc.text(`N°  ${String(guia.numero).padStart(6, '0')}`, 112.5, 21.5, { align: 'center' });
+
+      // Bloque Cliente, Vendedor, Fecha y Doc Identidad
+      const yDatos = 27.5;
+      doc.setDrawColor(...azul);
+      doc.setLineWidth(0.35);
+      doc.rect(8, yDatos, 88, 16);
+      doc.setFillColor(...azulClaro);
+      doc.rect(8, yDatos, 88, 4, 'F');
+      doc.rect(8, yDatos + 8, 88, 4, 'F');
+      doc.line(8, yDatos + 4, 96, yDatos + 4);
+      doc.line(8, yDatos + 8, 96, yDatos + 8);
+      doc.line(8, yDatos + 12, 96, yDatos + 12);
+
+      doc.setTextColor(...azul);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(6.5);
+      doc.text('SEÑOR(ES)', 52, yDatos + 3.0, { align: 'center' });
+      doc.text('VENDEDOR', 52, yDatos + 11.0, { align: 'center' });
+
+      doc.setTextColor(...negro);
+      doc.setFontSize(8.5);
+      const textoCliente = guia.cod && guia.cod !== '000' ? `[${guia.cod}] ${guia.cliente}` : guia.cliente;
+      doc.text(textoCliente.toUpperCase(), 10, yDatos + 7.0);
+      doc.text((guia.vendedor || 'ACOPIO').toUpperCase(), 10, yDatos + 15.0);
+
+      doc.rect(98, yDatos, 41, 16);
+      doc.setFillColor(...azulClaro);
+      doc.rect(98, yDatos, 41, 4, 'F');
+      doc.rect(98, yDatos + 8, 41, 4, 'F');
+      doc.line(98, yDatos + 4, 139, yDatos + 4);
+      doc.line(98, yDatos + 8, 139, yDatos + 8);
+      doc.line(98, yDatos + 12, 139, yDatos + 12);
+      doc.line(111.6, yDatos + 4, 111.6, yDatos + 8);
+      doc.line(125.3, yDatos + 4, 125.3, yDatos + 8);
+
+      doc.setTextColor(...azul);
+      doc.setFontSize(6.5);
+      doc.text('FECHA', 118.5, yDatos + 3.0, { align: 'center' });
+      doc.text('DOC. IDENTIDAD', 118.5, yDatos + 11.0, { align: 'center' });
+
+      const partesFecha = (guia.fecha || '2026-11-19').split('-');
+      doc.setTextColor(...negro);
+      doc.setFontSize(8.5);
+      doc.text(partesFecha[2] || '19', 104.8, yDatos + 7.0, { align: 'center' });
+      doc.text(partesFecha[1] || '11', 118.5, yDatos + 7.0, { align: 'center' });
+      doc.text((partesFecha[0] || '2026').slice(-2), 132.1, yDatos + 7.0, { align: 'center' });
+      doc.text(guia.docIdentidad || '-', 118.5, yDatos + 15.0, { align: 'center' });
+
+      // Tabla 15 filas
+      const yTabla = 46;
+      const hHeader = 6.2;
+      const hFila = 5.6;
+      const numFilas = 15;
+      const cols = [
+        { label: 'N°', w: 8 },
+        { label: 'CANT', w: 13 },
+        { label: 'DETALLE', w: 36 },
+        { label: 'PESO', w: 16 },
+        { label: 'JABA', w: 13 },
+        { label: 'BOLSA', w: 13 },
+        { label: 'DSCTO', w: 13 },
+        { label: 'TOTAL', w: 19 },
+      ];
+
+      doc.setFillColor(...azulClaro);
+      doc.rect(8, yTabla, 131, hHeader, 'FD');
+      doc.setTextColor(...azul);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(6.5);
+
+      let xCursor = 8;
+      cols.forEach((c, idx) => {
+        if (idx > 0) doc.line(xCursor, yTabla, xCursor, yTabla + hHeader + numFilas * hFila);
+        doc.text(c.label, xCursor + c.w / 2, yTabla + 4.3, { align: 'center' });
+        xCursor += c.w;
+      });
+
+      const filasDatos = guia.filas || [];
+      const precioKg = Number(guia.precioKg || 0);
+
+      for (let i = 0; i < numFilas; i++) {
+        const yRow = yTabla + hHeader + i * hFila;
+        doc.setDrawColor(...azul);
+        doc.setLineWidth(0.25);
+        doc.line(8, yRow, 139, yRow);
+
+        doc.setFillColor(245, 248, 255);
+        doc.rect(8, yRow, 8, hFila, 'F');
+        doc.setTextColor(...azul);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(7.2);
+        doc.text(String(i + 1), 12, yRow + 4.0, { align: 'center' });
+
+        const item = filasDatos[i];
+        if (item) {
+          const cantAves = Number(item.jabas || 0) * Number(item.avesJaba || 0);
+          const pesoRow = Number(item.peso || 0);
+          const dsctoRow = Number(item.dscto || 0);
+          const subTotalSoles = precioKg > 0 ? (pesoRow * precioKg - dsctoRow) : 0;
+          const detalleTxt = item.detalle || (i === 0 && guia.detalle ? guia.detalle : 'Pollo Vivo');
+
+          doc.setTextColor(...negro);
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(7.3);
+
+          if (cantAves > 0) doc.text(String(cantAves), 27.5, yRow + 4.0, { align: 'center' });
+          doc.text(detalleTxt.slice(0, 22), 30.2, yRow + 4.0);
+          if (pesoRow > 0) doc.text(pesoRow.toFixed(1), 75.5, yRow + 4.0, { align: 'right' });
+          if (Number(item.jabas) > 0) doc.text(String(item.jabas), 83.5, yRow + 4.0, { align: 'center' });
+          if (Number(item.avesJaba) > 0) doc.text(String(item.avesJaba), 96.5, yRow + 4.0, { align: 'center' });
+          if (dsctoRow > 0) doc.text(dsctoRow.toFixed(2), 115.5, yRow + 4.0, { align: 'right' });
+          if (subTotalSoles > 0) doc.text(subTotalSoles.toFixed(2), 137.5, yRow + 4.0, { align: 'right' });
+        }
+      }
+
+      const yFinTabla = yTabla + hHeader + numFilas * hFila;
+      doc.setLineWidth(0.4);
+      doc.rect(8, yTabla, 131, hHeader + numFilas * hFila);
+
+      const ySub = yFinTabla + 1.5;
+      doc.setFillColor(...azulClaro);
+      doc.rect(8, ySub, 131, 6.5, 'FD');
+      doc.setTextColor(...azul);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.2);
+      doc.text(`TOTAL AVES: ${guia.aves}`, 11, ySub + 4.4);
+      doc.text(`TOTAL JABAS: ${guia.jabas}`, 52, ySub + 4.4);
+      if (Number(guia.totalSoles) > 0) {
+        doc.setTextColor(...negro);
+        doc.text(`TOTAL S/ ${Number(guia.totalSoles).toFixed(2)}`, 137, ySub + 4.4, { align: 'right' });
+      }
+
+      const yPie = ySub + 8.5;
+      doc.setDrawColor(...azul);
+      doc.setLineWidth(0.35);
+      doc.rect(8, yPie, 66, 21);
+      doc.setTextColor(...azul);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7);
+      doc.text('RECIBIR CONFORME', 41, yPie + 4, { align: 'center' });
+
+      doc.setLineDashPattern([1, 1], 0);
+      doc.line(14, yPie + 11.5, 68, yPie + 11.5);
+      doc.setLineDashPattern([], 0);
+      doc.setFontSize(6);
+      doc.text('FIRMA', 41, yPie + 14.2, { align: 'center' });
+      doc.text('Nombre y Apellidos: ________________________', 11, yPie + 18.8);
+
+      doc.rect(8, yPie + 22.5, 66, 12);
+      doc.setFontSize(6.5);
+      doc.text('Nota: este documento no es comprobante', 10.5, yPie + 27.3);
+      doc.text('de pago canjear por boleta de Venta o Factura', 10.5, yPie + 31.3);
+
+      doc.setFillColor(...azulClaro);
+      doc.rect(77, yPie, 28, 9, 'FD');
+      doc.rect(105, yPie, 34, 9, 'S');
+      doc.setTextColor(...azul);
+      doc.setFontSize(7.5);
+      doc.text('PESO TOTAL', 91, yPie + 5.7, { align: 'center' });
+
+      doc.setTextColor(...negro);
+      doc.setFontSize(10);
+      doc.text(`${Number(guia.peso).toFixed(1)} kg`, 122, yPie + 6.0, { align: 'center' });
+
+      doc.setTextColor(...azul);
+      doc.setFontSize(6.1);
+      doc.text(empInfo.razonSocial, 77, yPie + 13.2);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(5.8);
+      empInfo.bancos.forEach((lineaBanco, idx) => {
+        doc.text(lineaBanco, 77, yPie + 17.0 + idx * 3.5);
+      });
+
+      doc.setFontSize(5.2);
+      doc.setTextColor(120, 130, 150);
+      doc.text('Generado con Avimoa • Control Avícola', 138, 202.5, { align: 'right' });
+
+      doc.save(`Nota_Pedido_${guia.empresa.replace(/\s+/g, '_')}_${String(guia.numero).padStart(6, '0')}.pdf`);
+    }
+
+    // =========================================================================
+    // APLICACIÓN PRINCIPAL: AVIMOA
+    // =========================================================================
+    function App() {
+      // Estado Usuarios con persistencia y sincronización Supabase
+      const [usuarios, setUsuarios] = useState(() => {
+        const guardado = localStorage.getItem('avimoa_usuarios');
+        return guardado ? JSON.parse(guardado) : USUARIOS_INIT;
+      });
+
+      const [usuarioActivo, setUsuarioActivo] = useState(null);
+      const [tipoAccesoLogin, setTipoAccesoLogin] = useState('RESPONSABLE'); // 'RESPONSABLE' | 'DESARROLLADOR'
+      const [dniInput, setDniInput] = useState('');
+      const [pinInput, setPinInput] = useState('');
+      const [mostrarPin, setMostrarPin] = useState(false);
+      const [loginError, setLoginError] = useState('');
+      const [cuentaBloqueadaMsg, setCuentaBloqueadaMsg] = useState(false);
+
+      const [tabActiva, setTabActiva] = useState('KARDEX');
+      const [fechaOperativa, setFechaOperativa] = useState('2026-11-19');
       const [online, setOnline] = useState(true);
       const [colaOffline, setColaOffline] = useState([]);
       const [toast, setToast] = useState(null);
+
+      // Configuración Supabase / Tiempo Real
+      const [sbUrl, setSbUrl] = useState(() => localStorage.getItem('avimoa_sb_url') || '');
+      const [sbKey, setSbKey] = useState(() => localStorage.getItem('avimoa_sb_key') || '');
+      const [webhookUrl, setWebhookUrl] = useState(() => localStorage.getItem('avimoa_webhook_url') || '');
+      const [sbConectado, setSbConectado] = useState(false);
+      const supabaseRef = useRef(null);
+
+      // Correlativos Independientes por Talonario Empresa
+      const [correlativos, setCorrelativos] = useState(() => {
+        const guardado = localStorage.getItem('avimoa_correlativos');
+        return guardado
+          ? JSON.parse(guardado)
+          : {
+              'PLUMÍFERO': { numero: 1601, inicializado: false },
+              'LOS 7 POLLITOS': { numero: 1432, inicializado: false },
+            };
+      });
 
       // Catálogos Maestros Editables
       const [galpones, setGalpones] = useState(GALPONES_INIT);
@@ -92,14 +482,10 @@
       // Movimientos del Turno
       const [saldoInicial] = useState(0);
       const [ingresos, setIngresos] = useState([
-        { id: 'i-1', sector: 'San Francisco', numeroGalpon: 'Galpón Único', empresa: 'PLUMÍFERO', placa: 'PLU-801', chofer: 'Demetrio', jabas: 200, aves: 1600, modo: 'FOTO_OCR' }
+        { id: 'i-1', sector: 'San Francisco', numeroGalpon: 'Galpón Único', empresa: 'PLUMÍFERO', placa: 'PLU-801', chofer: 'Demetrio', jabas: 200, aves: 1600, modo: 'DIGITAL' }
       ]);
-      const [guias, setGuias] = useState([
-        { id: 'gu-1', empresa: 'LOS 7 POLLITOS', numero: '001425', cod: '018', cliente: 'Lucero Apaza', jabas: 34, aves: 268, peso: 921.0, modo: 'DIGITAL' }
-      ]);
-      const [mermasAnte, setMermasAnte] = useState([
-        { id: 'ma-1', placa: 'PLU-801', aves: 2, peso: 5.5, motivo: 'Ahogados en trayecto', conFoto: false }
-      ]);
+      const [guias, setGuias] = useState([]);
+      const [mermasAnte, setMermasAnte] = useState([]);
       const [confirmacionPre, setConfirmacionPre] = useState(null);
       const [faenadoManana, setFaenadoManana] = useState(null);
       const [pesoFaenado, setPesoFaenado] = useState(0);
@@ -116,6 +502,282 @@
         setTimeout(() => setToast(null), 4000);
       };
 
+      const guardarUsuariosLocalYNube = async (listaActualizada, usuarioModificado = null) => {
+        setUsuarios(listaActualizada);
+        localStorage.setItem('avimoa_usuarios', JSON.stringify(listaActualizada));
+        if (supabaseRef.current && online && usuarioModificado) {
+          await supabaseRef.current.from('usuarios_app').upsert({
+            dni: usuarioModificado.dni,
+            nombre: usuarioModificado.nombre,
+            rol: usuarioModificado.rol,
+            pin: usuarioModificado.pin,
+            intentos_fallidos: usuarioModificado.intentosFallidos,
+            bloqueado: usuarioModificado.bloqueado,
+            updated_at: new Date().toISOString(),
+          });
+        }
+      };
+
+      const actualizarCorrelativoEmpresa = async (empresa, nuevoNumero, marcadoInicializado = true) => {
+        const actualizado = {
+          ...correlativos,
+          [empresa]: { numero: Number(nuevoNumero), inicializado: marcadoInicializado },
+        };
+        setCorrelativos(actualizado);
+        localStorage.setItem('avimoa_correlativos', JSON.stringify(actualizado));
+
+        if (supabaseRef.current && online) {
+          await supabaseRef.current
+            .from('correlativos_talonario')
+            .upsert({ empresa, correlativo_actual: Number(nuevoNumero), inicializado: marcadoInicializado });
+        }
+      };
+
+      const conectarSupabase = async (urlParam = sbUrl, keyParam = sbKey, silencioso = false) => {
+        if (!urlParam || !keyParam || !window.supabase) return;
+        try {
+          const client = window.supabase.createClient(urlParam.trim(), keyParam.trim());
+          const { data: usersData, error } = await client.from('usuarios_app').select('*');
+          if (error) throw error;
+
+          supabaseRef.current = client;
+          setSbConectado(true);
+          localStorage.setItem('avimoa_sb_url', urlParam.trim());
+          localStorage.setItem('avimoa_sb_key', keyParam.trim());
+
+          if (usersData && usersData.length > 0) {
+            const mapeados = usersData.map(u => ({
+              dni: u.dni,
+              nombre: u.nombre,
+              rol: u.rol,
+              pin: u.pin,
+              intentosFallidos: u.intentos_fallidos || 0,
+              bloqueado: !!u.bloqueado,
+            }));
+            setUsuarios(mapeados);
+            localStorage.setItem('avimoa_usuarios', JSON.stringify(mapeados));
+          }
+
+          const { data: corrData } = await client.from('correlativos_talonario').select('*');
+          if (corrData && corrData.length > 0) {
+            const mapa = { ...correlativos };
+            corrData.forEach(r => {
+              mapa[r.empresa] = { numero: r.correlativo_actual, inicializado: r.inicializado };
+            });
+            setCorrelativos(mapa);
+            localStorage.setItem('avimoa_correlativos', JSON.stringify(mapa));
+          }
+
+          await cargarDatosDelDiaDesdeNube(client, fechaOperativa);
+
+          client
+            .channel('avimoa-realtime')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'usuarios_app' }, async () => {
+              const { data } = await client.from('usuarios_app').select('*');
+              if (data) {
+                const m = data.map(u => ({
+                  dni: u.dni, nombre: u.nombre, rol: u.rol, pin: u.pin,
+                  intentosFallidos: u.intentos_fallidos || 0, bloqueado: !!u.bloqueado
+                }));
+                setUsuarios(m);
+                localStorage.setItem('avimoa_usuarios', JSON.stringify(m));
+              }
+            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'movimientos_ingreso' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'guias_pluma' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'mermas_ante_mortem' }, () => cargarDatosDelDiaDesdeNube(client, fechaOperativa))
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'correlativos_talonario' }, async () => {
+              const { data } = await client.from('correlativos_talonario').select('*');
+              if (data) {
+                const m = {};
+                data.forEach(r => { m[r.empresa] = { numero: r.correlativo_actual, inicializado: r.inicializado }; });
+                setCorrelativos(prev => ({ ...prev, ...m }));
+              }
+            })
+            .subscribe();
+
+          if (!silencioso) notificar('Avimoa conectado en TIEMPO REAL con Supabase.');
+        } catch (err) {
+          setSbConectado(false);
+          if (!silencioso) notificar('Error conectando a Supabase. Verifica URL/Key o ejecuta el SQL.', 'err');
+        }
+      };
+
+      const cargarDatosDelDiaDesdeNube = async (client, fecha) => {
+        try {
+          const [resIng, resGuias, resMermas, resGalp, resPlacas, resChof, resCli] = await Promise.all([
+            client.from('movimientos_ingreso').select('*').eq('fecha_operativa', fecha),
+            client.from('guias_pluma').select('*').eq('fecha_operativa', fecha),
+            client.from('mermas_ante_mortem').select('*').eq('fecha_operativa', fecha),
+            client.from('galpones').select('*'),
+            client.from('placas').select('*'),
+            client.from('choferes').select('*'),
+            client.from('clientes').select('*'),
+          ]);
+
+          if (resIng.data) {
+            setIngresos(resIng.data.map(r => ({
+              id: r.id, sector: r.sector, numeroGalpon: r.numero_galpon, empresa: r.empresa,
+              placa: r.placa, chofer: r.chofer, jabas: r.jabas, aves: r.aves, modo: r.modo
+            })));
+          }
+          if (resGuias.data) {
+            setGuias(resGuias.data.map(r => ({
+              id: r.id, fecha: r.fecha_operativa, empresa: r.empresa, numero: r.numero,
+              cod: r.cod_cliente, cliente: r.cliente, docIdentidad: r.doc_identidad,
+              vendedor: r.vendedor, detalle: r.detalle, precioKg: r.precio_kg,
+              jabas: r.jabas, aves: r.aves, peso: r.peso, totalSoles: r.total_soles,
+              filas: r.filas_json || []
+            })));
+          }
+          if (resMermas.data) {
+            setMermasAnte(resMermas.data.map(r => ({
+              id: r.id, placa: r.placa, aves: r.aves, peso: r.peso, motivo: r.motivo, conFoto: r.con_foto
+            })));
+          }
+          if (resGalp.data && resGalp.data.length > 0) {
+            setGalpones(resGalp.data.map(r => ({
+              id: r.id, sector: r.sector, numeroGalpon: r.numero_galpon, referencia: r.referencia, empresaId: r.empresa_id
+            })));
+          }
+          if (resPlacas.data && resPlacas.data.length > 0) {
+            setPlacas(resPlacas.data.map(r => ({
+              id: r.id, placa: r.placa, modelo: r.modelo, empresaId: r.empresa_id, choferId: r.chofer_id
+            })));
+          }
+          if (resChof.data && resChof.data.length > 0) setChoferes(resChof.data);
+          if (resCli.data && resCli.data.length > 0) {
+            setClientes(resCli.data.map(r => ({
+              cod: r.cod, cliente: r.cliente, apodo: r.apodo, docIdentidad: r.doc_identidad || ''
+            })));
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      };
+
+      useEffect(() => {
+        if (sbUrl && sbKey) conectarSupabase(sbUrl, sbKey, true);
+      }, []);
+
+      const sincronizarOperacionNube = async (tabla, payload, conceptoOffline) => {
+        if (!online || !supabaseRef.current) {
+          setColaOffline(prev => [...prev, { id: Date.now(), tabla, payload, concepto: conceptoOffline }]);
+          return;
+        }
+        await supabaseRef.current.from(tabla).upsert(payload);
+        if (webhookUrl) {
+          fetch(webhookUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tabla, fechaOperativa, payload })
+          }).catch(() => {});
+        }
+      };
+
+      // =======================================================================
+      // VALIDACIÓN DE LOGIN CON DNI VISIBLE, PIN CON OJITO Y BLOQUEO AL 3ER INTENTO
+      // =======================================================================
+      const handleLoginSubmit = async (e) => {
+        e.preventDefault();
+        setLoginError('');
+        setCuentaBloqueadaMsg(false);
+
+        const dniLimpio = dniInput.trim();
+        if (dniLimpio.length !== 8) {
+          setLoginError('Ingrese un número de DNI válido de 8 dígitos.');
+          return;
+        }
+        if (pinInput.length !== 4) {
+          setLoginError('Ingrese su PIN de 4 dígitos.');
+          return;
+        }
+
+        // Si hay conexión Supabase, consultar estado fresco del usuario en la nube
+        let listaBase = [...usuarios];
+        if (supabaseRef.current && online) {
+          const { data } = await supabaseRef.current.from('usuarios_app').select('*').eq('dni', dniLimpio).maybeSingle();
+          if (data) {
+            const idx = listaBase.findIndex(u => u.dni === dniLimpio);
+            const objNube = {
+              dni: data.dni,
+              nombre: data.nombre,
+              rol: data.rol,
+              pin: data.pin,
+              intentosFallidos: data.intentos_fallidos || 0,
+              bloqueado: !!data.bloqueado,
+            };
+            if (idx >= 0) listaBase[idx] = objNube;
+            else listaBase.push(objNube);
+          }
+        }
+
+        const userIdx = listaBase.findIndex(u => u.dni === dniLimpio);
+        if (userIdx === -1) {
+          setLoginError('DNI no registrado en Avimoa. Solicite su alta al Desarrollador.');
+          return;
+        }
+
+        const user = listaBase[userIdx];
+
+        // Verificar que coincida el tipo de acceso elegido (Desarrollador vs Responsable)
+        if (tipoAccesoLogin === 'DESARROLLADOR' && user.rol !== 'DESARROLLADOR') {
+          setLoginError('Este DNI corresponde a un Responsable de módulo. Cambie a la opción "Responsable".');
+          return;
+        }
+        if (tipoAccesoLogin === 'RESPONSABLE' && user.rol === 'DESARROLLADOR') {
+          setLoginError('Este DNI pertenece al Desarrollador. Seleccione la opción "Desarrollador".');
+          return;
+        }
+
+        // Verificar bloqueo previo
+        if (user.bloqueado) {
+          setCuentaBloqueadaMsg(true);
+          setLoginError('USUARIO BLOQUEADO tras 3 intentos fallidos. Solo el Desarrollador puede generar un nuevo PIN.');
+          return;
+        }
+
+        // Validar PIN
+        if (user.pin !== pinInput) {
+          const nuevosIntentos = (user.intentosFallidos || 0) + 1;
+          const debeBloquear = user.rol !== 'DESARROLLADOR' && nuevosIntentos >= 3;
+
+          const userActualizado = {
+            ...user,
+            intentosFallidos: nuevosIntentos,
+            bloqueado: debeBloquear,
+          };
+          listaBase[userIdx] = userActualizado;
+          await guardarUsuariosLocalYNube(listaBase, userActualizado);
+
+          if (debeBloquear) {
+            setCuentaBloqueadaMsg(true);
+            setLoginError('🔒 CUENTA BLOQUEADA: Alcanzaste el 3er intento fallido. Pide al Desarrollador que te genere un nuevo PIN.');
+          } else if (user.rol === 'DESARROLLADOR') {
+            setLoginError('PIN de Desarrollador incorrecto. Verifica con el ícono del ojito e intenta nuevamente.');
+          } else {
+            const restantes = 3 - nuevosIntentos;
+            setLoginError(`⚠️ PIN incorrecto. Te ${restantes === 1 ? 'queda 1 intento' : `quedan ${restantes} intentos`} antes del bloqueo.`);
+          }
+          return;
+        }
+
+        // Acceso Exitoso: reiniciar contador de intentos fallidos
+        const userLimpio = { ...user, intentosFallidos: 0, bloqueado: false };
+        listaBase[userIdx] = userLimpio;
+        await guardarUsuariosLocalYNube(listaBase, userLimpio);
+
+        setUsuarioActivo(userLimpio);
+        setPinInput('');
+        setMostrarPin(false);
+        setLoginError('');
+        setCuentaBloqueadaMsg(false);
+
+        const permitidos = PERMISOS_ROL[userLimpio.rol];
+        setTabActiva(permitidos.includes('KARDEX') ? 'KARDEX' : permitidos[0]);
+      };
+
       const nombreEmpresa = (empId) => EMPRESAS.find(e => e.id === empId)?.nombreCorto || 'CONSOLIDADO';
       const nombreChofer = (chId) => choferes.find(c => c.id === chId)?.nombre || 'Sin asignar';
 
@@ -126,28 +788,17 @@
       const basePreFaenado = confirmacionPre ? confirmacionPre.fisico : saldoTeoricoPreFaenado;
       const saldoTeoricoPostFaenado = basePreFaenado - (faenadoManana || 0) - mermaPost;
 
-      const iniciarConUsuario = (user) => {
-        setUsuarioActivo(user);
-        setPinInput('');
-        setPinError('');
-        const permitidos = PERMISOS_ROL[user.rol];
-        setTabActiva(permitidos.includes('KARDEX') ? 'KARDEX' : permitidos[0]);
-      };
-
-      const handlePinSubmit = (e) => {
-        e.preventDefault();
-        const encontrado = USUARIOS_DEMO.find(u => u.pin === pinInput);
-        if (!encontrado) {
-          setPinError('PIN incorrecto. Use uno de los accesos rápidos inferiores.');
-          return;
-        }
-        iniciarConUsuario(encontrado);
-      };
-
-      const toggleRed = () => {
+      const toggleRed = async () => {
         const nuevoEstado = !online;
         setOnline(nuevoEstado);
         if (nuevoEstado && colaOffline.length > 0) {
+          if (supabaseRef.current) {
+            for (const item of colaOffline) {
+              if (item.tabla && item.payload) {
+                await supabaseRef.current.from(item.tabla).upsert(item.payload);
+              }
+            }
+          }
           notificar(`Sincronizados ${colaOffline.length} registros pendientes con la nube.`);
           setColaOffline([]);
         } else if (!nuevoEstado) {
@@ -155,70 +806,157 @@
         }
       };
 
-      const registrarEnColaSiOffline = (concepto) => {
-        if (!online) {
-          setColaOffline(prev => [...prev, { id: Date.now(), concepto, fecha: fechaOperativa }]);
-        }
-      };
-
+      // =======================================================================
+      // PANTALLA DE INGRESO (LOGIN AVIMOA: RESPONSABLE VS DESARROLLADOR)
+      // =======================================================================
       if (!usuarioActivo) {
+        const bloqueadosCount = usuarios.filter(u => u.bloqueado).length;
+
         return (
-          <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
-            <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-6">
-              <div className="text-center space-y-1">
-                <span className="inline-block bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-extrabold px-3 py-1 rounded-full tracking-wider uppercase">
-                  Demo Interactivo Gerencial
-                </span>
-                <h1 className="text-2xl font-black text-white pt-1">Control Avícola Consolidado</h1>
-                <p className="text-xs text-slate-400">Plumífero E.I.R.L. & Los 7 Pollitos E.I.R.L.</p>
+          <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-slate-950">
+            <div className="w-full max-w-md bg-slate-900/95 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-6">
+              {/* LOGO AVIMOA */}
+              <div className="pt-1">
+                <LogoAvimoa />
+                <div className="flex justify-center mt-2">
+                  <span className={`inline-flex items-center gap-1.5 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase border ${
+                    sbConectado
+                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                      : 'bg-slate-800 text-slate-400 border-slate-700'
+                  }`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${sbConectado ? 'bg-emerald-400 animate-ping' : 'bg-amber-400'}`}></span>
+                    {sbConectado ? 'Nube Tiempo Real Activa' : 'Plumífero & Los 7 Pollitos'}
+                  </span>
+                </div>
               </div>
 
-              <form onSubmit={handlePinSubmit} className="space-y-4">
+              {/* SELECTOR DOS OPCIONES: RESPONSABLE vs DESARROLLADOR */}
+              <div className="grid grid-cols-2 gap-1.5 bg-slate-950 p-1.5 rounded-2xl border border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTipoAccesoLogin('RESPONSABLE');
+                    setLoginError('');
+                    setCuentaBloqueadaMsg(false);
+                  }}
+                  className={`py-2.5 px-3 rounded-xl text-xs font-black transition flex items-center justify-center gap-1.5 ${
+                    tipoAccesoLogin === 'RESPONSABLE'
+                      ? 'bg-amber-500 text-slate-950 shadow-md'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <span>👷</span> RESPONSABLE
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTipoAccesoLogin('DESARROLLADOR');
+                    setLoginError('');
+                    setCuentaBloqueadaMsg(false);
+                  }}
+                  className={`py-2.5 px-3 rounded-xl text-xs font-black transition flex items-center justify-center gap-1.5 relative ${
+                    tipoAccesoLogin === 'DESARROLLADOR'
+                      ? 'bg-emerald-500 text-slate-950 shadow-md'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <span>🛡️</span> DESARROLLADOR
+                  {bloqueadosCount > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 bg-rose-600 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-slate-900">
+                      {bloqueadosCount}
+                    </span>
+                  )}
+                </button>
+              </div>
+
+              {/* FORMULARIO DNI VISIBLE + PIN CON OJITO */}
+              <form onSubmit={handleLoginSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-center text-xs font-bold text-slate-400 uppercase mb-2">
-                    Ingrese su PIN de Acceso (4 dígitos)
+                  <label className="block text-xs font-bold text-slate-300 uppercase mb-1.5">
+                    Número de DNI ({tipoAccesoLogin === 'DESARROLLADOR' ? 'Desarrollador' : 'Responsable de Módulo'})
                   </label>
                   <input
-                    type="password"
+                    type="text"
                     inputMode="numeric"
-                    maxLength={4}
-                    value={pinInput}
-                    onChange={(e) => setPinInput(e.target.value.replace(/\D/g, ''))}
-                    placeholder="••••"
-                    className="w-full bg-slate-950 border-2 border-slate-700 focus:border-amber-500 rounded-2xl p-4 text-center text-3xl tracking-[0.7em] font-mono text-white outline-none"
+                    maxLength={8}
+                    value={dniInput}
+                    onChange={(e) => {
+                      setDniInput(e.target.value.replace(/\D/g, ''));
+                      setLoginError('');
+                    }}
+                    placeholder="Ej. 47720216"
+                    className="w-full bg-slate-950 border-2 border-slate-700 focus:border-amber-500 rounded-2xl px-4 py-3.5 text-center text-2xl tracking-[0.25em] font-mono font-bold text-white outline-none transition"
                   />
                 </div>
-                {pinError && <p className="text-rose-400 text-xs text-center font-bold">{pinError}</p>}
+
+                <div>
+                  <div className="flex justify-between items-center mb-1.5">
+                    <label className="text-xs font-bold text-slate-300 uppercase">
+                      PIN de Acceso (4 dígitos)
+                    </label>
+                    <span className="text-[11px] text-slate-400">
+                      {mostrarPin ? 'PIN visible' : 'Pulsa el ojo para verificar'}
+                    </span>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type={mostrarPin ? 'text' : 'password'}
+                      inputMode="numeric"
+                      maxLength={4}
+                      value={pinInput}
+                      onChange={(e) => {
+                        setPinInput(e.target.value.replace(/\D/g, ''));
+                        setLoginError('');
+                      }}
+                      placeholder="••••"
+                      className="w-full bg-slate-950 border-2 border-slate-700 focus:border-amber-500 rounded-2xl py-3.5 pl-4 pr-14 text-center text-3xl tracking-[0.6em] font-mono font-black text-amber-400 outline-none transition"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setMostrarPin(!mostrarPin)}
+                      title={mostrarPin ? 'Ocultar PIN' : 'Mostrar PIN'}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
+                    >
+                      {mostrarPin ? (
+                        <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                        </svg>
+                      ) : (
+                        <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {loginError && (
+                  <div className={`p-3.5 rounded-2xl border text-xs font-bold text-center ${
+                    cuentaBloqueadaMsg
+                      ? 'bg-rose-950/90 border-rose-500 text-rose-200 animate-pulse'
+                      : 'bg-amber-950/70 border-amber-500/60 text-amber-200'
+                  }`}>
+                    {loginError}
+                  </div>
+                )}
+
                 <button
                   type="submit"
-                  className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-2xl text-base shadow-lg transition"
+                  className={`w-full py-4 font-black rounded-2xl text-base shadow-lg transition ${
+                    tipoAccesoLogin === 'DESARROLLADOR'
+                      ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950'
+                      : 'bg-amber-500 hover:bg-amber-400 text-slate-950'
+                  }`}
                 >
-                  INGRESAR CON PIN
+                  {tipoAccesoLogin === 'DESARROLLADOR' ? 'INGRESAR COMO DESARROLLADOR' : 'INGRESAR A AVIMOA'}
                 </button>
               </form>
 
-              <div className="border-t border-slate-800 pt-4">
-                <p className="text-xs font-bold text-slate-400 uppercase text-center mb-3">
-                  Accesos Rápidos por Perfil (1 Clic para Demo)
+              <div className="border-t border-slate-800/80 pt-3 text-center">
+                <p className="text-[11px] text-slate-500">
+                  Seguridad activa: al <strong className="text-slate-300">3er intento fallido</strong> el usuario se bloquea automáticamente.
                 </p>
-                <div className="grid grid-cols-1 gap-2">
-                  {USUARIOS_DEMO.map((u) => (
-                    <button
-                      key={u.id}
-                      type="button"
-                      onClick={() => iniciarConUsuario(u)}
-                      className="flex items-center justify-between bg-slate-800/80 hover:bg-slate-800 border border-slate-700/80 p-3 rounded-xl text-left transition"
-                    >
-                      <div>
-                        <p className="text-sm font-bold text-white">{u.rol}</p>
-                        <p className="text-xs text-slate-400">{u.desc}</p>
-                      </div>
-                      <span className="bg-slate-950 text-amber-400 font-mono text-xs font-bold px-2.5 py-1.5 rounded-lg border border-slate-700">
-                        PIN: {u.pin}
-                      </span>
-                    </button>
-                  ))}
-                </div>
               </div>
             </div>
           </div>
@@ -227,36 +965,61 @@
 
       const tabsDisponibles = [
         { id: 'INGRESOS', label: '1. Traslado Galpón' },
-        { id: 'GUIAS', label: '2. Guía Pluma' },
+        { id: 'GUIAS', label: '2. Guía Pluma (PDF)' },
         { id: 'CONTEO_ANTE', label: '3. Conteo & Ante-Mortem' },
         { id: 'FAENADO_POST', label: '4. Faenado & Post-Mortem' },
         { id: 'KARDEX', label: '5. Kardex & Reportes' },
-        { id: 'MAESTROS', label: '6. Base de Datos' },
+        { id: 'MAESTROS', label: '6. Usuarios, Maestros & Nube' },
       ].filter((t) => PERMISOS_ROL[usuarioActivo.rol].includes(t.id));
+
+      const usuariosBloqueados = usuarios.filter(u => u.bloqueado);
 
       return (
         <div className="min-h-screen bg-slate-950 text-slate-100 pb-20">
           <header className="sticky top-0 z-30 bg-slate-900/95 backdrop-blur border-b border-slate-800 px-4 py-3">
-            <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="bg-amber-500 text-slate-950 text-xs font-black px-2 py-0.5 rounded">
-                    {usuarioActivo.rol}
-                  </span>
-                  <span className="text-sm font-bold text-white">{usuarioActivo.nombre}</span>
-                </div>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="text-xs text-slate-400">Fecha Operativa:</span>
-                  <input
-                    type="date"
-                    value={fechaOperativa}
-                    onChange={(e) => setFechaOperativa(e.target.value)}
-                    className="bg-slate-800 border border-slate-700 rounded px-2 py-0.5 text-xs font-mono text-amber-300"
-                  />
+            <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-4">
+                <LogoAvimoa compact />
+                <div className="hidden sm:block h-8 w-px bg-slate-800"></div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase ${
+                      usuarioActivo.rol === 'DESARROLLADOR' ? 'bg-emerald-500 text-slate-950' : 'bg-amber-500 text-slate-950'
+                    }`}>
+                      {usuarioActivo.rol}
+                    </span>
+                    <span className="text-xs font-bold text-white">{usuarioActivo.nombre}</span>
+                    {sbConectado && (
+                      <span className="bg-emerald-950 border border-emerald-600 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        LIVE
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-[11px] text-slate-400">Fecha Operativa:</span>
+                    <input
+                      type="date"
+                      value={fechaOperativa}
+                      onChange={(e) => {
+                        setFechaOperativa(e.target.value);
+                        if (supabaseRef.current) cargarDatosDelDiaDesdeNube(supabaseRef.current, e.target.value);
+                      }}
+                      className="bg-slate-800 border border-slate-700 rounded px-2 py-0.5 text-xs font-mono text-amber-300"
+                    />
+                  </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
+                {usuarioActivo.rol === 'DESARROLLADOR' && usuariosBloqueados.length > 0 && (
+                  <button
+                    onClick={() => setTabActiva('MAESTROS')}
+                    className="px-3 py-1.5 rounded-xl text-xs font-black bg-rose-600 text-white animate-pulse"
+                  >
+                    🔒 {usuariosBloqueados.length} Bloqueado(s)
+                  </button>
+                )}
+
                 <button
                   onClick={toggleRed}
                   className={`px-3 py-1.5 rounded-xl text-xs font-extrabold border ${
@@ -276,10 +1039,14 @@
                 </button>
 
                 <button
-                  onClick={() => setUsuarioActivo(null)}
+                  onClick={() => {
+                    setUsuarioActivo(null);
+                    setDniInput('');
+                    setPinInput('');
+                  }}
                   className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200"
                 >
-                  Cambiar PIN
+                  Salir
                 </button>
               </div>
             </div>
@@ -321,7 +1088,7 @@
             <div className="max-w-5xl mx-auto px-4 pt-4">
               <div className="bg-sky-950/60 border border-sky-700 p-4 rounded-2xl space-y-3">
                 <div className="flex justify-between items-center">
-                  <h3 className="font-bold text-sky-300 text-sm">Bitácora de Sugerencias del Cliente (Reunión)</h3>
+                  <h3 className="font-bold text-sky-300 text-sm">Bitácora de Observaciones Operativas</h3>
                   <button onClick={() => setMostrarNotas(false)} className="text-xs text-slate-400">Cerrar ✕</button>
                 </div>
                 <div className="flex gap-2">
@@ -329,7 +1096,7 @@
                     type="text"
                     value={nuevaNota}
                     onChange={(e) => setNuevaNota(e.target.value)}
-                    placeholder="Anota aquí cualquier cambio que pida el gerente..."
+                    placeholder="Anota aquí cualquier incidencia o ajuste del turno..."
                     className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm"
                   />
                   <button
@@ -378,11 +1145,25 @@
                 placas={placas}
                 choferes={choferes}
                 nombreEmpresa={nombreEmpresa}
-                nombreChofer={nombreChofer}
                 congelado={!!confirmacionPre}
                 onRegistrar={(nuevo) => {
                   setIngresos([...ingresos, nuevo]);
-                  registrarEnColaSiOffline(`Ingreso ${nuevo.placa}: ${nuevo.aves} aves`);
+                  sincronizarOperacionNube(
+                    'movimientos_ingreso',
+                    {
+                      id: nuevo.id,
+                      fecha_operativa: fechaOperativa,
+                      sector: nuevo.sector,
+                      numero_galpon: nuevo.numeroGalpon,
+                      empresa: nuevo.empresa,
+                      placa: nuevo.placa,
+                      chofer: nuevo.chofer,
+                      jabas: nuevo.jabas,
+                      aves: nuevo.aves,
+                      modo: nuevo.modo,
+                    },
+                    `Ingreso ${nuevo.placa}: ${nuevo.aves} aves`
+                  );
                   notificar(`Ingreso registrado: +${nuevo.aves} aves (${nuevo.sector} - ${nuevo.numeroGalpon})`);
                 }}
                 onError={(msg) => notificar(msg, 'err')}
@@ -391,12 +1172,48 @@
 
             {tabActiva === 'GUIAS' && (
               <ModuloGuiaPluma
+                fechaOperativa={fechaOperativa}
                 clientes={clientes}
+                guias={guias}
+                correlativos={correlativos}
+                onGuardarInicioCorrelativo={(emp, num) => {
+                  actualizarCorrelativoEmpresa(emp, num, true);
+                  notificar(`Correlativo inicial de ${emp} guardado en N° ${String(num).padStart(6, '0')}.`);
+                }}
                 congelado={!!confirmacionPre}
-                onRegistrar={(guia) => {
+                onRegistrar={(guia, descargarAhora) => {
                   setGuias([...guias, guia]);
-                  registrarEnColaSiOffline(`Guía #${guia.numero}: ${guia.aves} aves`);
-                  notificar(`Guía Pluma #${guia.numero} registrada (-${guia.aves} aves)`);
+                  const siguiente = Number(guia.numero) + 1;
+                  actualizarCorrelativoEmpresa(guia.empresa, siguiente, true);
+
+                  sincronizarOperacionNube(
+                    'guias_pluma',
+                    {
+                      id: guia.id,
+                      fecha_operativa: fechaOperativa,
+                      empresa: guia.empresa,
+                      numero: guia.numero,
+                      cod_cliente: guia.cod,
+                      cliente: guia.cliente,
+                      doc_identidad: guia.docIdentidad,
+                      vendedor: guia.vendedor,
+                      detalle: guia.detalle,
+                      precio_kg: guia.precioKg,
+                      jabas: guia.jabas,
+                      aves: guia.aves,
+                      peso: guia.peso,
+                      total_soles: guia.totalSoles,
+                      filas_json: guia.filas,
+                    },
+                    `Guía #${guia.numero}: ${guia.aves} aves`
+                  );
+
+                  if (descargarAhora) {
+                    descargarPDFNotaPedido(guia);
+                    notificar(`Nota de Pedido N° ${guia.numero} emitida y PDF descargado.`);
+                  } else {
+                    notificar(`Nota de Pedido N° ${guia.numero} guardada (-${guia.aves} aves).`);
+                  }
                 }}
                 onError={(msg) => notificar(msg, 'err')}
               />
@@ -412,7 +1229,19 @@
                 usuario={usuarioActivo}
                 onAgregarMerma={(m) => {
                   setMermasAnte([...mermasAnte, m]);
-                  registrarEnColaSiOffline(`Merma Ante-Mortem: ${m.aves} aves`);
+                  sincronizarOperacionNube(
+                    'mermas_ante_mortem',
+                    {
+                      id: m.id,
+                      fecha_operativa: fechaOperativa,
+                      placa: m.placa,
+                      aves: m.aves,
+                      peso: m.peso,
+                      motivo: m.motivo,
+                      con_foto: m.conFoto,
+                    },
+                    `Merma Ante-Mortem: ${m.aves} aves`
+                  );
                   notificar(`Merma Ante-Mortem registrada (-${m.aves} aves)`, 'warn');
                 }}
                 onConfirmarFisico={(acta) => {
@@ -420,6 +1249,20 @@
                   if (acta.diferencia !== 0) {
                     setAlertas([...alertas, `NO-CUADRE CONTEO FÍSICO: Teórico ${acta.teorico} vs Físico ${acta.fisico} (Diff: ${acta.diferencia})`]);
                   }
+                  sincronizarOperacionNube(
+                    'cierres_turno',
+                    {
+                      id: `pre-${fechaOperativa}`,
+                      fecha_operativa: fechaOperativa,
+                      tipo: 'CONTEO_PRE',
+                      teorico: acta.teorico,
+                      fisico: acta.fisico,
+                      diferencia: acta.diferencia,
+                      responsable: acta.responsable,
+                      hora: acta.hora,
+                    },
+                    'Acta Saldo Físico'
+                  );
                   notificar('Acta de Saldo Físico sellada con PIN. Turno congelado.');
                 }}
                 onError={(msg) => notificar(msg, 'err')}
@@ -445,6 +1288,23 @@
                   if (acta.diferencia !== 0) {
                     setAlertas([...alertas, `NO-CUADRE POST-FAENADO: Remanente Teórico ${acta.teorico} vs Físico ${acta.fisico}`]);
                   }
+                  sincronizarOperacionNube(
+                    'cierres_turno',
+                    {
+                      id: `post-${fechaOperativa}`,
+                      fecha_operativa: fechaOperativa,
+                      tipo: 'CIERRE_POST',
+                      teorico: acta.teorico,
+                      fisico: acta.fisico,
+                      diferencia: acta.diferencia,
+                      faenado_aves: faenadoManana || 0,
+                      faenado_kg: pesoFaenado || 0,
+                      merma_post: mermaPost || 0,
+                      responsable: acta.responsable,
+                      hora: acta.hora,
+                    },
+                    'Cierre Post-Faenado'
+                  );
                   notificar('Cierre Post-Faenado confirmado con PIN.');
                 }}
                 onError={(msg) => notificar(msg, 'err')}
@@ -470,6 +1330,15 @@
 
             {tabActiva === 'MAESTROS' && (
               <ModuloMaestros
+                usuarioActivo={usuarioActivo}
+                usuarios={usuarios}
+                onGuardarUsuario={async (nuevoUser) => {
+                  const idx = usuarios.findIndex(u => u.dni === nuevoUser.dni);
+                  const copia = [...usuarios];
+                  if (idx >= 0) copia[idx] = nuevoUser;
+                  else copia.push(nuevoUser);
+                  await guardarUsuariosLocalYNube(copia, nuevoUser);
+                }}
                 galpones={galpones}
                 setGalpones={setGalpones}
                 placas={placas}
@@ -480,6 +1349,18 @@
                 setClientes={setClientes}
                 nombreEmpresa={nombreEmpresa}
                 nombreChofer={nombreChofer}
+                sbUrl={sbUrl}
+                setSbUrl={setSbUrl}
+                sbKey={sbKey}
+                setSbKey={setSbKey}
+                webhookUrl={webhookUrl}
+                setWebhookUrl={(val) => {
+                  setWebhookUrl(val);
+                  localStorage.setItem('avimoa_webhook_url', val);
+                }}
+                sbConectado={sbConectado}
+                onConectarSupabase={() => conectarSupabase(sbUrl, sbKey, false)}
+                supabaseRef={supabaseRef}
                 notificar={notificar}
               />
             )}
@@ -488,7 +1369,10 @@
       );
     }
 
-    function ModuloIngresoGalpon({ galpones, placas, choferes, nombreEmpresa, nombreChofer, congelado, onRegistrar, onError }) {
+    // =========================================================================
+    // MÓDULO 1: INGRESO DE GALPÓN
+    // =========================================================================
+    function ModuloIngresoGalpon({ galpones, placas, choferes, nombreEmpresa, congelado, onRegistrar, onError }) {
       const sectoresUnicos = [...new Set(galpones.map(g => g.sector))];
       const [sectorSel, setSectorSel] = useState(sectoresUnicos[0] || '');
       const galponesDelSector = galpones.filter(g => g.sector === sectorSel);
@@ -531,36 +1415,12 @@
         });
       };
 
-      const simularOCR = () => {
-        if (congelado) return onError('Turno congelado por Conteo Físico.');
-        onRegistrar({
-          id: 'ing-' + Date.now(),
-          sector: 'Km 21',
-          numeroGalpon: 'Galpón 2',
-          empresa: 'PLUMÍFERO',
-          placa: 'X4F-945',
-          chofer: 'Sr. Peter',
-          jabas: 108,
-          aves: 1116,
-          modo: 'FOTO_OCR',
-        });
-      };
-
       return (
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-5">
-          <div className="flex flex-wrap justify-between items-center gap-2">
-            <div>
-              <span className="text-xs font-extrabold text-amber-400 uppercase">Módulo 1 • Traslado de Granja</span>
-              <h2 className="text-lg font-black text-white">Ingreso de Pollo Vivo (Galpón → Acopio)</h2>
-              <p className="text-xs text-slate-400">Selecciona Dirección, N° de Galpón, Placa y Chofer asignado.</p>
-            </div>
-            <button
-              type="button"
-              onClick={simularOCR}
-              className="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500 text-amber-300 px-3 py-2 rounded-xl text-xs font-extrabold"
-            >
-              📷 Simular Foto Ticket Km 21 - G2 (OCR)
-            </button>
+          <div>
+            <span className="text-xs font-extrabold text-amber-400 uppercase">Módulo 1 • Traslado de Granja</span>
+            <h2 className="text-lg font-black text-white">Ingreso de Pollo Vivo (Galpón → Acopio)</h2>
+            <p className="text-xs text-slate-400">Selecciona Dirección, N° de Galpón, Placa y Chofer asignado.</p>
           </div>
 
           <form onSubmit={handleGuardar} className="space-y-4">
@@ -659,12 +1519,32 @@
       );
     }
 
-    function ModuloGuiaPluma({ clientes, congelado, onRegistrar, onError }) {
+    // =========================================================================
+    // MÓDULO 2: GUÍA PLUMA / NOTA DE PEDIDO (CORRELATIVO + PDF DESCARGABLE)
+    // =========================================================================
+    function ModuloGuiaPluma({ fechaOperativa, clientes, guias, correlativos, onGuardarInicioCorrelativo, congelado, onRegistrar, onError }) {
       const [empresa, setEmpresa] = useState('PLUMÍFERO');
-      const [numero, setNumero] = useState('001594');
+      const corrInfo = correlativos[empresa] || { numero: 1, inicializado: false };
+      const numeroFormateado = String(corrInfo.numero).padStart(6, '0');
+
+      const [editandoCorrelativo, setEditandoCorrelativo] = useState(!corrInfo.inicializado);
+      const [inputInicioCorr, setInputInicioCorr] = useState(String(corrInfo.numero));
+
+      useEffect(() => {
+        const info = correlativos[empresa] || { numero: 1, inicializado: false };
+        setInputInicioCorr(String(info.numero));
+        setEditandoCorrelativo(!info.inicializado);
+      }, [empresa, correlativos]);
+
       const [busqueda, setBusqueda] = useState('');
-      const [clienteSel, setClienteSel] = useState(clientes[0]);
-      const [filas, setFilas] = useState([{ peso: 132.5, jabas: 10, avesJaba: 8 }]);
+      const [clienteSel, setClienteSel] = useState(clientes[1] || clientes[0]);
+      const [clienteLibre, setClienteLibre] = useState('');
+      const [docIdentidad, setDocIdentidad] = useState('');
+      const [vendedor, setVendedor] = useState('Ferci');
+      const [detalleGeneral, setDetalleGeneral] = useState('Pollo Vivo');
+      const [precioKg, setPrecioKg] = useState('');
+
+      const [filas, setFilas] = useState([{ peso: 141, jabas: 5, avesJaba: 8, dscto: 0 }]);
 
       const filtrados = busqueda.trim()
         ? clientes.filter(c =>
@@ -677,151 +1557,336 @@
       const totalJabas = filas.reduce((a, b) => a + Number(b.jabas || 0), 0);
       const totalAves = filas.reduce((a, b) => a + Number(b.jabas || 0) * Number(b.avesJaba || 0), 0);
       const totalPeso = filas.reduce((a, b) => a + Number(b.peso || 0), 0);
+      const totalDscto = filas.reduce((a, b) => a + Number(b.dscto || 0), 0);
+      const pKg = Number(precioKg || 0);
+      const totalSoles = pKg > 0 ? Math.max(0, totalPeso * pKg - totalDscto) : 0;
 
-      const handleGuardar = (e) => {
-        e.preventDefault();
+      const emitirGuia = (descargarPdfAhora) => {
         if (congelado) return onError('Turno congelado por Conteo Físico.');
-        if (!clienteSel) return onError('Seleccione un cliente válido.');
-        onRegistrar({
+        if (!corrInfo.inicializado) {
+          setEditandoCorrelativo(true);
+          return onError('Primero fija y guarda el N° de inicio de correlativo del talonario.');
+        }
+        const nombreDestinatario = clienteLibre.trim() ? clienteLibre.trim() : clienteSel?.apodo;
+        if (!nombreDestinatario) return onError('Seleccione un cliente o escriba el destinatario.');
+        if (totalAves <= 0 && totalPeso <= 0) return onError('Ingrese al menos una fila de pesada o aves.');
+
+        const nuevaGuia = {
           id: 'g-' + Date.now(),
+          fecha: fechaOperativa,
           empresa,
-          numero,
-          cod: clienteSel.cod,
-          cliente: clienteSel.apodo,
+          numero: numeroFormateado,
+          cod: clienteLibre.trim() ? '000' : (clienteSel?.cod || '000'),
+          cliente: nombreDestinatario,
+          docIdentidad: docIdentidad.trim(),
+          vendedor: vendedor.trim() || 'ACOPIO',
+          detalle: detalleGeneral.trim() || 'Pollo Vivo',
+          precioKg: pKg,
           jabas: totalJabas,
           aves: totalAves,
           peso: totalPeso,
-          modo: 'DIGITAL',
-        });
-        setNumero(String(Number(numero) + 1).padStart(6, '0'));
-      };
+          totalSoles,
+          filas: filas.map(f => ({
+            peso: Number(f.peso || 0),
+            jabas: Number(f.jabas || 0),
+            avesJaba: Number(f.avesJaba || 0),
+            dscto: Number(f.dscto || 0),
+            detalle: detalleGeneral.trim() || 'Pollo Vivo'
+          }))
+        };
 
-      const simularOCRGuia = () => {
-        if (congelado) return onError('Turno congelado por Conteo Físico.');
-        onRegistrar({
-          id: 'g-' + Date.now(),
-          empresa: 'PLUMÍFERO',
-          numero: '001593',
-          cod: '222',
-          cliente: 'Jhon Casas',
-          jabas: 65,
-          aves: 520,
-          peso: 1749.0,
-          modo: 'FOTO_OCR',
-        });
+        onRegistrar(nuevaGuia, descargarPdfAhora);
+        setClienteLibre('');
+        setFilas([{ peso: '', jabas: 5, avesJaba: 8, dscto: 0 }]);
       };
 
       return (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-5">
-          <div className="flex flex-wrap justify-between items-center gap-2">
-            <div>
-              <span className="text-xs font-extrabold text-sky-400 uppercase">Módulo 2 • Despacho Ventas Pollo Vivo</span>
-              <h2 className="text-lg font-black text-white">Emisión de Guía Pluma</h2>
-              <p className="text-xs text-slate-400">Búsqueda rápida por código de cliente o apodo de guía.</p>
+        <div className="space-y-6">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-5">
+            <div className="flex flex-wrap justify-between items-start gap-3">
+              <div>
+                <span className="text-xs font-extrabold text-sky-400 uppercase">Módulo 2 • Nota de Pedido / Guía Pluma</span>
+                <h2 className="text-lg font-black text-white">Emisión de Guía Pluma y PDF para Cliente</h2>
+                <p className="text-xs text-slate-400">Replica el talonario físico (hasta 15 pesadas) con cuentas bancarias por empresa.</p>
+              </div>
+
+              <div className="flex items-center gap-2 bg-slate-950 border border-slate-700 px-3 py-2 rounded-2xl">
+                <div>
+                  <p className="text-[10px] text-slate-400 uppercase font-bold">Nota de Pedido ({empresa})</p>
+                  <p className="text-lg font-mono font-black text-rose-400">N° {numeroFormateado}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setEditandoCorrelativo(!editandoCorrelativo)}
+                  className="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500 text-amber-300 px-2.5 py-1.5 rounded-xl text-xs font-extrabold"
+                >
+                  ⚙️ {corrInfo.inicializado ? 'Ajustar Correlativo' : 'Iniciar Correlativo'}
+                </button>
+              </div>
             </div>
-            <button
-              type="button"
-              onClick={simularOCRGuia}
-              className="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500 text-amber-300 px-3 py-2 rounded-xl text-xs font-extrabold"
-            >
-              📷 Simular Foto Guía #001593 (Jhon Casas)
-            </button>
+
+            {editandoCorrelativo && (
+              <div className="bg-amber-950/40 border border-amber-500/60 p-4 rounded-2xl flex flex-wrap items-end justify-between gap-3">
+                <div className="space-y-1 flex-1 min-w-[200px]">
+                  <p className="text-xs font-black text-amber-300 uppercase">
+                    Inicio de Correlativo Físico — Talonario {empresa}
+                  </p>
+                  <p className="text-xs text-slate-300">
+                    Digita el número con el que arranca tu talonario físico hoy; se guardará y avanzará solo (+1) en cada guía.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    min={1}
+                    value={inputInicioCorr}
+                    onChange={(e) => setInputInicioCorr(e.target.value)}
+                    className="w-32 bg-slate-900 border border-amber-400 rounded-xl p-2.5 text-center font-mono font-black text-lg text-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const val = Number(inputInicioCorr);
+                      if (!val || val < 1) return onError('Ingrese un número de correlativo válido.');
+                      onGuardarInicioCorrelativo(empresa, val);
+                      setEditandoCorrelativo(false);
+                    }}
+                    className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs"
+                  >
+                    GUARDAR INICIO
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">Talonario Empresa (Cuentas PDF)</label>
+                  <select
+                    value={empresa}
+                    onChange={(e) => setEmpresa(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold text-amber-300"
+                  >
+                    <option value="PLUMÍFERO">PLUMÍFERO E.I.R.L.</option>
+                    <option value="LOS 7 POLLITOS">LOS 7 POLLITOS E.I.R.L.</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">Vendedor / Despachador</label>
+                  <input
+                    type="text"
+                    value={vendedor}
+                    onChange={(e) => setVendedor(e.target.value)}
+                    placeholder="Ej. Ferci"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">Doc. Identidad (Opcional)</label>
+                  <input
+                    type="text"
+                    value={docIdentidad}
+                    onChange={(e) => setDocIdentidad(e.target.value)}
+                    placeholder="DNI o RUC"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-mono"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">Buscar Cliente Registrado (Código o Apodo)</label>
+                  <input
+                    type="text"
+                    value={busqueda}
+                    onChange={(e) => { setBusqueda(e.target.value); setClienteLibre(''); }}
+                    placeholder={clienteSel ? `Seleccionado: [${clienteSel.cod}] ${clienteSel.apodo}` : 'Escriba código ej. 222 o Jhon...'}
+                    className="w-full bg-slate-800 border border-sky-500/50 rounded-xl p-3 text-sm"
+                  />
+                  {filtrados.length > 0 && (
+                    <div className="bg-slate-800 border border-slate-700 rounded-xl mt-1 divide-y divide-slate-700 max-h-40 overflow-y-auto">
+                      {filtrados.map(c => (
+                        <button
+                          type="button"
+                          key={c.cod}
+                          onClick={() => {
+                            setClienteSel(c);
+                            setDocIdentidad(c.docIdentidad || '');
+                            setBusqueda('');
+                          }}
+                          className="w-full text-left px-3 py-2 hover:bg-slate-700 flex justify-between text-xs"
+                        >
+                          <span className="font-bold">{c.apodo} ({c.cliente})</span>
+                          <span className="font-mono text-sky-400">COD: {c.cod}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">O escribir Señor(es) / Destino directo</label>
+                  <input
+                    type="text"
+                    value={clienteLibre}
+                    onChange={(e) => setClienteLibre(e.target.value)}
+                    placeholder="Ej. OFICINA CAMAL o cliente nuevo..."
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">Detalle / Glosa en Nota</label>
+                  <input
+                    type="text"
+                    value={detalleGeneral}
+                    onChange={(e) => setDetalleGeneral(e.target.value)}
+                    placeholder="Ej. Pollo Vivo / Post-Mortem"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">Precio x Kg S/ (Dejar vacío si es solo peso)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={precioKg}
+                    onChange={(e) => setPrecioKg(e.target.value)}
+                    placeholder="0.00 (Opcional)"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 font-mono text-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="bg-slate-950 border border-slate-800 rounded-2xl p-3 space-y-2">
+                <div className="grid grid-cols-12 gap-1.5 text-[11px] font-bold text-slate-400 text-center px-1">
+                  <div className="col-span-1">N°</div>
+                  <div className="col-span-3">PESO (KG)</div>
+                  <div className="col-span-2">JABA</div>
+                  <div className="col-span-2">BOLSA</div>
+                  <div className="col-span-2">DSCTO</div>
+                  <div className="col-span-2">AVES</div>
+                </div>
+
+                {filas.map((f, i) => (
+                  <div key={i} className="grid grid-cols-12 gap-1.5 items-center">
+                    <div className="col-span-1 text-center font-mono text-xs font-bold text-slate-400">{i + 1}</div>
+                    <input
+                      type="number"
+                      step="0.1"
+                      value={f.peso}
+                      onChange={(e) => { const c = [...filas]; c[i].peso = e.target.value; setFilas(c); }}
+                      placeholder="141"
+                      className="col-span-3 bg-slate-800 border border-slate-700 rounded-xl p-2 text-center font-mono font-bold"
+                    />
+                    <input
+                      type="number"
+                      value={f.jabas}
+                      onChange={(e) => { const c = [...filas]; c[i].jabas = e.target.value; setFilas(c); }}
+                      placeholder="5"
+                      className="col-span-2 bg-slate-800 border border-slate-700 rounded-xl p-2 text-center font-mono"
+                    />
+                    <input
+                      type="number"
+                      value={f.avesJaba}
+                      onChange={(e) => { const c = [...filas]; c[i].avesJaba = e.target.value; setFilas(c); }}
+                      placeholder="8"
+                      className="col-span-2 bg-slate-800 border border-slate-700 rounded-xl p-2 text-center font-mono"
+                    />
+                    <input
+                      type="number"
+                      step="0.1"
+                      value={f.dscto}
+                      onChange={(e) => { const c = [...filas]; c[i].dscto = e.target.value; setFilas(c); }}
+                      placeholder="0"
+                      className="col-span-2 bg-slate-800 border border-slate-700 rounded-xl p-2 text-center font-mono text-xs"
+                    />
+                    <div className="col-span-2 text-center font-mono text-xs font-black text-sky-400">
+                      {Number(f.jabas || 0) * Number(f.avesJaba || 0)}
+                    </div>
+                  </div>
+                ))}
+
+                {filas.length < 15 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const u = filas[filas.length - 1];
+                      setFilas([...filas, { peso: '', jabas: u.jabas, avesJaba: u.avesJaba, dscto: 0 }]);
+                    }}
+                    className="w-full py-2.5 border border-dashed border-amber-500/60 rounded-xl text-xs font-bold text-amber-400 hover:bg-amber-500/10"
+                  >
+                    + Agregar Pesada / Repetir Jaba y Bolsa ( &quot; ) — ({filas.length}/15 filas)
+                  </button>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 bg-slate-950 p-3 rounded-2xl text-center border border-slate-800">
+                <div><p className="text-xs text-slate-400">Total Jabas</p><p className="font-black text-lg">{totalJabas}</p></div>
+                <div><p className="text-xs text-slate-400">Total Pollos</p><p className="font-black text-lg text-amber-400">-{totalAves}</p></div>
+                <div><p className="text-xs text-slate-400">Peso Total</p><p className="font-black text-lg text-emerald-400">{totalPeso.toFixed(1)} kg</p></div>
+                <div><p className="text-xs text-slate-400">Total S/</p><p className="font-black text-lg text-sky-400">{totalSoles > 0 ? `S/ ${totalSoles.toFixed(2)}` : '—'}</p></div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => emitirGuia(true)}
+                  className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-2xl font-black text-sm shadow-lg"
+                >
+                  📄 GUARDAR Y DESCARGAR PDF (CLIENTE)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => emitirGuia(false)}
+                  className="w-full py-4 bg-sky-600 hover:bg-sky-500 text-white rounded-2xl font-black text-sm"
+                >
+                  ✓ SOLO GUARDAR GUÍA EN SISTEMA
+                </button>
+              </div>
+            </div>
           </div>
 
-          <form onSubmit={handleGuardar} className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs text-slate-400 mb-1">Talonario Empresa</label>
-                <select value={empresa} onChange={(e) => setEmpresa(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold">
-                  <option value="PLUMÍFERO">PLUMÍFERO</option>
-                  <option value="LOS 7 POLLITOS">LOS 7 POLLITOS</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs text-slate-400 mb-1">N° Guía Pluma</label>
-                <input value={numero} onChange={(e) => setNumero(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-mono font-bold text-amber-400" />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs text-slate-400 mb-1">Cliente (Código 018, 222 o Apodo)</label>
-              <input
-                type="text"
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
-                placeholder={clienteSel ? `Seleccionado: [${clienteSel.cod}] ${clienteSel.apodo}` : 'Escriba código o apodo...'}
-                className="w-full bg-slate-800 border border-sky-500/50 rounded-xl p-3 text-sm"
-              />
-              {filtrados.length > 0 && (
-                <div className="bg-slate-800 border border-slate-700 rounded-xl mt-1 divide-y divide-slate-700">
-                  {filtrados.map(c => (
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-3">
+            <h3 className="text-sm font-black text-white uppercase">Guías Pluma / Notas de Pedido Emitidas Hoy ({guias.length})</h3>
+            {guias.length === 0 ? (
+              <p className="text-xs text-slate-500">Aún no se han emitido guías en esta fecha operativa.</p>
+            ) : (
+              <div className="divide-y divide-slate-800">
+                {guias.map((g) => (
+                  <div key={g.id} className="py-3 flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-black text-rose-400 text-sm">N° {String(g.numero).padStart(6, '0')}</span>
+                        <span className="text-xs bg-slate-800 px-2 py-0.5 rounded font-bold text-amber-300">{g.empresa}</span>
+                        <span className="text-sm font-bold text-white">{g.cliente}</span>
+                      </div>
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        {g.jabas} jabas • {g.aves} aves • {Number(g.peso).toFixed(1)} kg {g.vendedor ? `• Vendedor: ${g.vendedor}` : ''}
+                      </p>
+                    </div>
                     <button
                       type="button"
-                      key={c.cod}
-                      onClick={() => { setClienteSel(c); setBusqueda(''); }}
-                      className="w-full text-left px-3 py-2.5 hover:bg-slate-700 flex justify-between text-xs"
+                      onClick={() => descargarPDFNotaPedido(g)}
+                      className="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-xl text-xs font-extrabold"
                     >
-                      <span className="font-bold">{c.apodo} ({c.cliente})</span>
-                      <span className="font-mono text-sky-400">COD: {c.cod}</span>
+                      ⬇ Descargar PDF
                     </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              {filas.map((f, i) => (
-                <div key={i} className="grid grid-cols-3 gap-2">
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={f.peso}
-                    onChange={(e) => { const c = [...filas]; c[i].peso = e.target.value; setFilas(c); }}
-                    placeholder="Peso Kg"
-                    className="bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-center font-mono"
-                  />
-                  <input
-                    type="number"
-                    value={f.jabas}
-                    onChange={(e) => { const c = [...filas]; c[i].jabas = e.target.value; setFilas(c); }}
-                    placeholder="Jabas"
-                    className="bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-center font-mono"
-                  />
-                  <input
-                    type="number"
-                    value={f.avesJaba}
-                    onChange={(e) => { const c = [...filas]; c[i].avesJaba = e.target.value; setFilas(c); }}
-                    placeholder="Aves/Jaba"
-                    className="bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-center font-mono"
-                  />
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={() => {
-                  const u = filas[filas.length - 1];
-                  setFilas([...filas, { peso: '', jabas: u.jabas, avesJaba: u.avesJaba }]);
-                }}
-                className="w-full py-2 border border-dashed border-amber-500/60 rounded-xl text-xs font-bold text-amber-400"
-              >
-                + Repetir Fila Anterior ( &quot; )
-              </button>
-            </div>
-
-            <div className="grid grid-cols-3 gap-2 bg-slate-950 p-3 rounded-2xl text-center">
-              <div><p className="text-xs text-slate-400">Total Jabas</p><p className="font-black text-lg">{totalJabas}</p></div>
-              <div><p className="text-xs text-slate-400">Total Pollos</p><p className="font-black text-lg text-amber-400">-{totalAves}</p></div>
-              <div><p className="text-xs text-slate-400">Peso Total</p><p className="font-black text-lg text-emerald-400">{totalPeso.toFixed(1)} kg</p></div>
-            </div>
-
-            <button type="submit" className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-2xl font-black text-base">
-              GUARDAR GUÍA PLUMA Y DESCONTAR SALDO
-            </button>
-          </form>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       );
     }
 
+    // =========================================================================
+    // MÓDULO 3: CONTEO Y MERMA ANTE-MORTEM
+    // =========================================================================
     function ModuloConteoAnteMortem({ placas, nombreChofer, mermasAnte, saldoTeorico, confirmacionPre, usuario, onAgregarMerma, onConfirmarFisico, onError }) {
       const [avesMuertas, setAvesMuertas] = useState(1);
       const [pesoMerma, setPesoMerma] = useState(2.8);
@@ -864,8 +1929,8 @@
 
       const handleConfirmar = (e) => {
         e.preventDefault();
-        if (pin !== usuario.pin && pin !== '1234') {
-          return onError(`PIN incorrecto. Para este perfil use PIN: ${usuario.pin}`);
+        if (pin !== usuario.pin) {
+          return onError('PIN incorrecto. Ingresa tu PIN personal de 4 dígitos para firmar el acta.');
         }
         if (diff !== 0 && obs.trim().length < 4) {
           return onError('Existe diferencia vs el sistema. Ingrese observación obligatoria.');
@@ -961,7 +2026,7 @@
                   maxLength={4}
                   value={pin}
                   onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
-                  placeholder={`PIN Personal (prueba: ${usuario.pin} o 1111)`}
+                  placeholder="Ingresa tu PIN personal para firmar"
                   className="w-full bg-slate-800 border border-amber-500/60 rounded-xl p-3 text-center font-mono text-lg"
                 />
                 <button type="submit" className="w-full py-3.5 bg-sky-600 hover:bg-sky-500 rounded-xl font-black text-sm">
@@ -1024,6 +2089,9 @@
       );
     }
 
+    // =========================================================================
+    // MÓDULO 4: FAENADO Y MERMA POST-MORTEM
+    // =========================================================================
     function ModuloFaenadoPostMortem({ basePreFaenado, faenadoManana, mermaPost, saldoTeoricoPost, confirmacionPost, usuario, onRegistrarFaenado, onConfirmarPost, onError }) {
       const [cantFaenado, setCantFaenado] = useState(faenadoManana ?? basePreFaenado);
       const [pesoTotalKg, setPesoTotalKg] = useState(2850);
@@ -1039,8 +2107,8 @@
 
       const handleCierrePost = (e) => {
         e.preventDefault();
-        if (pin !== usuario.pin && pin !== '1234') {
-          return onError(`PIN incorrecto. Use PIN: ${usuario.pin}`);
+        if (pin !== usuario.pin) {
+          return onError('PIN incorrecto. Ingresa tu PIN personal para confirmar el cierre.');
         }
         onConfirmarPost({
           teorico: saldoTeoricoPost,
@@ -1116,7 +2184,7 @@
                   maxLength={4}
                   value={pin}
                   onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
-                  placeholder={`PIN Jefe Faenado (prueba: ${usuario.pin} o 1111)`}
+                  placeholder="Ingresa tu PIN personal para cerrar"
                   className="w-full bg-slate-800 border border-emerald-500/60 rounded-xl p-3 text-center font-mono text-lg"
                 />
                 <button type="submit" className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-black text-sm">
@@ -1129,6 +2197,9 @@
       );
     }
 
+    // =========================================================================
+    // MÓDULO 5: KARDEX VERTICAL Y REPORTES
+    // =========================================================================
     function ModuloKardexDashboard({ fechaOperativa, ingresos, guias, mermasAnte, confirmacionPre, faenadoManana, pesoFaenado, mermaPost, confirmacionPost, saldoTeoricoPreFaenado, alertas, notificar }) {
       let saldoCorriente = 0;
 
@@ -1154,7 +2225,7 @@
         const csvContent = 'data:text/csv;charset=utf-8,' + filas.map(e => e.join(',')).join('\n');
         const link = document.createElement('a');
         link.setAttribute('href', encodeURI(csvContent));
-        link.setAttribute('download', `Kardex_Avicola_${fechaOperativa}.csv`);
+        link.setAttribute('download', `Kardex_Avimoa_${fechaOperativa}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -1272,8 +2343,24 @@
       );
     }
 
-    function ModuloMaestros({ galpones, setGalpones, placas, setPlacas, choferes, setChoferes, clientes, setClientes, nombreEmpresa, nombreChofer, notificar }) {
-      const [subTab, setSubTab] = useState('GALPONES');
+    // =========================================================================
+    // MÓDULO 6: USUARIOS (DNI + PIN ALEATORIO + DESBLOQUEO), MAESTROS Y NUBE
+    // =========================================================================
+    function ModuloMaestros({
+      usuarioActivo, usuarios, onGuardarUsuario,
+      galpones, setGalpones, placas, setPlacas, choferes, setChoferes, clientes, setClientes,
+      nombreEmpresa, nombreChofer, sbUrl, setSbUrl, sbKey, setSbKey, webhookUrl, setWebhookUrl,
+      sbConectado, onConectarSupabase, supabaseRef, notificar
+    }) {
+      const esDev = usuarioActivo.rol === 'DESARROLLADOR';
+      const [subTab, setSubTab] = useState(esDev ? 'USUARIOS' : 'GALPONES');
+
+      // Estados Nuevo Responsable / Desarrollador
+      const [dniNuevoUser, setDniNuevoUser] = useState('');
+      const [nombreNuevoUser, setNombreNuevoUser] = useState('');
+      const [rolNuevoUser, setRolNuevoUser] = useState('TRASLADO');
+      const [pinGeneradoPreview, setPinGeneradoPreview] = useState(() => generarPinAleatorio4());
+      const [ultimoCredencialCreado, setUltimoCredencialCreado] = useState(null);
 
       // Estados Galpones
       const [empresaGalpon, setEmpresaGalpon] = useState('emp-1');
@@ -1294,14 +2381,59 @@
       const [telNuevoChofer, setTelNuevoChofer] = useState('');
 
       // Estados Clientes
-      const [csvTexto, setCsvTexto] = useState('045\tMARIA ELENA QUISPE\tMaria Quispe');
+      const [csvTexto, setCsvTexto] = useState('045\tMARIA ELENA QUISPE\tMaria Quispe\t41258963');
 
-      const agregarGalpon = (e) => {
+      const crearResponsableConPin = async (e) => {
+        e.preventDefault();
+        if (dniNuevoUser.trim().length !== 8) {
+          return notificar('El DNI debe tener exactamente 8 dígitos.', 'err');
+        }
+        if (!nombreNuevoUser.trim()) {
+          return notificar('Ingrese el nombre del responsable.', 'err');
+        }
+        const pinFinal = pinGeneradoPreview || generarPinAleatorio4();
+        const nuevoObj = {
+          dni: dniNuevoUser.trim(),
+          nombre: nombreNuevoUser.trim(),
+          rol: rolNuevoUser,
+          pin: pinFinal,
+          intentosFallidos: 0,
+          bloqueado: false,
+        };
+        await onGuardarUsuario(nuevoObj);
+        setUltimoCredencialCreado(nuevoObj);
+        setDniNuevoUser('');
+        setNombreNuevoUser('');
+        setPinGeneradoPreview(generarPinAleatorio4());
+        notificar(`Usuario ${nuevoObj.nombre} creado con PIN aleatorio ${pinFinal}.`);
+      };
+
+      const desbloquearYRegenerarPin = async (u) => {
+        const nuevoPin = generarPinAleatorio4();
+        const actualizado = {
+          ...u,
+          pin: nuevoPin,
+          intentosFallidos: 0,
+          bloqueado: false,
+        };
+        await onGuardarUsuario(actualizado);
+        setUltimoCredencialCreado(actualizado);
+        notificar(`Nuevo PIN aleatorio generado para ${u.nombre}: ${nuevoPin}`);
+      };
+
+      const copiarCredencialesWhatsApp = (u) => {
+        const rolDesc = ROLES_MODULO.find(r => r.value === u.rol)?.label || u.rol;
+        const mensaje = `🐔 *AVIMOA — Acceso al Sistema*\n👤 *Responsable:* ${u.nombre}\n📋 *Módulo:* ${rolDesc}\n🪪 *DNI:* ${u.dni}\n🔑 *PIN de Acceso:* ${u.pin}\n🔗 *Enlace:* ${window.location.href}`;
+        navigator.clipboard?.writeText(mensaje);
+        notificar('Credenciales copiadas al portapapeles listas para pegar en WhatsApp.');
+      };
+
+      const agregarGalpon = async (e) => {
         e.preventDefault();
         if (!sectorGalpon.trim()) return;
         const cant = Number(cantidadLote);
+        const nuevos = [];
         if (cant > 1) {
-          const nuevos = [];
           for (let i = 1; i <= cant; i++) {
             nuevos.push({
               id: 'g-' + Date.now() + '-' + i,
@@ -1311,116 +2443,262 @@
               empresaId: empresaGalpon,
             });
           }
-          setGalpones([...galpones, ...nuevos]);
           notificar(`Se crearon ${cant} galpones (Galpón 1 al ${cant}) en ${sectorGalpon}.`);
         } else {
-          setGalpones([
-            ...galpones,
-            {
-              id: 'g-' + Date.now(),
-              sector: sectorGalpon.trim(),
-              numeroGalpon,
-              referencia: referenciaGalpon.trim() || sectorGalpon.trim(),
-              empresaId: empresaGalpon,
-            },
-          ]);
+          nuevos.push({
+            id: 'g-' + Date.now(),
+            sector: sectorGalpon.trim(),
+            numeroGalpon,
+            referencia: referenciaGalpon.trim() || sectorGalpon.trim(),
+            empresaId: empresaGalpon,
+          });
           notificar(`Dirección ${sectorGalpon} (${numeroGalpon}) registrada.`);
+        }
+        setGalpones([...galpones, ...nuevos]);
+        if (supabaseRef.current) {
+          await supabaseRef.current.from('galpones').upsert(
+            nuevos.map(n => ({ id: n.id, sector: n.sector, numero_galpon: n.numeroGalpon, referencia: n.referencia, empresa_id: n.empresaId }))
+          );
         }
         setSectorGalpon('');
         setReferenciaGalpon('');
         setCantidadLote(1);
       };
 
-      const agregarPlaca = (e) => {
+      const agregarPlaca = async (e) => {
         e.preventDefault();
         if (!nuevaPlaca.trim()) return;
-        setPlacas([
-          ...placas,
-          {
-            id: 'v-' + Date.now(),
-            placa: nuevaPlaca.trim().toUpperCase(),
-            modelo: modeloPlaca.trim() || 'Camión Furgón',
-            empresaId: empresaPlaca,
-            choferId: choferHabitualPlaca,
-          },
-        ]);
+        const obj = {
+          id: 'v-' + Date.now(),
+          placa: nuevaPlaca.trim().toUpperCase(),
+          modelo: modeloPlaca.trim() || 'Camión Furgón',
+          empresaId: empresaPlaca,
+          choferId: choferHabitualPlaca,
+        };
+        setPlacas([...placas, obj]);
+        if (supabaseRef.current) {
+          await supabaseRef.current.from('placas').upsert({
+            id: obj.id, placa: obj.placa, modelo: obj.modelo, empresa_id: obj.empresaId, chofer_id: obj.choferId
+          });
+        }
         setNuevaPlaca('');
         setModeloPlaca('');
         notificar('Placa / Vehículo registrado en el catálogo.');
       };
 
-      const agregarChofer = (e) => {
+      const agregarChofer = async (e) => {
         e.preventDefault();
         if (!nombreNuevoChofer.trim()) return;
-        setChoferes([
-          ...choferes,
-          {
-            id: 'ch-' + Date.now(),
-            nombre: nombreNuevoChofer.trim(),
-            dni: dniNuevoChofer.trim(),
-            telefono: telNuevoChofer.trim(),
-            activo: true,
-          },
-        ]);
+        const obj = {
+          id: 'ch-' + Date.now(),
+          nombre: nombreNuevoChofer.trim(),
+          dni: dniNuevoChofer.trim(),
+          telefono: telNuevoChofer.trim(),
+          activo: true,
+        };
+        setChoferes([...choferes, obj]);
+        if (supabaseRef.current) {
+          await supabaseRef.current.from('choferes').upsert(obj);
+        }
         setNombreNuevoChofer('');
         setDniNuevoChofer('');
         setTelNuevoChofer('');
         notificar('Chofer registrado correctamente.');
       };
 
-      const importarClientes = () => {
+      const importarClientes = async () => {
         const lineas = csvTexto.split('\n').map(l => l.trim()).filter(Boolean);
         const nuevos = [...clientes];
+        const aSubir = [];
         lineas.forEach(linea => {
           const partes = linea.split(/\t|,|;/).map(p => p.trim());
           if (partes.length >= 3) {
             const idx = nuevos.findIndex(c => c.cod === partes[0]);
-            const obj = { cod: partes[0], cliente: partes[1].toUpperCase(), apodo: partes[2] };
+            const obj = { cod: partes[0], cliente: partes[1].toUpperCase(), apodo: partes[2], docIdentidad: partes[3] || '' };
             if (idx >= 0) nuevos[idx] = obj;
             else nuevos.push(obj);
+            aSubir.push({ cod: obj.cod, cliente: obj.cliente, apodo: obj.apodo, doc_identidad: obj.docIdentidad });
           }
         });
         setClientes(nuevos);
+        if (supabaseRef.current && aSubir.length > 0) {
+          await supabaseRef.current.from('clientes').upsert(aSubir);
+        }
         notificar(`Importación masiva completada (${lineas.length} clientes procesados).`);
       };
 
       return (
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-5">
           <div>
-            <span className="text-xs font-extrabold text-sky-400 uppercase">Base de Datos Interna • Catálogos Maestros</span>
-            <h2 className="text-lg font-black text-white">Direcciones, Galpones, Placas, Choferes y Clientes</h2>
+            <span className="text-xs font-extrabold text-sky-400 uppercase">Administración Avimoa • Usuarios y Catálogos</span>
+            <h2 className="text-lg font-black text-white">Responsables por DNI, Galpones, Placas, Choferes y Nube</h2>
           </div>
 
           <div className="flex flex-wrap gap-2 bg-slate-950 p-2 rounded-2xl border border-slate-800">
-            <button
-              type="button"
-              onClick={() => setSubTab('GALPONES')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'GALPONES' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}
-            >
+            {esDev && (
+              <button
+                type="button"
+                onClick={() => setSubTab('USUARIOS')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${
+                  subTab === 'USUARIOS' ? 'bg-amber-500 text-slate-950' : 'text-amber-300 hover:text-white'
+                }`}
+              >
+                👥 Usuarios & PIN ({usuarios.length})
+              </button>
+            )}
+            <button type="button" onClick={() => setSubTab('GALPONES')} className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'GALPONES' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}>
               Direcciones / Galpones ({galpones.length})
             </button>
-            <button
-              type="button"
-              onClick={() => setSubTab('PLACAS')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'PLACAS' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}
-            >
+            <button type="button" onClick={() => setSubTab('PLACAS')} className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'PLACAS' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}>
               Placas ({placas.length})
             </button>
-            <button
-              type="button"
-              onClick={() => setSubTab('CHOFERES')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'CHOFERES' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}
-            >
+            <button type="button" onClick={() => setSubTab('CHOFERES')} className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'CHOFERES' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}>
               Choferes ({choferes.length})
             </button>
-            <button
-              type="button"
-              onClick={() => setSubTab('CLIENTES')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'CLIENTES' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}
-            >
+            <button type="button" onClick={() => setSubTab('CLIENTES')} className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'CLIENTES' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'}`}>
               Clientes ({clientes.length})
             </button>
+            {esDev && (
+              <button type="button" onClick={() => setSubTab('NUBE')} className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition ${subTab === 'NUBE' ? 'bg-emerald-600 text-white' : 'text-emerald-400 hover:text-emerald-300'}`}>
+                ☁️ Nube Tiempo Real ({sbConectado ? 'ON' : 'OFF'})
+              </button>
+            )}
           </div>
+
+          {/* SUB-PESTAÑA EXCLUSIVA DESARROLLADOR: USUARIOS POR DNI, PIN ALEATORIO Y DESBLOQUEO */}
+          {subTab === 'USUARIOS' && esDev && (
+            <div className="space-y-5">
+              {ultimoCredencialCreado && (
+                <div className="bg-emerald-950/70 border border-emerald-500 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-black text-emerald-300 uppercase">Credencial Lista para Compartir</p>
+                    <p className="text-sm font-bold text-white mt-0.5">
+                      {ultimoCredencialCreado.nombre} — DNI: <span className="font-mono text-amber-300">{ultimoCredencialCreado.dni}</span> | PIN: <span className="font-mono text-emerald-300 text-base font-black">{ultimoCredencialCreado.pin}</span>
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => copiarCredencialesWhatsApp(ultimoCredencialCreado)}
+                    className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs"
+                  >
+                    📋 Copiar Mensaje WhatsApp
+                  </button>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <form onSubmit={crearResponsableConPin} className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
+                  <h3 className="text-sm font-black text-white">Asignar Responsable por Módulo (DNI + PIN Aleatorio)</h3>
+                  <div>
+                    <label className="text-xs text-slate-400">Número de DNI (8 dígitos)</label>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={8}
+                      value={dniNuevoUser}
+                      onChange={(e) => setDniNuevoUser(e.target.value.replace(/\D/g, ''))}
+                      placeholder="Ej. 71234568"
+                      className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-mono mt-1"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Nombre del Responsable</label>
+                    <input
+                      type="text"
+                      value={nombreNuevoUser}
+                      onChange={(e) => setNombreNuevoUser(e.target.value)}
+                      placeholder="Ej. Carlos Quispe"
+                      className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm mt-1"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Módulo Asignado</label>
+                    <select
+                      value={rolNuevoUser}
+                      onChange={(e) => setRolNuevoUser(e.target.value)}
+                      className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm font-bold text-amber-300 mt-1"
+                    >
+                      {ROLES_MODULO.map(r => (
+                        <option key={r.value} value={r.value}>{r.label}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="bg-slate-900 border border-slate-700 p-3 rounded-xl flex items-center justify-between">
+                    <div>
+                      <p className="text-[11px] text-slate-400">PIN Aleatorio Generado</p>
+                      <p className="text-xl font-mono font-black text-emerald-400 tracking-widest">{pinGeneradoPreview}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setPinGeneradoPreview(generarPinAleatorio4())}
+                      className="bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-2 rounded-xl text-xs font-bold text-amber-300"
+                    >
+                      🎲 Otro PIN
+                    </button>
+                  </div>
+
+                  <button type="submit" className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs">
+                    + GUARDAR RESPONSABLE Y GENERAR ACCESO
+                  </button>
+                </form>
+
+                <div className="space-y-2.5 max-h-[430px] overflow-y-auto">
+                  <h3 className="text-xs font-black text-slate-400 uppercase">Usuarios Registrados y Estado de Bloqueo</h3>
+                  {usuarios.map(u => (
+                    <div
+                      key={u.dni}
+                      className={`p-3.5 rounded-2xl border space-y-2 ${
+                        u.bloqueado
+                          ? 'bg-rose-950/40 border-rose-500'
+                          : 'bg-slate-950 border-slate-800'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-black text-white">{u.nombre}</span>
+                            {u.bloqueado && (
+                              <span className="bg-rose-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full animate-pulse">
+                                🔒 BLOQUEADO (3/3)
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-slate-400 mt-0.5">
+                            DNI: <strong className="font-mono text-slate-200">{u.dni}</strong> • Módulo: <strong className="text-amber-300">{u.rol}</strong>
+                          </p>
+                          <p className="text-xs text-slate-400">
+                            PIN Actual: <strong className="font-mono text-emerald-400">{u.pin}</strong> • Intentos fallidos: {u.intentosFallidos || 0}/3
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => desbloquearYRegenerarPin(u)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-extrabold ${
+                            u.bloqueado
+                              ? 'bg-rose-600 hover:bg-rose-500 text-white'
+                              : 'bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700'
+                          }`}
+                        >
+                          {u.bloqueado ? '🔓 Desbloquear y Generar Nuevo PIN' : '🎲 Regenerar Nuevo PIN'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => copiarCredencialesWhatsApp(u)}
+                          className="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-950 hover:bg-emerald-900 border border-emerald-700 text-emerald-300"
+                        >
+                          📋 Copiar WhatsApp
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
           {subTab === 'GALPONES' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -1433,7 +2711,7 @@
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400">Dirección / Sector (ej. Km 32 Granja Santa Rosa)</label>
+                  <label className="text-xs text-slate-400">Dirección / Sector</label>
                   <input value={sectorGalpon} onChange={(e) => setSectorGalpon(e.target.value)} placeholder="Ej. Km 32 Granja Santa Rosa" className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-sm mt-1" />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
@@ -1575,7 +2853,7 @@
           {subTab === 'CLIENTES' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3">
-                <h3 className="text-sm font-black text-white">Carga Masiva de Clientes (cod | cliente | apodo)</h3>
+                <h3 className="text-sm font-black text-white">Carga Masiva de Clientes (cod | cliente | apodo | dni)</h3>
                 <textarea
                   rows={4}
                   value={csvTexto}
@@ -1595,6 +2873,62 @@
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {subTab === 'NUBE' && esDev && (
+            <div className="bg-slate-950 border border-emerald-500/40 p-5 rounded-2xl space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-base font-black text-emerald-400">Conexión en Tiempo Real (Supabase + Google Drive Sheets)</h3>
+                  <p className="text-xs text-slate-400">Sincroniza usuarios, bloqueos, correlativos y movimientos entre todos los celulares al instante.</p>
+                </div>
+                <span className={`px-3 py-1 rounded-full text-xs font-black ${sbConectado ? 'bg-emerald-950 text-emerald-300 border border-emerald-500' : 'bg-slate-800 text-slate-400'}`}>
+                  {sbConectado ? '● CONECTADO' : '○ LOCAL / SIN NUBE'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs text-slate-400">Supabase Project URL</label>
+                  <input
+                    type="text"
+                    value={sbUrl}
+                    onChange={(e) => setSbUrl(e.target.value)}
+                    placeholder="https://xxxxx.supabase.co"
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs font-mono mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-slate-400">Supabase Anon Public Key</label>
+                  <input
+                    type="password"
+                    value={sbKey}
+                    onChange={(e) => setSbKey(e.target.value)}
+                    placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs font-mono mt-1"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs text-slate-400">Google Apps Script Web App URL (Opcional — Espejo Tablilla Mensual en Drive)</label>
+                <input
+                  type="text"
+                  value={webhookUrl}
+                  onChange={(e) => setWebhookUrl(e.target.value)}
+                  placeholder="https://script.google.com/macros/s/.../exec"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs font-mono mt-1"
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={onConectarSupabase}
+                className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl text-sm"
+              >
+                CONECTAR Y SINCRONIZAR EN TIEMPO REAL
+              </button>
             </div>
           )}
         </div>
